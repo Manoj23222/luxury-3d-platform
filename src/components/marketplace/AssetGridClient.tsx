@@ -65,51 +65,8 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
   return (
     <>
       <section className="border-b border-neutral-200 bg-white pt-24">
-        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-6 lg:px-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <span className="rounded-full border border-neutral-200 bg-neutral-50 px-4 py-2 text-xs font-semibold text-neutral-600">
-                3D Asset Marketplace
-              </span>
-
-              <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
-                Browse Premium 3D Assets
-              </h1>
-
-              <p className="mt-3 max-w-2xl text-neutral-500">
-                Search, filter and download Blender, GLB, FBX, OBJ and ZIP-ready
-                3D models.
-              </p>
-            </div>
-
-            <Link
-              href="/contact"
-              className="w-fit rounded-full bg-black px-7 py-3 text-sm font-semibold text-white"
-            >
-              Hire Custom 3D
-            </Link>
-          </div>
-
-          <div className="mt-8 grid gap-3 rounded-3xl border border-neutral-200 bg-neutral-50 p-3 md:grid-cols-[1fr_180px]">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search assets, categories, tags..."
-              className="w-full rounded-2xl border border-neutral-200 bg-white px-5 py-4 text-sm outline-none focus:border-black"
-            />
-
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="rounded-2xl border border-neutral-200 bg-white px-5 py-4 text-sm font-semibold outline-none focus:border-black"
-            >
-              <option>Newest</option>
-              <option>Most Downloaded</option>
-              <option>Price Low</option>
-              <option>Price High</option>
-            </select>
-          </div>
-        </div>
+       
+          
       </section>
 
       <section className="mx-auto flex max-w-7xl gap-3 overflow-x-auto px-5 py-6 sm:px-6 lg:px-10">
