@@ -2,23 +2,40 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
+import { getCurrentUser } from "@/lib/auth";
+
+const allowedFormats = ["glb", "gltf", "fbx", "blend", "obj", "stl", "zip"];
 
 export async function POST(req: Request) {
   try {
     await connectDB();
 
-    const { orderId } = await req.json();
+    const user = await getCurrentUser();
 
-    const order = await Order.findById(orderId).lean();
-
-    if (!order) {
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: "Order not found" },
-        { status: 404 }
+        { success: false, message: "Login required" },
+        { status: 401 }
       );
     }
 
-    if (!order.downloadEnabled) {
+    const { orderId, format = "zip" } = await req.json();
+
+    if (!allowedFormats.includes(format)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid file format" },
+        { status: 400 }
+      );
+    }
+
+    const order = await Order.findOne({
+      _id: orderId,
+      userId: user.id,
+      status: "Paid",
+      downloadEnabled: true,
+    }).lean();
+
+    if (!order) {
       return NextResponse.json(
         { success: false, message: "Download not allowed" },
         { status: 403 }
@@ -34,9 +51,29 @@ export async function POST(req: Request) {
       );
     }
 
+    const urls: Record<string, string> = {
+      glb: product.glbUrl || product.modelUrl || "",
+      gltf: product.gltfUrl || "",
+      fbx: product.fbxUrl || "",
+      blend: product.blendUrl || "",
+      obj: product.objUrl || "",
+      stl: product.stlUrl || "",
+      zip: product.zipUrl || product.downloadZipUrl || "",
+    };
+
+    const url = urls[format];
+
+    if (!url) {
+      return NextResponse.json(
+        { success: false, message: `${format.toUpperCase()} file not available` },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      url: product.downloadZipUrl || "",
+      format,
+      url,
     });
   } catch (error: any) {
     return NextResponse.json(

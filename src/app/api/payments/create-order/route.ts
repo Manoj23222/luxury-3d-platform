@@ -3,13 +3,23 @@ import crypto from "crypto";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import Order from "@/models/Order";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
     await connectDB();
 
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "Login required" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
-    const { productId, customerName, customerEmail, customerPhone } = body;
+    const { productId, customerPhone } = body;
 
     const product = await Product.findById(productId).lean();
 
@@ -36,19 +46,42 @@ export async function POST(req: Request) {
       );
     }
 
+    const existingPaidOrder = await Order.findOne({
+      userId: user.id,
+      productId,
+      status: "Paid",
+      downloadEnabled: true,
+    });
+
+    if (existingPaidOrder) {
+      return NextResponse.json({
+        success: true,
+        alreadyPurchased: true,
+        message: "Already purchased",
+        order: existingPaidOrder,
+        razorpayOrder: {
+          id: existingPaidOrder.razorpayOrderId,
+          amount: amount * 100,
+          currency: "INR",
+        },
+      });
+    }
+
     const razorpayOrderId = `order_${crypto.randomBytes(10).toString("hex")}`;
 
     const order = await Order.create({
+      userId: user.id,
       productId,
       productName: product.name || "",
       productImage: product.thumbnail || "",
-      customerName: customerName || "",
-      customerEmail: customerEmail || "",
+      customerName: user.name || "",
+      customerEmail: user.email || "",
       customerPhone: customerPhone || "",
       amount,
       currency: "INR",
       status: "Pending",
       razorpayOrderId,
+      downloadEnabled: false,
     });
 
     return NextResponse.json({

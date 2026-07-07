@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
-  Center,
+  Bounds,
   ContactShadows,
   Environment,
   Html,
@@ -14,80 +13,79 @@ import {
 function Loader() {
   return (
     <Html center>
-      <div className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-black">
-        Loading 3D...
+      <div className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-black shadow">
+        Loading...
       </div>
     </Html>
   );
 }
 
-function Model({ url }: { url?: string }) {
-  if (!url) {
+function getExt(fileName?: string) {
+  return fileName?.split("?")[0].split(".").pop()?.toLowerCase() || "";
+}
+
+function Model({ url }: { url: string }) {
+  const gltf = useGLTF(url);
+  return <primitive object={gltf.scene} />;
+}
+
+export default function ModelViewer({
+  url,
+  fileName,
+}: {
+  url?: string;
+  fileName?: string;
+}) {
+  const ext = getExt(fileName);
+  console.log("MODEL VIEWER DEBUG:", {
+  url,
+  fileName,
+  ext,
+});
+
+  if (!url || (ext !== "glb" && ext !== "gltf")) {
     return (
-      <mesh rotation={[0.4, 0.4, 0]}>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="#ffffff" metalness={1} roughness={0.18} />
-      </mesh>
+      <div className="flex h-[420px] w-full items-center justify-center rounded-3xl border border-neutral-200 bg-neutral-100">
+        <p className="text-sm font-semibold text-neutral-500">
+          Only GLB / GLTF preview supported
+        </p>
+      </div>
     );
   }
 
-  const gltf = useGLTF(url);
-
   return (
-    <Center>
-      <primitive object={gltf.scene} scale={1.8} />
-    </Center>
-  );
-}
-
-export default function ModelViewer({ url }: { url?: string }) {
-  const [autoRotate, setAutoRotate] = useState(true);
-
-  return (
-    <div className="relative h-[460px] w-full overflow-hidden rounded-3xl border border-white/10 bg-[#020202]">
-      <div className="absolute right-4 top-4 z-10 flex gap-2">
-        <button
-          onClick={() => setAutoRotate((prev) => !prev)}
-          className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-black"
-        >
-          {autoRotate ? "Pause" : "Rotate"}
-        </button>
-      </div>
-
+    <div className="h-[420px] w-full overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-100">
       <Canvas
         shadows
-        camera={{ position: [4, 3, 6], fov: 40 }}
+        camera={{ position: [3, 2, 6], fov: 38 }}
         gl={{ antialias: true }}
       >
-        <color attach="background" args={["#020202"]} />
+        <color attach="background" args={["#f4f4f2"]} />
 
-        <ambientLight intensity={0.7} />
-        <directionalLight
-          castShadow
-          position={[5, 6, 5]}
-          intensity={3.5}
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-        />
+        <ambientLight intensity={0.8} />
 
-        <Suspense fallback={<Loader />}>
+        
           <Environment preset="studio" />
-          <Model url={url} />
+
+         <Bounds fit clip observe margin={1.4}>
+  <Model url={url} />
+</Bounds>
+
           <ContactShadows
-            position={[0, -1.2, 0]}
-            opacity={0.45}
-            scale={10}
-            blur={2.8}
+            position={[0, -1, 0]}
+            opacity={0.25}
+            scale={8}
+            blur={2.5}
             far={4}
           />
-        </Suspense>
+        
 
         <OrbitControls
-          enablePan
+          makeDefault
+          enablePan={false}
           enableZoom
-          autoRotate={autoRotate}
-          autoRotateSpeed={0.8}
-          minDistance={2}
+          enableRotate
+          minDistance={2.5}
           maxDistance={12}
         />
       </Canvas>

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,15 +12,37 @@ const links = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const isLoggedIn = false;
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const data = await res.json();
+        setIsLoggedIn(Boolean(data.success));
+      } catch {
+        setIsLoggedIn(false);
+      }
+    }
+
+    checkUser();
+  }, []);
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setIsLoggedIn(false);
+    setMobileOpen(false);
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-xl">
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-10">
         <Link href="/" className="flex shrink-0 items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-sm font-bold text-white shadow-sm">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-sm font-bold text-white">
             3D
           </div>
 
@@ -38,7 +61,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-semibold text-neutral-600 transition hover:text-black"
+              className="text-sm font-semibold text-neutral-600 hover:text-black"
             >
               {item.label}
             </Link>
@@ -49,9 +72,8 @@ export default function Navbar() {
           <input
             type="text"
             placeholder="Search assets..."
-            className="w-full rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm outline-none transition focus:border-black"
+            className="w-full rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm outline-none focus:border-black"
           />
-          
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
@@ -66,7 +88,7 @@ export default function Navbar() {
 
               <Link
                 href="/register"
-                className="rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
+                className="rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
               >
                 Register
               </Link>
@@ -80,7 +102,10 @@ export default function Navbar() {
                 Dashboard
               </Link>
 
-              <button className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
+              <button
+                onClick={logout}
+                className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+              >
                 Logout
               </button>
             </>
@@ -126,6 +151,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
+                  onClick={() => setMobileOpen(false)}
                   className="block rounded-xl border p-3 text-center font-semibold"
                 >
                   Login
@@ -133,6 +159,7 @@ export default function Navbar() {
 
                 <Link
                   href="/register"
+                  onClick={() => setMobileOpen(false)}
                   className="block rounded-xl bg-black p-3 text-center font-semibold text-white"
                 >
                   Register
@@ -142,12 +169,16 @@ export default function Navbar() {
               <>
                 <Link
                   href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
                   className="block rounded-xl border p-3 text-center font-semibold"
                 >
                   Dashboard
                 </Link>
 
-                <button className="w-full rounded-xl bg-red-600 p-3 font-semibold text-white">
+                <button
+                  onClick={logout}
+                  className="w-full rounded-xl bg-red-600 p-3 font-semibold text-white"
+                >
                   Logout
                 </button>
               </>

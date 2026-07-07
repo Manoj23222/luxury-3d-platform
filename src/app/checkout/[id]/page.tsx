@@ -9,6 +9,7 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const [product, setProduct] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
 
@@ -19,23 +20,36 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    const load = async () => {
+    async function load() {
+      const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+      const meData = await meRes.json();
+
+      if (!meData.success) {
+        router.push(`/login?next=/checkout/${id}`);
+        return;
+      }
+
+      setUser(meData.user);
+      setForm((prev) => ({
+        ...prev,
+        name: meData.user?.name || "",
+        email: meData.user?.email || "",
+      }));
+
       const res = await fetch(`/api/public/products/${id}`);
       const data = await res.json();
 
-      if (data.product) {
-        setProduct(data.product);
-      }
+      if (data.product) setProduct(data.product);
 
       setLoading(false);
-    };
+    }
 
     load();
-  }, [id]);
+  }, [id, router]);
 
   const payNow = async () => {
-    if (!form.name || !form.email) {
-      alert("Name and email required");
+    if (!user) {
+      router.push(`/login?next=/checkout/${id}`);
       return;
     }
 
@@ -48,8 +62,6 @@ export default function CheckoutPage() {
       },
       body: JSON.stringify({
         productId: id,
-        customerName: form.name,
-        customerEmail: form.email,
         customerPhone: form.phone,
       }),
     });
@@ -117,6 +129,10 @@ export default function CheckoutPage() {
           <h1 className="mt-3 text-4xl font-bold tracking-tight">
             Complete Your Purchase
           </h1>
+
+          <p className="mt-2 text-sm text-neutral-500">
+            Checkout is protected. Only logged-in users can purchase assets.
+          </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
@@ -126,20 +142,14 @@ export default function CheckoutPage() {
             <div className="mt-6 grid gap-4">
               <input
                 value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
-                placeholder="Full Name"
-                className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm outline-none focus:border-black"
+                readOnly
+                className="rounded-2xl border border-neutral-200 bg-neutral-100 px-4 py-3 text-sm outline-none"
               />
 
               <input
                 value={form.email}
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-                placeholder="Email Address"
-                className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm outline-none focus:border-black"
+                readOnly
+                className="rounded-2xl border border-neutral-200 bg-neutral-100 px-4 py-3 text-sm outline-none"
               />
 
               <input

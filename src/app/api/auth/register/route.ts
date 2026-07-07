@@ -17,7 +17,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingUser = await User.findOne({ email });
+    const cleanEmail = email.toLowerCase().trim();
+
+const existingUser = await User.findOne({ email: cleanEmail });
 
     if (existingUser) {
       return NextResponse.json(
@@ -30,7 +32,7 @@ export async function POST(req: Request) {
 
     const user = await User.create({
       name,
-      email,
+      email: cleanEmail,
       password: hashedPassword,
       role: "creator",
     });

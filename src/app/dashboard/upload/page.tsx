@@ -1,20 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ModelViewer from "@/components/3d/ModelViewer";
 
-const categories = [
-  "Furniture",
-  "Packaging",
-  "Electronics",
-  "Bottle",
-  "Cosmetics",
-  "Architecture",
-  "Character",
-  "Vehicle",
-  "Other",
-];  
+
 
 export default function UploadPage() {
   const router = useRouter();
@@ -24,6 +14,33 @@ export default function UploadPage() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [categories, setCategories] = useState<any[]>([]);
+const [glbFile, setGlbFile] = useState<File | null>(null);
+const [gltfFile, setGltfFile] = useState<File | null>(null);
+const [fbxFile, setFbxFile] = useState<File | null>(null);
+const [blendFile, setBlendFile] = useState<File | null>(null);
+const [objFile, setObjFile] = useState<File | null>(null);
+const [stlFile, setStlFile] = useState<File | null>(null);
+const [zipFile, setZipFile] = useState<File | null>(null);
+useEffect(() => {
+  async function loadCategories() {
+    try {
+      const res = await fetch("/api/categories", {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setCategories(data.categories || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  loadCategories();
+}, []);
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -46,12 +63,11 @@ export default function UploadPage() {
     return file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   };
 
-  const isPreviewable = (file?: File | null) => {
-    if (!file) return false;
-    const name = file.name.toLowerCase();
-    return name.endsWith(".glb") || name.endsWith(".gltf");
-  };
-
+ const isPreviewable = (file?: File | null) => {
+  if (!file) return false;
+  const name = file.name.toLowerCase();
+  return name.endsWith(".glb") || name.endsWith(".gltf");
+};
   const selectModel = (file: File | null) => {
     setModelFile(file);
 
@@ -93,6 +109,13 @@ export default function UploadPage() {
     data.append("status", publish ? "Published" : form.status);
     data.append("featured", form.featured);
     data.append("model", modelFile);
+    if (glbFile) data.append("glbFile", glbFile);
+    if (gltfFile) data.append("gltfFile", gltfFile);
+    if (fbxFile) data.append("fbxFile", fbxFile);
+    if (blendFile) data.append("blendFile", blendFile);
+    if (objFile) data.append("objFile", objFile);
+    if (stlFile) data.append("stlFile", stlFile);
+    if (zipFile) data.append("zipFile", zipFile);
 
     if (thumbnailFile) {
       data.append("thumbnailFile", thumbnailFile);
@@ -140,12 +163,26 @@ export default function UploadPage() {
               placeholder="Luxury perfume bottle 3D model"
             />
 
-            <Select
-              label="Category"
-              value={form.category}
-              onChange={(v) => update("category", v)}
-              options={["", ...categories]}
-            />
+            <label className="block">
+  <span className="mb-2 block text-sm font-semibold text-neutral-700">
+    Category
+  </span>
+
+  <select
+    value={form.category}
+    onChange={(e) => update("category", e.target.value)}
+    className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-black outline-none focus:border-black"
+  >
+    <option value="">Select Category</option>
+
+    {categories.map((cat) => (
+      <option key={cat._id} value={cat.name}>
+        {"— ".repeat(cat.level || 0)}
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</label>
 
             <Textarea
               label="Description"
@@ -164,10 +201,52 @@ export default function UploadPage() {
 
           <Card title="Media & Files">
             <FileBox
-              label="3D Model File"
-              accept=".glb,.gltf,.obj,.fbx,.stl,.blend,.zip"
-              onChange={selectModel}
-            />
+  label="Preview Model (GLB / GLTF)"
+  accept=".glb,.gltf"
+  onChange={selectModel}
+/>
+
+<FileBox
+  label="GLB File"
+  accept=".glb"
+  onChange={setGlbFile}
+/>
+
+<FileBox
+  label="GLTF File"
+  accept=".gltf"
+  onChange={setGltfFile}
+/>
+
+<FileBox
+  label="FBX File"
+  accept=".fbx"
+  onChange={setFbxFile}
+/>
+
+<FileBox
+  label="BLEND File"
+  accept=".blend"
+  onChange={setBlendFile}
+/>
+
+<FileBox
+  label="OBJ File"
+  accept=".obj"
+  onChange={setObjFile}
+/>
+
+<FileBox
+  label="STL File"
+  accept=".stl"
+  onChange={setStlFile}
+/>
+
+<FileBox
+  label="ZIP Package"
+  accept=".zip"
+  onChange={setZipFile}
+/>
 
             <FileBox
               label="Thumbnail Image"
@@ -254,7 +333,7 @@ export default function UploadPage() {
 
           <div className="mt-5 overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-50">
             {previewUrl ? (
-              <ModelViewer url={previewUrl} />
+              <ModelViewer url={previewUrl} fileName={modelFile?.name} />
             ) : thumbnailFile ? (
               <img
                 src={URL.createObjectURL(thumbnailFile)}

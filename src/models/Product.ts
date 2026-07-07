@@ -2,53 +2,57 @@ import mongoose, { Schema, models } from "mongoose";
 
 const ProductSchema = new Schema(
   {
-    // Basic
     name: { type: String, required: true },
     slug: { type: String, default: "" },
     shortDescription: { type: String, default: "" },
     description: { type: String, default: "" },
 
-    // Category
     category: { type: String, default: "" },
     subCategory: { type: String, default: "" },
     childCategory: { type: String, default: "" },
     categoryPath: { type: [String], default: [] },
 
-    // Media
     thumbnail: { type: String, default: "" },
     galleryImages: { type: [String], default: [] },
+
     modelUrl: { type: String, default: "" },
+    modelFileName: { type: String, default: "" },
+    modelFileType: { type: String, default: "" },
+
+    glbUrl: { type: String, default: "" },
+    gltfUrl: { type: String, default: "" },
+    fbxUrl: { type: String, default: "" },
+    blendUrl: { type: String, default: "" },
+    objUrl: { type: String, default: "" },
+    stlUrl: { type: String, default: "" },
+    zipUrl: { type: String, default: "" },
+
     videoUrl: { type: String, default: "" },
     hdriUrl: { type: String, default: "" },
 
-    // Client / Brand
     clientName: { type: String, default: "" },
     brandName: { type: String, default: "" },
 
-    // Project Info
     softwareUsed: { type: [String], default: [] },
     projectYear: { type: String, default: "" },
     duration: { type: String, default: "" },
 
-    // Tags
     tags: { type: [String], default: [] },
 
-   // Pricing / Download
-price: { type: Number, default: 0 },
-isFree: { type: Boolean, default: true },
-downloadType: {
-  type: String,
-  enum: ["Free", "Paid"],
-  default: "Free",
-},
-downloadZipUrl: { type: String, default: "" },
-license: { type: String, default: "" },
-    // SEO
+    price: { type: Number, default: 0 },
+    isFree: { type: Boolean, default: true },
+    downloadType: {
+      type: String,
+      enum: ["Free", "Paid"],
+      default: "Free",
+    },
+    downloadZipUrl: { type: String, default: "" },
+    license: { type: String, default: "" },
+
     seoTitle: { type: String, default: "" },
     seoDescription: { type: String, default: "" },
     seoKeywords: { type: [String], default: [] },
 
-    // Publish
     status: {
       type: String,
       enum: ["Draft", "Published"],
@@ -61,12 +65,10 @@ license: { type: String, default: "" },
       default: "Public",
     },
 
-    // Analytics
     views: { type: Number, default: 0 },
     downloads: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
 
-    // Owner
     creatorId: { type: String, default: "" },
   },
   { timestamps: true }

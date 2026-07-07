@@ -80,7 +80,10 @@ export default async function ProjectDetailPage({
             <div className="rounded-[2rem] border border-neutral-200 bg-white p-4 shadow-sm">
               {project.modelUrl ? (
                 <div className="overflow-hidden rounded-[1.5rem] bg-neutral-100">
-                  <ModelViewer url={project.modelUrl} />
+                  <ModelViewer
+  url={project.modelUrl}
+  fileName={project.modelFileName || project.modelUrl}
+/>
                 </div>
               ) : gallery[0] ? (
                 <img

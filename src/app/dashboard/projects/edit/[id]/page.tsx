@@ -100,10 +100,10 @@ export default function EditProjectPage() {
           thumbnail: p.thumbnail || "",
           galleryImages: Array.isArray(p.galleryImages) ? p.galleryImages : [],
           price: p.price || 0,
-         isFree: String(p.isFree ?? true),
-         downloadType: p.downloadType || "Free",
-         downloadZipUrl: p.downloadZipUrl || "",
-            license: p.license || "",
+          isFree: String(p.isFree ?? true),
+          downloadType: p.downloadType || "Free",
+          downloadZipUrl: p.downloadZipUrl || "",
+          license: p.license || "",
         });
       }
 
@@ -118,7 +118,9 @@ export default function EditProjectPage() {
 
     const payload = {
       ...form,
+      price: Number(form.price || 0),
       featured: form.featured === "true",
+      isFree: form.isFree === "true",
       softwareUsed: form.softwareUsed
         .split(",")
         .map((x: string) => x.trim())
@@ -146,64 +148,93 @@ export default function EditProjectPage() {
     }
   };
 
-  if (loading) return <div className="px-6 py-28 text-white">Loading...</div>;
+  if (loading) {
+    return <div className="px-6 py-28 text-black">Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen px-6 py-28 text-white">
+    <div className="min-h-screen px-5 py-28 text-black sm:px-8">
       <div className="mx-auto max-w-5xl">
-        <p className="mb-3 text-sm uppercase tracking-[0.4em] text-neutral-500">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-neutral-500">
           Edit Project
         </p>
 
-        <h1 className="text-4xl font-semibold">Project Details</h1>
+        <h1 className="text-3xl font-bold text-black sm:text-4xl">
+          Project Details
+        </h1>
 
-        <div className="mt-10 grid gap-6">
-          <input value={form.name} onChange={(e) => update("name", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Project name" />
+        <div className="mt-8 grid gap-5 rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-8">
+          <input
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Project name"
+          />
 
-          <select value={form.category} onChange={(e) => update("category", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none">
+          <select
+            value={form.category}
+            onChange={(e) => update("category", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+          >
             <option value="">Select Category</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat.name}>
-                {"— ".repeat(cat.level)} {cat.name}
+                {"— ".repeat(cat.level || 0)} {cat.name}
               </option>
             ))}
           </select>
 
-          <textarea value={form.description} onChange={(e) => update("description", e.target.value)} className="h-40 rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Project description" />
+          <textarea
+            value={form.description}
+            onChange={(e) => update("description", e.target.value)}
+            className="h-40 rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Project description"
+          />
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p className="mb-3 font-semibold">Main Image</p>
+          <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-5">
+            <p className="mb-3 font-bold text-black">Main Image</p>
 
             {form.thumbnail && (
-              <img src={form.thumbnail} className="mb-4 h-40 w-40 rounded-2xl object-cover" />
+              <img
+                src={form.thumbnail}
+                alt="Thumbnail"
+                className="mb-4 h-40 w-40 rounded-2xl object-cover"
+              />
             )}
 
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => e.target.files?.[0] && uploadThumbnail(e.target.files[0])}
-              className="block w-full rounded-2xl border border-dashed border-white/20 p-5"
+              onChange={(e) =>
+                e.target.files?.[0] && uploadThumbnail(e.target.files[0])
+              }
+              className="block w-full rounded-2xl border border-dashed border-neutral-300 bg-white p-5 text-black"
             />
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p className="mb-3 font-semibold">Gallery Images</p>
+          <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-5">
+            <p className="mb-3 font-bold text-black">Gallery Images</p>
 
             <input
               type="file"
               accept="image/*"
               multiple
               onChange={(e) => uploadGallery(e.target.files)}
-              className="block w-full rounded-2xl border border-dashed border-white/20 p-5"
+              className="block w-full rounded-2xl border border-dashed border-neutral-300 bg-white p-5 text-black"
             />
 
             <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {form.galleryImages.map((img: string) => (
                 <div key={img} className="relative">
-                  <img src={img} className="h-32 w-full rounded-2xl object-cover" />
+                  <img
+                    src={img}
+                    alt="Gallery"
+                    className="h-32 w-full rounded-2xl object-cover"
+                  />
+
                   <button
                     onClick={() => removeGalleryImage(img)}
-                    className="absolute right-2 top-2 rounded-full bg-red-600 px-3 py-1 text-xs"
+                    className="absolute right-2 top-2 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white"
                   >
                     Delete
                   </button>
@@ -212,33 +243,88 @@ export default function EditProjectPage() {
             </div>
           </div>
 
-          <input value={form.softwareUsed} onChange={(e) => update("softwareUsed", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Software used" />
-          <input value={form.projectYear} onChange={(e) => update("projectYear", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Project year" />
-          <input value={form.tags} onChange={(e) => update("tags", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Tags comma separated" />
-          <input value={form.videoUrl} onChange={(e) => update("videoUrl", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Video URL" />
+          <input
+            value={form.softwareUsed}
+            onChange={(e) => update("softwareUsed", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Software used"
+          />
 
-          <input value={form.price} onChange={(e) => update("price", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Price" />
+          <input
+            value={form.projectYear}
+            onChange={(e) => update("projectYear", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Project year"
+          />
 
-          <select value={form.isFree} onChange={(e) => update("isFree", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none">
-          <option value="true">Free Download</option>
-          <option value="false">Paid Download</option>
+          <input
+            value={form.tags}
+            onChange={(e) => update("tags", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Tags comma separated"
+          />
+
+          <input
+            value={form.videoUrl}
+            onChange={(e) => update("videoUrl", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Video URL"
+          />
+
+          <input
+            type="number"
+            value={form.price}
+            onChange={(e) => update("price", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Price"
+          />
+
+          <select
+            value={form.isFree}
+            onChange={(e) => update("isFree", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+          >
+            <option value="true">Free Download</option>
+            <option value="false">Paid Download</option>
           </select>
 
-<input value={form.downloadZipUrl} onChange={(e) => update("downloadZipUrl", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="Download ZIP URL" />
+          <input
+            value={form.downloadZipUrl}
+            onChange={(e) => update("downloadZipUrl", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="Download ZIP URL"
+          />
 
-<input value={form.license} onChange={(e) => update("license", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none" placeholder="License e.g. Personal / Commercial" />
+          <input
+            value={form.license}
+            onChange={(e) => update("license", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+            placeholder="License e.g. Personal / Commercial"
+          />
 
-          <select value={form.status} onChange={(e) => update("status", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none">
+          <select
+            value={form.status}
+            onChange={(e) => update("status", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+          >
             <option value="Draft">Draft</option>
             <option value="Published">Published</option>
           </select>
 
-          <select value={form.featured} onChange={(e) => update("featured", e.target.value)} className="rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none">
+          <select
+            value={form.featured}
+            onChange={(e) => update("featured", e.target.value)}
+            className="rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-black outline-none focus:border-black"
+          >
             <option value="false">Not Featured</option>
             <option value="true">Featured</option>
           </select>
 
-          <button onClick={saveProject} disabled={saving} className="rounded-full bg-white px-8 py-4 font-semibold text-black disabled:opacity-50">
+          <button
+            onClick={saveProject}
+            disabled={saving}
+            className="rounded-full bg-black px-8 py-4 font-semibold text-white disabled:opacity-50"
+          >
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>

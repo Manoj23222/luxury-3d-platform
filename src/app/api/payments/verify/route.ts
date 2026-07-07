@@ -1,21 +1,30 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/models/Order";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
     await connectDB();
 
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "Login required" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
 
-    const {
-      razorpayOrderId,
-      razorpayPaymentId,
-      razorpaySignature,
-    } = body;
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = body;
 
     const order = await Order.findOneAndUpdate(
-      { razorpayOrderId },
+      {
+        razorpayOrderId,
+        userId: user.id,
+      },
       {
         status: "Paid",
         razorpayPaymentId: razorpayPaymentId || "",

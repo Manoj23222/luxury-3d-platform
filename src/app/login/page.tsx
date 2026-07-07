@@ -26,23 +26,29 @@ export default function LoginPage() {
 
     setLoading(true);
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
-    setLoading(false);
+      const data = await res.json();
 
-    if (data.success) {
-      alert("Login successful");
-      router.push("/dashboard");
-      router.refresh();
-    } else {
+      if (data.success) {
+        alert("Login successful");
+        router.push("/");
+        router.refresh();
+        return;
+      }
+
       alert(data.message || "Login failed");
+    } catch (error) {
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,12 +85,14 @@ export default function LoginPage() {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
-<Link
-  href="/forgot-password"
-  className="mt-4 block text-center text-sm font-semibold text-neutral-400 hover:text-white"
->
-  Forgot Password?
-</Link>
+
+        <Link
+          href="/forgot-password"
+          className="mt-4 block text-center text-sm font-semibold text-neutral-400 hover:text-white"
+        >
+          Forgot Password?
+        </Link>
+
         <p className="mt-5 text-center text-sm text-neutral-400">
           No account?{" "}
           <Link href="/register" className="text-white">

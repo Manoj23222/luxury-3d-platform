@@ -1,24 +1,32 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import SecureDownloadButton from "@/components/payment/SecureDownloadButton";
+import { getCurrentUser } from "@/lib/auth";
+
 async function getOrders() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    const res = await fetch(`${baseUrl}/api/orders`, {
-      cache: "no-store",
-    });
+  const res = await fetch(`${baseUrl}/api/orders`, {
+    cache: "no-store",
+  });
 
-    if (!res.ok) return [];
+  if (!res.ok) return [];
 
-    const data = await res.json();
-    return (data.orders || []).filter((x: any) => x.status === "Paid");
-  } catch {
-    return [];
-  }
+  const data = await res.json();
+
+  return (data.orders || []).filter(
+    (x: any) => x.status === "Paid" && x.downloadEnabled === true
+  );
 }
 
 export default async function LibraryPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?next=/library");
+  }
+
   const orders = await getOrders();
 
   return (
@@ -34,7 +42,7 @@ export default async function LibraryPage() {
           <h1 className="mt-3 text-4xl font-bold">Purchased Assets</h1>
 
           <p className="mt-2 text-neutral-500">
-            All paid assets unlocked after successful payment.
+            Only assets purchased by your account are shown here.
           </p>
         </div>
 

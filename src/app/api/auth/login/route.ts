@@ -12,8 +12,16 @@ export async function POST(req: Request) {
 
     const { email, password } = await req.json();
 
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return NextResponse.json(
+        { success: false, message: "Email and password required" },
+        { status: 400 }
+      );
+    }
 
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+console.log("LOGIN EMAIL:", email);
+console.log("FOUND USER:", user);
     if (!user) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password" },
@@ -21,8 +29,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
+    const isMatch =
+  user.password === password || (await bcrypt.compare(password, user.password));
+console.log("PASSWORD MATCH:", isMatch);
     if (!isMatch) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password" },
@@ -31,26 +40,33 @@ export async function POST(req: Request) {
     }
 
     const token = jwt.sign(
-  { id: user._id, name: user.name, email: user.email, role: user.role },
-  JWT_SECRET,
-  { expiresIn: "7d" }
-);
+      {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role || "user",
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     const response = NextResponse.json({
       success: true,
       message: "Login successful",
       user: {
-        id: user._id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role || "user",
       },
     });
 
     response.cookies.set("lux3d_token", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
-      sameSite: "lax",
     });
 
     return response;

@@ -20,6 +20,11 @@ export async function GET(
     }
 
     const product = await Product.findById(id).lean();
+console.log({
+  modelUrl: product?.modelUrl,
+  modelFileName: product?.modelFileName,
+  modelFileType: product?.modelFileType,
+});
 
     if (!product) {
       return NextResponse.json(
