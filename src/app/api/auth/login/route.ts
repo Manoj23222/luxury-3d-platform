@@ -19,10 +19,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
-console.log("LOGIN EMAIL:", email);
-console.log("FOUND USER:", user);
-    if (!user) {
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+    });
+
+    if (!user || user.isActive === false) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password" },
         { status: 401 }
@@ -30,8 +31,8 @@ console.log("FOUND USER:", user);
     }
 
     const isMatch =
-  user.password === password || (await bcrypt.compare(password, user.password));
-console.log("PASSWORD MATCH:", isMatch);
+      user.password === password || (await bcrypt.compare(password, user.password));
+
     if (!isMatch) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password" },
@@ -39,12 +40,14 @@ console.log("PASSWORD MATCH:", isMatch);
       );
     }
 
+    const role = user.role || "customer";
+
     const token = jwt.sign(
       {
         id: user._id.toString(),
         name: user.name,
         email: user.email,
-        role: user.role || "user",
+        role,
       },
       JWT_SECRET,
       { expiresIn: "7d" }
@@ -57,7 +60,7 @@ console.log("PASSWORD MATCH:", isMatch);
         id: user._id.toString(),
         name: user.name,
         email: user.email,
-        role: user.role || "user",
+        role,
       },
     });
 

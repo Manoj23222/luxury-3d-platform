@@ -4,6 +4,8 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCard from "@/components/dashboard/StatsCard";
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentProjects from "@/components/dashboard/RecentProjects";
+import { canAccessDashboard, isAdmin } from "@/lib/permissions";
+import { getDashboardLinks } from "@/lib/dashboardLinks";
 
 const stats = [
   { label: "Total Assets", value: "12", subtitle: "Marketplace products" },
@@ -19,10 +21,17 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  if (!canAccessDashboard(user.role)) {
+    redirect("/");
+  }
+
+  const admin = isAdmin(user.role);
+  const dashboardLinks = getDashboardLinks(user.role);
+
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <DashboardHeader
-        title="Dashboard"
+        title={admin ? "Admin Dashboard" : "Creator Dashboard"}
         subtitle={`Welcome back, ${user.name || "Creator"}`}
       />
 
@@ -38,7 +47,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <QuickActions />
+        <QuickActions links={dashboardLinks} />
 
         <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-black">Recent Activity</h2>
@@ -54,6 +63,27 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {admin && (
+        <div className="mt-8 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold text-black">Admin Controls</h2>
+
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl bg-neutral-50 p-4 text-sm font-semibold">
+              Users
+            </div>
+            <div className="rounded-2xl bg-neutral-50 p-4 text-sm font-semibold">
+              Orders
+            </div>
+            <div className="rounded-2xl bg-neutral-50 p-4 text-sm font-semibold">
+              Products
+            </div>
+            <div className="rounded-2xl bg-neutral-50 p-4 text-sm font-semibold">
+              Settings
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8">
         <RecentProjects projects={[]} />

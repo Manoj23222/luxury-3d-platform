@@ -1,25 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
-  const router = useRouter();
-
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const update = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const submit = async () => {
-    if (!form.email || !form.password) {
+    const email = form.email.trim();
+    const password = form.password.trim();
+
+    if (!email || !password) {
       alert("Email and password required");
       return;
     }
@@ -29,32 +23,37 @@ export default function LoginPage() {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
-      if (data.success) {
-        alert("Login successful");
-        router.push("/");
-        router.refresh();
+      if (!res.ok || !data.success) {
+        alert(data.message || "Login failed");
+        setLoading(false);
         return;
       }
 
-      alert(data.message || "Login failed");
-    } catch (error) {
+      const role = data.user?.role;
+
+      if (role === "admin" || role === "creator") {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/";
+      }
+    } catch {
       alert("Something went wrong");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 text-white">
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8"
+      >
         <p className="text-sm uppercase tracking-[0.4em] text-neutral-500">
           Welcome Back
         </p>
@@ -63,23 +62,30 @@ export default function LoginPage() {
 
         <div className="mt-8 space-y-4">
           <input
+            type="email"
             value={form.email}
-            onChange={(e) => update("email", e.target.value)}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, email: e.target.value }))
+            }
             className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none"
             placeholder="Email"
+            autoComplete="email"
           />
 
           <input
             type="password"
             value={form.password}
-            onChange={(e) => update("password", e.target.value)}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, password: e.target.value }))
+            }
             className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 outline-none"
             placeholder="Password"
+            autoComplete="current-password"
           />
         </div>
 
         <button
-          onClick={submit}
+          type="submit"
           disabled={loading}
           className="mt-6 w-full rounded-full bg-white px-6 py-3 font-semibold text-black disabled:opacity-50"
         >
@@ -99,7 +105,7 @@ export default function LoginPage() {
             Register
           </Link>
         </p>
-      </div>
+      </form>
     </main>
   );
 }
