@@ -39,7 +39,7 @@ export default async function DashboardProjectsPage() {
 
         <Link
           href="/dashboard/upload"
-          className="rounded-full border border-black bg-white px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-neutral-800"
+          className="rounded-full border border-neutral-300 bg-white px-6 py-3 text-center text-sm font-semibold text-black transition hover:border-black"
         >
           Upload Asset
         </Link>
@@ -54,7 +54,7 @@ export default async function DashboardProjectsPage() {
 
           <Link
             href="/dashboard/upload"
-            className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
+            className="mt-6 inline-flex rounded-full border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-black transition hover:border-black"
           >
             Upload Asset
           </Link>

@@ -1,11 +1,15 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
+import User from "@/models/User";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCard from "@/components/dashboard/StatsCard";
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentProjects from "@/components/dashboard/RecentProjects";
 import { canAccessDashboard, isAdmin } from "@/lib/permissions";
 import { getDashboardLinks } from "@/lib/dashboardLinks";
+
+export const dynamic = "force-dynamic";
 
 const stats = [
   { label: "Total Assets", value: "12", subtitle: "Marketplace products" },
@@ -15,24 +19,35 @@ const stats = [
 ];
 
 export default async function DashboardPage() {
-  const user = await getCurrentUser();
+  const authUser = await getCurrentUser();
 
-  if (!user) {
+  if (!authUser) {
     redirect("/login");
   }
 
-  if (!canAccessDashboard(user.role)) {
+  await connectDB();
+
+  const dbUser = await User.findById(authUser.id).select("-password").lean();
+
+  if (!dbUser || dbUser.isActive === false) {
+    redirect("/login");
+  }
+
+  const role = dbUser.role || "customer";
+  const permissions = dbUser.permissions || [];
+
+  if (!canAccessDashboard(role, permissions)) {
     redirect("/");
   }
 
-  const admin = isAdmin(user.role);
-  const dashboardLinks = getDashboardLinks(user.role);
+  const admin = isAdmin(role);
+  const dashboardLinks = getDashboardLinks(role, permissions);
 
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <DashboardHeader
-        title={admin ? "Admin Dashboard" : "Creator Dashboard"}
-        subtitle={`Welcome back, ${user.name || "Creator"}`}
+        title={admin ? "Admin Dashboard" : "Dashboard"}
+        subtitle={`Welcome back, ${dbUser.name || "User"}`}
       />
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

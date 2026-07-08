@@ -8,27 +8,23 @@ type User = {
   email: string;
   role?: "customer" | "creator" | "admin";
   isActive?: boolean;
+  permissions?: string[];
   createdAt?: string;
 };
+
+const permissionOptions = [
+  { key: "dashboard_access", label: "Dashboard Access" },
+  { key: "upload_assets", label: "Upload Assets" },
+  { key: "manage_users", label: "Users" },
+  { key: "manage_orders", label: "Orders" },
+  { key: "manage_products", label: "Products" },
+  { key: "manage_settings", label: "Settings" },
+];
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);const deleteUser = async (id: string) => {
-  if (!confirm("Delete this user?")) return;
-
-  const res = await fetch(`/api/admin/users/${id}`, {
-    method: "DELETE",
-  });
-
-  const data = await res.json();
-
-  if (res.ok && data.success) {
-    loadUsers();
-  } else {
-    alert(data.error || "Delete failed");
-  }
-};
+  const [loading, setLoading] = useState(true);
 
   const loadUsers = async () => {
     try {
@@ -60,21 +56,7 @@ export default function AdminUsersPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-const deleteUser = async (id: string) => {
-  if (!confirm("Delete this user?")) return;
 
-  const res = await fetch(`/api/admin/users/${id}`, {
-    method: "DELETE",
-  });
-
-  const data = await res.json();
-
-  if (res.ok && data.success) {
-    loadUsers();
-  } else {
-    alert(data.error || "Delete failed");
-  }
-};
     const data = await res.json();
 
     if (res.ok && data.success) {
@@ -82,6 +64,33 @@ const deleteUser = async (id: string) => {
     } else {
       alert(data.error || "Update failed");
     }
+  };
+
+  const deleteUser = async (id: string) => {
+    if (!confirm("Delete this user?")) return;
+
+    const res = await fetch(`/api/admin/users/${id}`, {
+      method: "DELETE",
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      loadUsers();
+    } else {
+      alert(data.error || "Delete failed");
+    }
+  };
+
+  const togglePermission = (user: User, permission: string) => {
+    const oldPermissions = user.permissions || [];
+    const has = oldPermissions.includes(permission);
+
+    const newPermissions = has
+      ? oldPermissions.filter((item) => item !== permission)
+      : [...oldPermissions, permission];
+
+    updateUser(user._id, { permissions: newPermissions });
   };
 
   const filteredUsers = useMemo(() => {
@@ -106,7 +115,7 @@ const deleteUser = async (id: string) => {
         </h1>
 
         <p className="mt-2 text-sm text-neutral-500">
-          Manage customers, creators and admin access.
+          Customer ko dashboard access sirf permission ON hone par milega.
         </p>
       </div>
 
@@ -121,24 +130,23 @@ const deleteUser = async (id: string) => {
 
       <div className="mt-6 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left text-sm">
+          <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="bg-neutral-100 text-xs uppercase tracking-wider text-neutral-500">
               <tr>
-                <th className="px-5 py-4 text-right">Action</th>
                 <th className="px-5 py-4">Name</th>
                 <th className="px-5 py-4">Email</th>
                 <th className="px-5 py-4">Role</th>
                 <th className="px-5 py-4">Status</th>
+                <th className="px-5 py-4">Permissions</th>
                 <th className="px-5 py-4">Created</th>
-                
+                <th className="px-5 py-4 text-right">Action</th>
               </tr>
-            </thead>   
-             
+            </thead>
 
             <tbody className="divide-y divide-neutral-200">
               {loading && (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center">
+                  <td colSpan={7} className="px-5 py-12 text-center">
                     Loading users...
                   </td>
                 </tr>
@@ -146,7 +154,7 @@ const deleteUser = async (id: string) => {
 
               {!loading &&
                 filteredUsers.map((user) => (
-                  <tr key={user._id} className="hover:bg-neutral-50">
+                  <tr key={user._id} className="align-top hover:bg-neutral-50">
                     <td className="px-5 py-4 font-semibold">
                       {user.name || "No Name"}
                     </td>
@@ -186,29 +194,52 @@ const deleteUser = async (id: string) => {
                       </select>
                     </td>
 
+                    <td className="px-5 py-4">
+                      <div className="grid min-w-[360px] grid-cols-2 gap-2">
+                        {permissionOptions.map((item) => {
+                          const active = (user.permissions || []).includes(
+                            item.key
+                          );
+
+                          return (
+                            <button
+                              key={item.key}
+                              type="button"
+                              onClick={() => togglePermission(user, item.key)}
+                              className={`rounded-xl border px-3 py-2 text-xs font-bold transition ${
+                                active
+                                  ? "border-green-600 bg-green-50 text-green-700"
+                                  : "border-neutral-300 bg-white text-neutral-500 hover:bg-neutral-50"
+                              }`}
+                            >
+                              {item.label}: {active ? "ON" : "OFF"}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </td>
+
                     <td className="px-5 py-4 text-neutral-500">
                       {user.createdAt
                         ? new Date(user.createdAt).toLocaleDateString()
                         : "-"}
                     </td>
+
                     <td className="px-5 py-4 text-right">
-                   <button
-                   onClick={() => deleteUser(user._id)}
-                    className="rounded-xl border border-red-300 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50"
-                        >
-                    
-    
-                     Delete
-                     
-                 </button>
-                  </td>
+                      <button
+                        onClick={() => deleteUser(user._id)}
+                        className="rounded-xl border border-red-300 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
 
               {!loading && filteredUsers.length === 0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={7}
                     className="px-5 py-12 text-center text-neutral-500"
                   >
                     No users found.

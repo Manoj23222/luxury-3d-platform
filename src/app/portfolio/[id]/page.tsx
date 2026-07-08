@@ -152,10 +152,10 @@ export default async function ProjectDetailPage({
               ) : (
                 <Link
   href={`/checkout/${id}`}
-  className="rounded-2xl border border-black bg-white px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-neutral-200"
+  className="rounded-2xl border border-black bg-neutral-100 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-neutral-200"
 >
   
-  Buy Now ₹{project.price || 0}
+  Purchase ₹{project.price || 0}
 </Link>
               )}
 

@@ -5,6 +5,15 @@ import { getCurrentUser } from "@/lib/auth";
 
 const allowedRoles = ["customer", "creator", "admin"];
 
+const allowedPermissions = [
+  "dashboard_access",
+  "upload_assets",
+  "manage_users",
+  "manage_orders",
+  "manage_products",
+  "manage_settings",
+];
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -44,8 +53,15 @@ export async function PATCH(
     if (body.role) updateData.role = body.role;
     if (typeof body.isActive === "boolean") updateData.isActive = body.isActive;
 
+    if (Array.isArray(body.permissions)) {
+      updateData.permissions = body.permissions.filter((item: string) =>
+        allowedPermissions.includes(item)
+      );
+    }
+
     const updatedUser = await User.findByIdAndUpdate(id, updateData, {
       new: true,
+      runValidators: true,
     }).select("-password");
 
     if (!updatedUser) {

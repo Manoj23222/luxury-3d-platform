@@ -84,8 +84,26 @@ const OrderSchema = new Schema(
       default: false,
       index: true,
     },
+    
   },
+  
   {
+    downloadCount: {
+  type: Number,
+  default: 0,
+},
+
+lastDownloadedAt: {
+  type: Date,
+  default: null,
+},
+
+downloadHistory: [
+  {
+    format: { type: String, default: "" },
+    downloadedAt: { type: Date, default: Date.now },
+  },
+],
     timestamps: true,
   }
 );

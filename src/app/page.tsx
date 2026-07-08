@@ -209,7 +209,7 @@ export default async function HomePage() {
                       {free ? (
                         <a
                           href={item.downloadZipUrl || "#"}
-                          className="rounded-xl bg-black py-3 text-center text-sm font-semibold text-white transition hover:bg-neutral-800"
+                          className="rounded-xl border border-neutral-300 bg-white py-3 text-center text-sm font-semibold text-black transition hover:border-black"
                         >
                           Download
                         </a>

@@ -152,27 +152,7 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
                       </span>
                     </div>
 
-                    <div className="mt-5 grid grid-cols-2 gap-3">
-                      <Link
-                        href={`/portfolio/${item._id}`}
-                        className="rounded-xl border border-neutral-300 py-3 text-center text-sm font-semibold text-black transition hover:border-black"
-                      >
-                        Preview
-                      </Link>
-
-                      {free ? (
-                        <button
-                          onClick={() => trackDownload(item)}
-                          className="rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-neutral-800"
-                        >
-                          Download
-                        </button>
-                      ) : (
-                        <button className="rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-neutral-800">
-                          PURCHASE
-                        </button>
-                      )}
-                    </div>
+                    
                   </div>
                 </article>
               );

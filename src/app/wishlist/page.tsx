@@ -53,7 +53,7 @@ export default async function WishlistPage() {
 
             <Link
               href="/portfolio"
-              className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
+              className="mt-6 inline-flex rounded-full border border-neutral-400 bg-white px-6 py-3 text-sm font-semibold text-black"
             >
               Browse Assets
             </Link>

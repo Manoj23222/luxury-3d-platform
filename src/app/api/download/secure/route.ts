@@ -69,7 +69,20 @@ export async function POST(req: Request) {
         { status: 404 }
       );
     }
+await Product.findByIdAndUpdate(product._id, {
+  $inc: { downloads: 1 },
+});
 
+await Order.findByIdAndUpdate(order._id, {
+  $inc: { downloadCount: 1 },
+  lastDownloadedAt: new Date(),
+  $push: {
+    downloadHistory: {
+      format,
+      downloadedAt: new Date(),
+    },
+  },
+});
     return NextResponse.json({
       success: true,
       format,
