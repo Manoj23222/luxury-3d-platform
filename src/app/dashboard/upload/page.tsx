@@ -3,12 +3,60 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ModelViewer from "@/components/3d/ModelViewer";
+type UploadedFileData = {
+  url: string;
+  name: string;
+  type: string;
+  size: number;
+};
 
+type UploadKey =
+  | "model"
+  | "thumbnail"
+  | "glb"
+  | "gltf"
+  | "fbx"
+  | "blend"
+  | "obj"
+  | "stl"
+  | "zip";
+const MB = 1024 * 1024;
 
+const FILE_LIMITS: Record<string, number> = {
+  thumbnail: 10 * MB,
+  model: 200 * MB,
+  glb: 200 * MB,
+  gltf: 200 * MB,
+  fbx: 200 * MB,
+  blend: 200 * MB,
+  obj: 200 * MB,
+  stl: 200 * MB,
+  zip: 400 * MB,
+};
+
+function formatMB(size: number) {
+  return `${(size / MB).toFixed(1)} MB`;
+}
+
+function validateUploadFile(file: File, type: keyof typeof FILE_LIMITS) {
+  const max = FILE_LIMITS[type];
+
+  if (file.size > max) {
+    alert(
+      `❌ ${file.name} is too large.\n\nSelected: ${formatMB(
+        file.size
+      )}\nMaximum allowed: ${formatMB(max)}`
+    );
+    return false;
+  }
+
+  return true;
+}
 
 export default function UploadPage() {
   const router = useRouter();
-
+const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
+const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFileData>>({});
   const [modelFile, setModelFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -81,13 +129,57 @@ useEffect(() => {
       setPreviewUrl("");
     }
   };
+const autoUploadFile = async (key: UploadKey, file: File | null) => {
+  if (!file) return;
 
-  const submit = async (publish = false) => {
-    if (!modelFile) {
-      alert("Please select a 3D model file");
+  setUploadingFiles((prev) => ({ ...prev, [key]: true }));
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("title", file.name);
+  data.append("uploadType", key);
+
+  try {
+    const res = await fetch("/api/media", {
+      method: "POST",
+      body: data,
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      alert(result.message || `${key} upload failed`);
       return;
     }
 
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [key]: {
+        url: result.url || result.media?.url,
+        name: file.name,
+        type: file.name.split(".").pop()?.toLowerCase() || "",
+        size: file.size,
+      },
+    }));
+
+    alert(`✅ ${file.name} uploaded successfully`);
+  } catch {
+    alert(`${key} upload failed`);
+  } finally {
+    setUploadingFiles((prev) => ({ ...prev, [key]: false }));
+  }
+};
+  const submit = async (publish = false) => {
+    const isAnyUploading = Object.values(uploadingFiles).some(Boolean);
+
+if (isAnyUploading) {
+  alert("Please wait. File upload is still running.");
+  return;
+}
+    if (!uploadedFiles.model?.url) {
+  alert("Please upload Preview Model first");
+  return;
+}
     if (!form.name.trim()) {
       alert("Asset name required");
       return;
@@ -108,18 +200,18 @@ useEffect(() => {
     data.append("softwareUsed", form.softwareUsed);
     data.append("status", publish ? "Published" : form.status);
     data.append("featured", form.featured);
-    data.append("model", modelFile);
-    if (glbFile) data.append("glbFile", glbFile);
-    if (gltfFile) data.append("gltfFile", gltfFile);
-    if (fbxFile) data.append("fbxFile", fbxFile);
-    if (blendFile) data.append("blendFile", blendFile);
-    if (objFile) data.append("objFile", objFile);
-    if (stlFile) data.append("stlFile", stlFile);
-    if (zipFile) data.append("zipFile", zipFile);
+    data.append("modelUrl", uploadedFiles.model?.url || "");
+    data.append("modelFileName", uploadedFiles.model?.name || "");
+    data.append("modelFileType", uploadedFiles.model?.type || "");
 
-    if (thumbnailFile) {
-      data.append("thumbnailFile", thumbnailFile);
-    }
+    data.append("thumbnailUrl", uploadedFiles.thumbnail?.url || "");
+    data.append("glbUrl", uploadedFiles.glb?.url || "");
+    data.append("gltfUrl", uploadedFiles.gltf?.url || "");
+    data.append("fbxUrl", uploadedFiles.fbx?.url || "");
+    data.append("blendUrl", uploadedFiles.blend?.url || "");
+    data.append("objUrl", uploadedFiles.obj?.url || "");
+    data.append("stlUrl", uploadedFiles.stl?.url || "");
+    data.append("zipUrl", uploadedFiles.zip?.url || "");
 
     const res = await fetch("/api/products", {
       method: "POST",
@@ -182,6 +274,7 @@ useEffect(() => {
       </option>
     ))}
   </select>
+  
 </label>
 
             <Textarea
@@ -198,78 +291,44 @@ useEffect(() => {
               placeholder="bottle, cosmetic, blender, product"
             />
           </Card>
-
           <Card title="Media & Files">
-            <FileBox
-  label="Preview Model (GLB / GLTF)"
-  accept=".glb,.gltf"
-  onChange={selectModel}
-/>
+  <FileBox
+    label="Preview Model (GLB / GLTF)"
+    accept=".glb,.gltf"
+    type="model"
+    uploading={uploadingFiles.model}
+    uploaded={uploadedFiles.model}
+    onChange={(file) => {
+      selectModel(file);
+      autoUploadFile("model", file);
+    }}
+  />
 
-<FileBox
-  label="GLB File"
-  accept=".glb"
-  onChange={setGlbFile}
-/>
+  <FileBox label="GLB File" accept=".glb" type="glb" uploading={uploadingFiles.glb} uploaded={uploadedFiles.glb} onChange={(file) => { setGlbFile(file); autoUploadFile("glb", file); }} />
 
-<FileBox
-  label="GLTF File"
-  accept=".gltf"
-  onChange={setGltfFile}
-/>
+  <FileBox label="GLTF File" accept=".gltf" type="gltf" uploading={uploadingFiles.gltf} uploaded={uploadedFiles.gltf} onChange={(file) => { setGltfFile(file); autoUploadFile("gltf", file); }} />
 
-<FileBox
-  label="FBX File"
-  accept=".fbx"
-  onChange={setFbxFile}
-/>
+  <FileBox label="FBX File" accept=".fbx" type="fbx" uploading={uploadingFiles.fbx} uploaded={uploadedFiles.fbx} onChange={(file) => { setFbxFile(file); autoUploadFile("fbx", file); }} />
 
-<FileBox
-  label="BLEND File"
-  accept=".blend"
-  onChange={setBlendFile}
-/>
+  <FileBox label="BLEND File" accept=".blend" type="blend" uploading={uploadingFiles.blend} uploaded={uploadedFiles.blend} onChange={(file) => { setBlendFile(file); autoUploadFile("blend", file); }} />
 
-<FileBox
-  label="OBJ File"
-  accept=".obj"
-  onChange={setObjFile}
-/>
+  <FileBox label="OBJ File" accept=".obj" type="obj" uploading={uploadingFiles.obj} uploaded={uploadedFiles.obj} onChange={(file) => { setObjFile(file); autoUploadFile("obj", file); }} />
 
-<FileBox
-  label="STL File"
-  accept=".stl"
-  onChange={setStlFile}
-/>
+  <FileBox label="STL File" accept=".stl" type="stl" uploading={uploadingFiles.stl} uploaded={uploadedFiles.stl} onChange={(file) => { setStlFile(file); autoUploadFile("stl", file); }} />
 
-<FileBox
-  label="ZIP Package"
-  accept=".zip"
-  onChange={setZipFile}
-/>
+  <FileBox label="ZIP Package" accept=".zip" type="zip" uploading={uploadingFiles.zip} uploaded={uploadedFiles.zip} onChange={(file) => { setZipFile(file); autoUploadFile("zip", file); }} />
 
-            <FileBox
-              label="Thumbnail Image"
-              accept="image/*"
-              onChange={setThumbnailFile}
-            />
+  <FileBox label="Thumbnail Image" accept="image/*" type="thumbnail" uploading={uploadingFiles.thumbnail} uploaded={uploadedFiles.thumbnail} onChange={(file) => { setThumbnailFile(file); autoUploadFile("thumbnail", file); }} />
 
-            <Input
-              label="Download ZIP URL"
-              value={form.downloadZipUrl}
-              onChange={(v) => update("downloadZipUrl", v)}
-              placeholder="Cloudinary / ZIP download URL"
-            />
+  <Input
+    label="Download ZIP URL"
+    value={form.downloadZipUrl}
+    onChange={(v) => update("downloadZipUrl", v)}
+    placeholder="Cloudinary / ZIP download URL"
+  />
+</Card>
 
-            {modelFile && (
-              <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
-                <p className="font-bold text-black">{modelFile.name}</p>
-                <p className="mt-1 text-sm text-neutral-500">
-                  {(modelFile.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
-            )}
-          </Card>
+          
 
           <Card title="Marketplace Pricing">
             <Select
@@ -326,6 +385,7 @@ useEffect(() => {
               options={["Draft", "Published"]}
             />
           </Card>
+          
         </div>
 
         <aside className="h-fit rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm lg:sticky lg:top-28">
@@ -363,18 +423,26 @@ useEffect(() => {
           <div className="mt-5 grid gap-3">
             <button
               onClick={() => submit(false)}
-              disabled={loading}
+              disabled={loading || Object.values(uploadingFiles).some(Boolean)}
               className="rounded-2xl border border-neutral-300 bg-white px-6 py-4 text-sm font-semibold text-black transition hover:border-black disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Save Draft"}
+              {Object.values(uploadingFiles).some(Boolean)
+  ? "Uploading files..."
+  : loading
+  ? "Saving..."
+  : "Save Draft"}
             </button>
 
             <button
               onClick={() => submit(true)}
-              disabled={loading}
+              disabled={loading || Object.values(uploadingFiles).some(Boolean)}
               className="rounded-2xl bg-black px-6 py-4 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50"
             >
-              {loading ? "Publishing..." : "Publish Asset"}
+              {Object.values(uploadingFiles).some(Boolean)
+  ? "Uploading files..."
+  : loading
+  ? "Publishing..."
+  : "Publish Asset"}
             </button>
           </div>
         </aside>
@@ -486,23 +554,69 @@ function Select({
 function FileBox({
   label,
   accept,
+  type,
+  uploading,
+  uploaded,
   onChange,
 }: {
   label: string;
   accept: string;
+  type: keyof typeof FILE_LIMITS;
+  uploading?: boolean;
+  uploaded?: UploadedFileData;
   onChange: (file: File | null) => void;
 }) {
+  const [selected, setSelected] = useState<File | null>(null);
+
+  const handleFile = (file: File | null) => {
+    if (!file) {
+      setSelected(null);
+      onChange(null);
+      return;
+    }
+
+    if (!validateUploadFile(file, type)) {
+      setSelected(null);
+      onChange(null);
+      return;
+    }
+
+    setSelected(file);
+    onChange(file);
+  };
+
   return (
     <label className="block">
       <span className="mb-2 block text-sm font-semibold text-neutral-700">
         {label}
       </span>
+
       <input
         type="file"
         accept={accept}
-        onChange={(e) => onChange(e.target.files?.[0] || null)}
+        onChange={(e) => handleFile(e.target.files?.[0] || null)}
         className="w-full rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-sm text-black outline-none file:mr-4 file:rounded-full file:border-0 file:bg-black file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
       />
+
+      {selected && (
+        <div className="mt-3 rounded-2xl border border-green-200 bg-green-50 p-3 text-sm">
+          <p className="font-bold text-green-700">✅ File selected</p>
+          <p className="mt-1 text-neutral-700">{selected.name}</p>
+          <p className="text-xs text-neutral-500">{formatMB(selected.size)}</p>
+        </div>
+      )}
+      {uploading && (
+  <div className="mt-3 rounded-2xl border border-blue-200 bg-blue-50 p-3 text-sm font-bold text-blue-700">
+    Uploading...
+  </div>
+)}
+
+{uploaded && (
+  <div className="mt-3 rounded-2xl border border-green-200 bg-green-50 p-3 text-sm">
+    <p className="font-bold text-green-700">✅ Uploaded</p>
+    <p className="mt-1 truncate text-neutral-700">{uploaded.name}</p>
+  </div>
+)}
     </label>
   );
 }

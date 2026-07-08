@@ -3,6 +3,20 @@ import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import cloudinary from "@/lib/cloudinary";
 
+const MB = 1024 * 1024;
+
+const FILE_RULES: Record<string, { maxSize: number; folder: string }> = {
+  model: { maxSize: 200 * MB, folder: "luxury-3d-products/preview" },
+  thumbnailFile: { maxSize: 10 * MB, folder: "lux3d-thumbnails" },
+  glbFile: { maxSize: 200 * MB, folder: "luxury-3d-products/glb" },
+  gltfFile: { maxSize: 200 * MB, folder: "luxury-3d-products/gltf" },
+  fbxFile: { maxSize: 200 * MB, folder: "luxury-3d-products/fbx" },
+  blendFile: { maxSize: 200 * MB, folder: "luxury-3d-products/blend" },
+  objFile: { maxSize: 200 * MB, folder: "luxury-3d-products/obj" },
+  stlFile: { maxSize: 200 * MB, folder: "luxury-3d-products/stl" },
+  zipFile: { maxSize: 400 * MB, folder: "luxury-3d-products/zip" },
+};
+
 function slugify(text: string) {
   return text
     .toLowerCase()
@@ -24,6 +38,24 @@ function getExt(fileName: string) {
 
 function isFile(value: FormDataEntryValue | null): value is File {
   return value instanceof File && value.size > 0;
+}
+
+function formatMB(bytes: number) {
+  return `${(bytes / MB).toFixed(1)} MB`;
+}
+
+function validateFile(key: string, file: File) {
+  const rule = FILE_RULES[key];
+
+  if (!rule) return;
+
+  if (file.size > rule.maxSize) {
+    throw new Error(
+      `${file.name} is too large. Selected ${formatMB(
+        file.size
+      )}, maximum allowed ${formatMB(rule.maxSize)}.`
+    );
+  }
 }
 
 async function uploadToCloudinary(
@@ -60,17 +92,28 @@ async function uploadToCloudinary(
   });
 }
 
-async function uploadOptionalFile(
+async function uploadFormFile(
   formData: FormData,
   key: string,
-  folder: string
+  resourceType: "image" | "raw"
 ) {
   const file = formData.get(key);
 
-  if (!isFile(file)) return "";
+  if (!isFile(file)) return null;
 
-  const upload = await uploadToCloudinary(file, folder, "raw");
-  return upload.secure_url || "";
+  validateFile(key, file);
+
+  const rule = FILE_RULES[key];
+
+  const upload = await uploadToCloudinary(file, rule.folder, resourceType);
+
+  return {
+    key,
+    file,
+    url: upload.secure_url || "",
+    type: getExt(file.name),
+    name: file.name,
+  };
 }
 
 export async function GET() {
@@ -101,7 +144,19 @@ export async function POST(req: Request) {
     const name =
       String(formData.get("name") || "").trim() ||
       `Untitled Project ${Date.now()}`;
+      const modelUrlInput = String(formData.get("modelUrl") || "");
+const modelFileNameInput = String(formData.get("modelFileName") || "");
+const modelFileTypeInput = String(formData.get("modelFileType") || "");
 
+const thumbnailUrlInput = String(formData.get("thumbnailUrl") || "");
+const glbUrlInput = String(formData.get("glbUrl") || "");
+const gltfUrlInput = String(formData.get("gltfUrl") || "");
+const fbxUrlInput = String(formData.get("fbxUrl") || "");
+const blendUrlInput = String(formData.get("blendUrl") || "");
+const objUrlInput = String(formData.get("objUrl") || "");
+const stlUrlInput = String(formData.get("stlUrl") || "");
+const zipUrlInput = String(formData.get("zipUrl") || "");
+ 
     const slug = String(formData.get("slug") || "") || slugify(name);
     const shortDescription = String(formData.get("shortDescription") || "");
     const description = String(formData.get("description") || "");
@@ -131,83 +186,46 @@ export async function POST(req: Request) {
     const featured = String(formData.get("featured") || "false") === "true";
     const visibility = String(formData.get("visibility") || "Public");
 
-    let thumbnail = String(formData.get("thumbnail") || "");
-
-    const thumbnailFile = formData.get("thumbnailFile");
-    const modelFile = formData.get("model");
-
     const tags = toList(formData.get("tags"));
     const softwareUsed = toList(formData.get("softwareUsed"));
     const seoKeywords = toList(formData.get("seoKeywords"));
 
-    if (!isFile(modelFile)) {
-      return NextResponse.json(
-        { success: false, message: "Preview GLB/GLTF model file is required" },
-        { status: 400 }
-      );
-    }
+    const modelFile = formData.get("model");
 
-    const modelFileName = modelFile.name;
-    const modelFileType = getExt(modelFile.name);
+    if (!isFile(modelFile) && !modelUrlInput) {
+  return NextResponse.json(
+    { success: false, message: "Preview GLB/GLTF model file is required" },
+    { status: 400 }
+  );
+}
 
-    const modelUpload = await uploadToCloudinary(
-      modelFile,
-      "luxury-3d-products/preview",
-      "raw"
+    if (isFile(modelFile)) {
+  validateFile("model", modelFile);
+}
+
+    const uploads = await Promise.all([
+  isFile(modelFile) ? uploadFormFile(formData, "model", "raw") : null,
+  uploadFormFile(formData, "thumbnailFile", "image"),
+  uploadFormFile(formData, "glbFile", "raw"),
+  uploadFormFile(formData, "gltfFile", "raw"),
+  uploadFormFile(formData, "fbxFile", "raw"),
+  uploadFormFile(formData, "blendFile", "raw"),
+  uploadFormFile(formData, "objFile", "raw"),
+  uploadFormFile(formData, "stlFile", "raw"),
+  uploadFormFile(formData, "zipFile", "raw"),
+]);
+
+    const uploaded = Object.fromEntries(
+      uploads.filter(Boolean).map((item: any) => [item.key, item])
     );
 
-    if (isFile(thumbnailFile)) {
-      const thumbUpload = await uploadToCloudinary(
-        thumbnailFile,
-        "lux3d-thumbnails",
-        "image"
-      );
+    const modelUpload = uploaded.model;
+    const finalModelUrl = modelUpload?.url || modelUrlInput;
+const finalModelName = modelUpload?.name || modelFileNameInput;
+const finalModelType = modelUpload?.type || modelFileTypeInput;
+    const thumbnailUpload = uploaded.thumbnailFile;
 
-      thumbnail = thumbUpload.secure_url || "";
-    }
-
-    const glbUrl = await uploadOptionalFile(
-      formData,
-      "glbFile",
-      "luxury-3d-products/glb"
-    );
-
-    const gltfUrl = await uploadOptionalFile(
-      formData,
-      "gltfFile",
-      "luxury-3d-products/gltf"
-    );
-
-    const fbxUrl = await uploadOptionalFile(
-      formData,
-      "fbxFile",
-      "luxury-3d-products/fbx"
-    );
-
-    const blendUrl = await uploadOptionalFile(
-      formData,
-      "blendFile",
-      "luxury-3d-products/blend"
-    );
-
-    const objUrl = await uploadOptionalFile(
-      formData,
-      "objFile",
-      "luxury-3d-products/obj"
-    );
-
-    const stlUrl = await uploadOptionalFile(
-      formData,
-      "stlFile",
-      "luxury-3d-products/stl"
-    );
-
-    const zipUrl =
-      (await uploadOptionalFile(
-        formData,
-        "zipFile",
-        "luxury-3d-products/zip"
-      )) || downloadZipUrl;
+    const zipUrl = uploaded.zipFile?.url || downloadZipUrl;
 
     const product = await Product.create({
       name,
@@ -220,20 +238,21 @@ export async function POST(req: Request) {
       childCategory,
       categoryPath: [category, subCategory, childCategory].filter(Boolean),
 
-      thumbnail,
-      galleryImages: [],
+      thumbnail: thumbnailUpload?.url || thumbnailUrlInput || String(formData.get("thumbnail") || ""),
 
-      modelUrl: modelUpload.secure_url,
-      modelFileName,
-      modelFileType,
+modelUrl: finalModelUrl,
+modelFileName: finalModelName,
+modelFileType: finalModelType,
 
-      glbUrl: glbUrl || modelUpload.secure_url,
-      gltfUrl,
-      fbxUrl,
-      blendUrl,
-      objUrl,
-      stlUrl,
-      zipUrl,
+glbUrl: uploaded.glbFile?.url || glbUrlInput || finalModelUrl,
+gltfUrl: uploaded.gltfFile?.url || gltfUrlInput,
+fbxUrl: uploaded.fbxFile?.url || fbxUrlInput,
+blendUrl: uploaded.blendFile?.url || blendUrlInput,
+objUrl: uploaded.objFile?.url || objUrlInput,
+stlUrl: uploaded.stlFile?.url || stlUrlInput,
+zipUrl: uploaded.zipFile?.url || zipUrlInput || downloadZipUrl,
+
+downloadZipUrl: uploaded.zipFile?.url || zipUrlInput || downloadZipUrl,
 
       videoUrl,
       hdriUrl,
@@ -249,7 +268,7 @@ export async function POST(req: Request) {
       price,
       isFree,
       downloadType,
-      downloadZipUrl: zipUrl || downloadZipUrl,
+    
       license,
 
       seoTitle,
