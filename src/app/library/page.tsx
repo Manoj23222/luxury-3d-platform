@@ -52,7 +52,7 @@ export default async function LibraryPage() {
 
             <Link
               href="/portfolio"
-              className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
+              className="mt-6 inline-flex rounded-full border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-neutral-100"
             >
               Browse Assets
             </Link>

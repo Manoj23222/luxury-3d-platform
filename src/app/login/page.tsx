@@ -35,13 +35,7 @@ export default function LoginPage() {
         return;
       }
 
-      const role = data.user?.role;
-
-      if (role === "admin" || role === "creator") {
-        window.location.href = "/dashboard";
-      } else {
-        window.location.href = "/";
-      }
+      window.location.href = "/";
     } catch {
       alert("Something went wrong");
       setLoading(false);

@@ -11,19 +11,35 @@ const links = [
   { href: "/library", label: "Library" },
 ];
 
+type User = {
+  id: string;
+  name?: string;
+  email: string;
+  role?: "customer" | "creator" | "admin";
+};
+
 export default function Navbar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  const isLoggedIn = Boolean(user);
+  const isCreator = user?.role === "creator";
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     async function checkUser() {
       try {
         const res = await fetch("/api/auth/me", { cache: "no-store" });
         const data = await res.json();
-        setIsLoggedIn(Boolean(data.success));
+
+        if (data.success) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
       } catch {
-        setIsLoggedIn(false);
+        setUser(null);
       }
     }
 
@@ -32,7 +48,7 @@ export default function Navbar() {
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    setIsLoggedIn(false);
+    setUser(null);
     setMobileOpen(false);
     router.push("/");
     router.refresh();
@@ -68,7 +84,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden flex-1 max-w-md mx-8 lg:block">
+        <div className="mx-8 hidden max-w-md flex-1 lg:block">
           <input
             type="text"
             placeholder="Search assets..."
@@ -88,19 +104,48 @@ export default function Navbar() {
 
               <Link
                 href="/register"
-                className="rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
+                className="rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
               >
                 Register
               </Link>
             </>
           ) : (
             <>
-              <Link
-                href="/dashboard"
-                className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-black hover:border-black"
-              >
-                Dashboard
-              </Link>
+              {isCreator && (
+                <Link
+                  href="/dashboard"
+                  className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-black hover:border-black"
+                >
+                  Dashboard
+                </Link>
+              )}
+
+              {isAdmin && (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-black hover:border-black"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <Link
+                    href="/admin"
+                    className="rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-white hover:bg-white-800"
+                  >
+                    Admin
+                  </Link>
+                </>
+              )}
+
+              {!isCreator && !isAdmin && (
+                <Link
+                  href="/library"
+                  className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-black hover:border-black"
+                >
+                  My Library
+                </Link>
+              )}
 
               <button
                 onClick={logout}
@@ -121,7 +166,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-2xl font-bold"
+          className="text-2xl font-bold lg:hidden"
         >
           ☰
         </button>
@@ -167,13 +212,35 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileOpen(false)}
-                  className="block rounded-xl border p-3 text-center font-semibold"
-                >
-                  Dashboard
-                </Link>
+                {(isCreator || isAdmin) && (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-xl border p-3 text-center font-semibold"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-xl bg-black p-3 text-center font-semibold text-white"
+                  >
+                    Admin
+                  </Link>
+                )}
+
+                {!isCreator && !isAdmin && (
+                  <Link
+                    href="/library"
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-xl border p-3 text-center font-semibold"
+                  >
+                    My Library
+                  </Link>
+                )}
 
                 <button
                   onClick={logout}

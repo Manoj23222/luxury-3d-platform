@@ -22,12 +22,13 @@ export default async function DashboardLayout({
   ];
 
   const adminMenu = [
-    { name: "Users", href: "/dashboard/users" },
-    { name: "Products", href: "/dashboard/products" },
-    { name: "Categories", href: "/dashboard/categories" },
-    { name: "Settings", href: "/dashboard/settings" },
-  ];
-
+  { name: "Admin Panel", href: "/admin" },
+  { name: "Users", href: "/admin/users" },
+  { name: "Products", href: "/admin/products" },
+  { name: "Categories", href: "/admin/categories" },
+  { name: "Orders", href: "/admin/orders" },
+  { name: "Settings", href: "/admin/settings" },
+];
   const menu =
     user.role === "admin" ? [...creatorMenu, ...adminMenu] : creatorMenu;
 

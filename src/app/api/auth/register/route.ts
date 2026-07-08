@@ -34,7 +34,7 @@ const existingUser = await User.findOne({ email: cleanEmail });
       name,
       email: cleanEmail,
       password: hashedPassword,
-      role: "creator",
+      role: "customer",
     });
 
     return NextResponse.json({

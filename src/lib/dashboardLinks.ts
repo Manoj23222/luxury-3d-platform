@@ -9,6 +9,7 @@ import {
 export function getDashboardLinks(role?: string) {
   const links = [];
 
+  // Creator + Admin
   if (canUploadAssets(role)) {
     links.push({
       label: "Upload Asset",
@@ -21,6 +22,7 @@ export function getDashboardLinks(role?: string) {
     });
   }
 
+  // Admin Only
   if (canManageUsers(role)) {
     links.push({
       label: "Users",
@@ -38,14 +40,14 @@ export function getDashboardLinks(role?: string) {
   if (canManageProducts(role)) {
     links.push({
       label: "Products",
-      href: "/dashboard/projects",
+      href: "/admin/products", // ✅ unique route
     });
   }
 
   if (canManageSettings(role)) {
     links.push({
       label: "Settings",
-      href: "/dashboard/settings",
+      href: "/admin/settings", // ✅ unique route
     });
   }
 
