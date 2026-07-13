@@ -3,18 +3,17 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import SecureDownloadButton from "@/components/payment/SecureDownloadButton";
 import { getCurrentUser } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
+import Order from "@/models/Order";
 
-async function getOrders() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+async function getOrders(userId: string) {
+  await connectDB();
 
-  const res = await fetch(`${baseUrl}/api/orders`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  return data.orders || [];
+  return Order.find({
+    userId,
+  })
+    .sort({ createdAt: -1 })
+    .lean();
 }
 
 export default async function OrdersPage() {
@@ -24,7 +23,7 @@ export default async function OrdersPage() {
     redirect("/login?next=/orders");
   }
 
-  const orders = await getOrders();
+  const orders = await getOrders(user.id);
 
   return (
     <main className="min-h-screen bg-neutral-50 text-black">
@@ -134,7 +133,7 @@ export default async function OrdersPage() {
                     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
                       {order.productId && (
                         <Link
-                          href={`/product/${order.productId}`}
+                          href={`/portfolio/${order.productId}`}
                           className="rounded-full border border-neutral-300 px-5 py-3 text-center text-sm font-semibold hover:border-black"
                         >
                           View Asset

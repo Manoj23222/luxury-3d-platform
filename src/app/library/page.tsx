@@ -3,21 +3,19 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import SecureDownloadButton from "@/components/payment/SecureDownloadButton";
 import { getCurrentUser } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
+import Order from "@/models/Order";
 
-async function getOrders() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+async function getOrders(userId: string) {
+  await connectDB();
 
-  const res = await fetch(`${baseUrl}/api/orders`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) return [];
-
-  const data = await res.json();
-
-  return (data.orders || []).filter(
-    (x: any) => x.status === "Paid" && x.downloadEnabled === true
-  );
+  return Order.find({
+    userId,
+    status: "Paid",
+    downloadEnabled: true,
+  })
+    .sort({ createdAt: -1 })
+    .lean();
 }
 
 export default async function LibraryPage() {
@@ -27,7 +25,7 @@ export default async function LibraryPage() {
     redirect("/login?next=/library");
   }
 
-  const orders = await getOrders();
+  const orders = await getOrders(user.id);
 
   return (
     <main className="min-h-screen bg-neutral-50 text-black">
@@ -52,7 +50,7 @@ export default async function LibraryPage() {
 
             <Link
               href="/portfolio"
-              className="mt-6 inline-flex rounded-full border border-neutral-00 bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-neutral-100"
+              className="mt-6 inline-flex rounded-full border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-neutral-100"
             >
               Browse Assets
             </Link>
