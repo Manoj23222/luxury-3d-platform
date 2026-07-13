@@ -22,6 +22,13 @@ export default function CheckoutPage() {
 
   const [upiTransactionId, setUpiTransactionId] = useState("");
   const [paymentScreenshot, setPaymentScreenshot] = useState("");
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+
+  const [timeLeft, setTimeLeft] = useState(10 * 60);
+const [paymentStatus, setPaymentStatus] = useState<
+  "waiting" | "submitted" | "verified" | "rejected"
+>("waiting");
+const [submittedAt, setSubmittedAt] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -32,6 +39,29 @@ export default function CheckoutPage() {
   const upiId = process.env.NEXT_PUBLIC_UPI_ID || "";
   const upiQrUrl = process.env.NEXT_PUBLIC_UPI_QR_URL || "";
   const upiName = process.env.NEXT_PUBLIC_UPI_NAME || "LUX3D";
+
+  useEffect(() => {
+  setIsMobileDevice(
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+  );
+}, []);
+
+useEffect(() => {
+  if (paymentStatus !== "waiting" || timeLeft <= 0) return;
+
+  const timer = window.setInterval(() => {
+    setTimeLeft((previous) => {
+      if (previous <= 1) {
+        window.clearInterval(timer);
+        return 0;
+      }
+
+      return previous - 1;
+    });
+  }, 1000);
+
+  return () => window.clearInterval(timer);
+}, [paymentStatus, timeLeft]);
 
   useEffect(() => {
     async function load() {
@@ -138,10 +168,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (!form.phone.trim()) {
-      alert("Please enter phone number");
-      return;
-    }
+  
 
     if (!upiTransactionId.trim()) {
       alert("Please enter UPI transaction ID / UTR");
@@ -187,11 +214,14 @@ export default function CheckoutPage() {
         return;
       }
 
-      alert(
-        "Payment submitted successfully. Download will unlock after admin verification."
-      );
+      const submittedTime = new Date().toLocaleString();
 
-      router.push("/orders");
+setSubmittedAt(submittedTime);
+setPaymentStatus("submitted");
+
+alert("Payment submitted successfully for admin verification.");
+
+      
     } catch {
       alert("Payment submission failed");
     } finally {
@@ -250,6 +280,10 @@ export default function CheckoutPage() {
     payWithRazorpay();
   };
 
+const formattedTime = `${Math.floor(timeLeft / 60)
+  .toString()
+  .padStart(2, "0")}:${(timeLeft % 60).toString().padStart(2, "0")}`;
+
   if (loading) {
     return (
       <main className="min-h-screen bg-neutral-50 text-black">
@@ -289,50 +323,7 @@ export default function CheckoutPage() {
 
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
           <div className="grid gap-6">
-            <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-bold">1. Customer Details</h2>
-
-              <div className="mt-5 grid gap-4">
-                <label>
-                  <span className="mb-2 block text-sm font-semibold">
-                    Name
-                  </span>
-                  <input
-                    value={form.name}
-                    readOnly
-                    className="w-full rounded-2xl border border-neutral-200 bg-neutral-100 px-4 py-3 text-sm"
-                  />
-                </label>
-
-                <label>
-                  <span className="mb-2 block text-sm font-semibold">
-                    Email
-                  </span>
-                  <input
-                    value={form.email}
-                    readOnly
-                    className="w-full rounded-2xl border border-neutral-200 bg-neutral-100 px-4 py-3 text-sm"
-                  />
-                </label>
-
-                <label>
-                  <span className="mb-2 block text-sm font-semibold">
-                    Phone Number
-                  </span>
-                  <input
-                    value={form.phone}
-                    onChange={(e) =>
-                      setForm((prev) => ({
-                        ...prev,
-                        phone: e.target.value,
-                      }))
-                    }
-                    placeholder="Enter phone number"
-                    className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm outline-none focus:border-black"
-                  />
-                </label>
-              </div>
-            </section>
+            
 
             <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
               <h2 className="text-xl font-bold">2. Payment Method</h2>
@@ -383,95 +374,207 @@ export default function CheckoutPage() {
             </section>
 
             {paymentMethod === "UPI" && (
-              <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
-                <h2 className="text-xl font-bold">3. Scan & Pay</h2>
+  <section className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6">
+    <div className="mx-auto max-w-xl">
+      <h2 className="text-center text-2xl font-black tracking-tight sm:text-3xl">
+        Scan QR and Pay
+      </h2>
 
-                <div className="mt-5 grid gap-6 md:grid-cols-[240px_1fr]">
-                  <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-4 text-center">
-                    {upiQrUrl ? (
-                      <img
-                        src={upiQrUrl}
-                        alt="UPI payment QR code"
-                        className="mx-auto aspect-square w-full rounded-2xl object-contain"
-                      />
-                    ) : (
-                      <div className="flex aspect-square items-center justify-center rounded-2xl bg-white text-sm text-neutral-500">
-                        Add NEXT_PUBLIC_UPI_QR_URL in .env.local
-                      </div>
-                    )}
+      <div className="mt-7 rounded-[2rem] border-2 border-blue-100 bg-gradient-to-b from-white to-blue-50 p-5 text-center sm:p-8">
+        <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
+          Amount
+        </p>
 
-                    <p className="mt-3 text-xs text-neutral-500">
-                      Scan using any UPI app
-                    </p>
-                  </div>
+        <p className="mt-2 text-4xl font-black text-black">
+          ₹{Number(product.price || 0).toFixed(2)}
+        </p>
 
-                  <div>
-                    <div className="rounded-2xl bg-neutral-50 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                        Payable Amount
-                      </p>
+        <div className="mx-auto mt-7 max-w-[280px]">
+          {upiQrUrl ? (
+            <img
+              src={upiQrUrl}
+              alt="UPI payment QR code"
+              className="aspect-square w-full rounded-2xl bg-white object-contain p-2"
+            />
+          ) : (
+            <div className="flex aspect-square items-center justify-center rounded-2xl bg-white p-6 text-sm text-neutral-500">
+              QR code is not configured
+            </div>
+          )}
+        </div>
 
-                      <p className="mt-2 text-3xl font-black">
-                        ₹{Number(product.price || 0)}
-                      </p>
-                    </div>
+        <p className="mt-6 text-sm font-semibold text-neutral-700">
+          Pay using Google Pay, PhonePe, Paytm, BHIM
+        </p>
 
-                    <div className="mt-4 rounded-2xl border border-neutral-200 p-4">
-                      <p className="text-xs text-neutral-500">UPI ID</p>
-                      <p className="mt-1 break-all font-bold">
-                        {upiId || "UPI ID not configured"}
-                      </p>
-                    </div>
+        <p className="mt-1 text-sm text-neutral-500">
+          or any other UPI app
+        </p>
 
-                    {upiPaymentLink && (
-                      <a
-                        href={upiPaymentLink}
-                        className="mt-4 block rounded-2xl border border-black bg-white px-5 py-3 text-center text-sm font-semibold text-white hover:bg-neutral-800"
-                      >
-                        Open UPI App
-                      </a>
-                    )}
+        <div className="mt-5 rounded-2xl border border-neutral-200 bg-white p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            UPI ID
+          </p>
 
-                    <p className="mt-4 text-xs leading-5 text-neutral-500">
-                      Payment complete hone ke baad neeche UTR / transaction
-                      ID enter karein.
-                    </p>
-                  </div>
-                </div>
+          <p className="mt-1 break-all text-sm font-bold text-black">
+            {upiId || "UPI ID not configured"}
+          </p>
+        </div>
 
-                <div className="mt-6 grid gap-4">
-                  <label>
-                    <span className="mb-2 block text-sm font-semibold">
-                      UPI Transaction ID / UTR *
-                    </span>
+        {upiPaymentLink && isMobileDevice && (
+          <a
+            href={upiPaymentLink}
+            className="mt-5 block rounded-2xl bg-black px-5 py-3 text-center text-sm font-bold text-white hover:bg-neutral-800"
+          >
+            Open UPI App
+          </a>
+        )}
+      </div>
 
-                    <input
-                      value={upiTransactionId}
-                      onChange={(e) =>
-                        setUpiTransactionId(e.target.value)
-                      }
-                      placeholder="Enter transaction ID or UTR"
-                      className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm outline-none focus:border-black"
-                    />
-                  </label>
+      <div className="mt-7 text-center">
+        {timeLeft > 0 ? (
+          <>
+            <p className="text-lg text-neutral-700">
+              QR valid for{" "}
+              <span className="font-black text-black">
+                {formattedTime}
+              </span>{" "}
+              minutes
+            </p>
 
-                  
+            <div className="mx-auto mt-4 h-2 max-w-sm overflow-hidden rounded-full bg-neutral-200">
+              <div
+                className="h-full rounded-full bg-blue-600 transition-all duration-1000"
+                style={{
+                  width: `${Math.max(0, (timeLeft / 600) * 100)}%`,
+                }}
+              />
+            </div>
 
-                  {screenshotUploading && (
-                    <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold text-blue-700">
-                      Uploading payment screenshot...
-                    </div>
-                  )}
+            <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left">
+              <p className="font-bold text-amber-700">
+                ⏳ Waiting for payment
+              </p>
 
-                  {paymentScreenshot && !screenshotUploading && (
-                    <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-semibold text-green-700">
-                      Payment screenshot uploaded successfully.
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
+              <p className="mt-1 text-sm text-amber-600">
+                After payment, enter your UTR or transaction ID below.
+              </p>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
+            <p className="font-bold text-red-700">
+              QR session expired
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setTimeLeft(10 * 60);
+                setPaymentStatus("waiting");
+              }}
+              className="mt-4 rounded-xl bg-black px-5 py-3 text-sm font-bold text-white"
+            >
+              Start New 10-Minute Session
+            </button>
           </div>
+        )}
+      </div>
+
+      <div className="my-8 flex items-center gap-4">
+        <div className="h-px flex-1 bg-neutral-200" />
+
+        <span className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
+          OR
+        </span>
+
+        <div className="h-px flex-1 bg-neutral-200" />
+      </div>
+
+      <div>
+        <h3 className="text-xl font-bold">
+          Already completed payment?
+        </h3>
+
+        <p className="mt-1 text-sm text-neutral-500">
+          Enter your UTR or transaction ID for admin verification.
+        </p>
+      </div>
+
+      {paymentStatus !== "submitted" ? (
+        <div className="mt-5 grid gap-4">
+          <label className="block">
+            <span className="mb-2 block text-sm font-semibold">
+              UPI Transaction ID / UTR *
+            </span>
+
+            <input
+              value={upiTransactionId}
+              onChange={(event) =>
+                setUpiTransactionId(event.target.value)
+              }
+              placeholder="Enter transaction ID or UTR"
+              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm outline-none focus:border-black"
+            />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-semibold">
+              Payment Screenshot
+              <span className="ml-1 font-normal text-neutral-500">
+                (optional, maximum 10 MB)
+              </span>
+            </span>
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={screenshotUploading}
+              onChange={(event) =>
+                uploadScreenshot(event.target.files?.[0] || null)
+              }
+              className="w-full rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-black file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white disabled:opacity-50"
+            />
+          </label>
+
+          {screenshotUploading && (
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold text-blue-700">
+              Uploading payment screenshot...
+            </div>
+          )}
+
+          {paymentScreenshot && !screenshotUploading && (
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-semibold text-green-700">
+              Payment screenshot uploaded successfully.
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <p className="font-bold text-amber-700">
+            ✅ Payment details submitted
+          </p>
+
+          <p className="mt-2 text-sm text-amber-700">
+            Status: Waiting for admin verification
+          </p>
+
+          <p className="mt-1 text-xs text-amber-600">
+            Submitted at: {submittedAt}
+          </p>
+
+          <button
+            type="button"
+            onClick={() => router.push("/orders")}
+            className="mt-4 rounded-xl bg-black px-5 py-3 text-sm font-bold text-white"
+          >
+            View My Orders
+          </button>
+        </div>
+      )}
+    </div>
+  </section>
+)}
 
           <aside className="h-fit rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
             <h2 className="text-xl font-bold">Order Summary</h2>
@@ -516,17 +619,23 @@ export default function CheckoutPage() {
 
             <button
               onClick={submitPayment}
-              disabled={paying || screenshotUploading}
+              disabled={
+                         paying ||
+                         screenshotUploading ||
+                         paymentStatus === "submitted"
+                        }
               className="mt-6 w-full rounded-2xl bg-black px-6 py-4 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {screenshotUploading
-                ? "Uploading Screenshot..."
-                : paying
-                ? "Submitting..."
-                : paymentMethod === "UPI"
-                ? "Submit Payment for Verification"
-                : "Pay with Razorpay"}
-            </button>
+  {paymentStatus === "submitted"
+    ? "Verification Pending"
+    : screenshotUploading
+    ? "Uploading Screenshot..."
+    : paying
+    ? "Submitting..."
+    : paymentMethod === "UPI"
+    ? "Submit Payment for Verification"
+    : "Pay with Razorpay"}
+</button>
 
             {paymentMethod === "UPI" && (
               <p className="mt-3 text-center text-xs leading-5 text-neutral-500">
@@ -534,6 +643,7 @@ export default function CheckoutPage() {
               </p>
             )}
           </aside>
+        </div>
         </div>
       </section>
     </main>
