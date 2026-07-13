@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(
   _req: Request,
@@ -19,7 +20,33 @@ export async function GET(
       );
     }
 
-    const product = await Product.findById(id).lean();
+    const currentUser = await getCurrentUser();
+
+if (!currentUser) {
+  return NextResponse.json(
+    { success: false, message: "Login required" },
+    { status: 401 }
+  );
+}
+
+const product = await Product.findById(id).lean();
+
+if (!product) {
+  return NextResponse.json(
+    { success: false, message: "Project not found" },
+    { status: 404 }
+  );
+}
+
+if (
+  currentUser.role !== "admin" &&
+  String(product.creatorId || "") !== currentUser.id
+) {
+  return NextResponse.json(
+    { success: false, message: "Access denied" },
+    { status: 403 }
+  );
+}
 
     if (!product) {
       return NextResponse.json(
@@ -52,6 +79,34 @@ export async function PUT(
         { status: 400 }
       );
     }
+
+    const currentUser = await getCurrentUser();
+
+if (!currentUser) {
+  return NextResponse.json(
+    { success: false, message: "Login required" },
+    { status: 401 }
+  );
+}
+
+const existing = await Product.findById(id);
+
+if (!existing) {
+  return NextResponse.json(
+    { success: false, message: "Project not found" },
+    { status: 404 }
+  );
+}
+
+if (
+  currentUser.role !== "admin" &&
+  String(existing.creatorId || "") !== currentUser.id
+) {
+  return NextResponse.json(
+    { success: false, message: "Access denied" },
+    { status: 403 }
+  );
+}
 
     const body = await req.json();
 
@@ -125,7 +180,35 @@ export async function DELETE(
       );
     }
 
-    const product = await Product.findByIdAndDelete(id);
+    const currentUser = await getCurrentUser();
+
+if (!currentUser) {
+  return NextResponse.json(
+    { success: false, message: "Login required" },
+    { status: 401 }
+  );
+}
+
+const product = await Product.findById(id);
+
+if (!product) {
+  return NextResponse.json(
+    { success: false, message: "Project not found" },
+    { status: 404 }
+  );
+}
+
+if (
+  currentUser.role !== "admin" &&
+  String(product.creatorId || "") !== currentUser.id
+) {
+  return NextResponse.json(
+    { success: false, message: "Access denied" },
+    { status: 403 }
+  );
+}
+
+await product.deleteOne();
 
     if (!product) {
       return NextResponse.json(

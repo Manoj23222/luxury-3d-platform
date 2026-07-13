@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Media from "@/models/Media";
 import cloudinary from "@/lib/cloudinary";
+import { getCurrentUser } from "@/lib/auth";
 
 const MB = 1024 * 1024;
 
@@ -27,19 +28,63 @@ function formatMB(bytes: number) {
 }
 
 export async function GET() {
-  await connectDB();
+  try {
+    const currentUser = await getCurrentUser();
 
-  const media = await Media.find().sort({ createdAt: -1 }).lean();
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Login required",
+          media: [],
+        },
+        { status: 401 }
+      );
+    }
 
-  return NextResponse.json({
-    success: true,
-    media,
-  });
+    await connectDB();
+
+    const filter =
+      currentUser.role === "admin"
+        ? {}
+        : {
+            creatorId: currentUser.id,
+          };
+
+    const media = await Media.find(filter)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return NextResponse.json({
+      success: true,
+      media,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: error.message || "Media fetch failed",
+        media: [],
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: Request) {
   try {
     await connectDB();
+const currentUser = await getCurrentUser();
+
+if (!currentUser) {
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Login required",
+    },
+    { status: 401 }
+  );
+}
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
@@ -99,6 +144,10 @@ export async function POST(req: Request) {
       fileType: uploadType,
       folder: `lux3d-media-library/${uploadType}`,
       size: file.size,
+
+      creatorId: currentUser.id,
+creatorName: currentUser.name || "",
+creatorEmail: currentUser.email || "",
     });
 
     return NextResponse.json({

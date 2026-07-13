@@ -69,7 +69,21 @@ const ProductSchema = new Schema(
     downloads: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
 
-    creatorId: { type: String, default: "" },
+    creatorId: {
+  type: String,
+  required: true,
+  index: true,
+},
+
+creatorName: {
+  type: String,
+  default: "",
+},
+
+creatorEmail: {
+  type: String,
+  default: "",
+},
   },
   { timestamps: true }
 );

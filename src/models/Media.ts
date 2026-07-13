@@ -7,8 +7,25 @@ const MediaSchema = new Schema(
     fileType: { type: String, default: "image" },
     folder: { type: String, default: "media-library" },
     size: { type: Number, default: 0 },
+    creatorId: {
+  type: String,
+  required: true,
+  index: true,
+},
+
+creatorName: {
+  type: String,
+  default: "",
+},
+
+creatorEmail: {
+  type: String,
+  default: "",
+},
   },
+  
   { timestamps: true }
+  
 );
 
 export default models.Media || mongoose.model("Media", MediaSchema);

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import cloudinary from "@/lib/cloudinary";
+import { getCurrentUser } from "@/lib/auth";
 
 const MB = 1024 * 1024;
 
@@ -118,11 +119,36 @@ async function uploadFormFile(
 
 export async function GET() {
   try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Login required",
+          products: [],
+        },
+        { status: 401 }
+      );
+    }
+
     await connectDB();
 
-    const products = await Product.find({}).sort({ createdAt: -1 }).lean();
+    const filter =
+      currentUser.role === "admin"
+        ? {}
+        : {
+            creatorId: currentUser.id,
+          };
 
-    return NextResponse.json({ success: true, products });
+    const products = await Product.find(filter)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return NextResponse.json({
+      success: true,
+      products,
+    });
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -138,6 +164,18 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     await connectDB();
+
+    const currentUser = await getCurrentUser();
+
+if (!currentUser) {
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Login required",
+    },
+    { status: 401 }
+  );
+}
 
     const formData = await req.formData();
 
@@ -279,7 +317,9 @@ downloadZipUrl: uploaded.zipFile?.url || zipUrlInput || downloadZipUrl,
       featured,
       visibility,
 
-      creatorId: "personal-admin",
+     creatorId: currentUser.id,
+creatorName: currentUser.name || "",
+creatorEmail: currentUser.email || "",
     });
 
     return NextResponse.json({ success: true, product });
