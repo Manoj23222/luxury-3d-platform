@@ -1,26 +1,39 @@
 import Link from "next/link";
 import DeleteProductButton from "@/components/dashboard/DeleteProductButton";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { redirect } from "next/navigation";
+import connectDB from "@/lib/mongodb";
+import Product from "@/models/Product";
+import { getCurrentUser } from "@/lib/auth";
 
-async function getProjects() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+async function getProjects(userId: string, role?: string) {
+  await connectDB();
 
-    const res = await fetch(`${baseUrl}/api/products`, {
-      cache: "no-store",
-    });
+  const filter =
+    role === "admin"
+      ? {}
+      : {
+          creatorId: userId,
+        };
 
-    if (!res.ok) return [];
+  const projects = await Product.find(filter)
+    .sort({ createdAt: -1 })
+    .lean();
 
-    const data = await res.json();
-    return data.products || [];
-  } catch {
-    return [];
-  }
+  return projects.map((item: any) => ({
+    ...item,
+    _id: item._id.toString(),
+  }));
 }
 
 export default async function DashboardProjectsPage() {
-  const projects = await getProjects();
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?next=/dashboard/projects");
+  }
+
+  const projects = await getProjects(user.id, user.role);
 
   return (
     <div className="mx-auto max-w-7xl pb-10">
@@ -119,8 +132,77 @@ export default async function DashboardProjectsPage() {
                   >
                     Edit
                   </Link>
+                  {item.zipUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=zip`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  ZIP
+</a>
+)}
 
-                  <DeleteProductButton id={item._id} />
+{item.glbUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=glb`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  GLB
+</a>
+)}
+
+{item.gltfUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=gltf`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  GLTF
+</a>
+)}
+
+{item.fbxUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=fbx`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  FBX
+</a>
+)}
+
+{item.objUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=obj`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  OBJ
+</a>
+)}
+
+{item.blendUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=blend`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  BLEND
+</a>
+)}
+
+{item.stlUrl && (
+  <a
+  href={`/api/products/${item._id}/owner-download?format=stl`}
+  target="_blank"
+  className="rounded-full border px-3 py-2 text-xs font-semibold hover:bg-neutral-100"
+>
+  STL
+</a>
+)}
+
+                 <DeleteProductButton id={String(item._id)} />
                 </div>
               </div>
             );

@@ -9,15 +9,19 @@ import Order from "@/models/Order";
 async function getOrders(userId: string) {
   await connectDB();
 
-  return Order.find({
-    userId,
-    status: "Paid",
-    downloadEnabled: true,
-  })
-    .sort({ createdAt: -1 })
-    .lean();
-}
+const orders = await Order.find({
+  userId,
+  status: "Paid",
+  downloadEnabled: true,
+})
+  .sort({ createdAt: -1 })
+  .lean();
 
+return orders.map((order: any) => ({
+  ...order,
+  _id: order._id.toString(),
+}));
+}
 export default async function LibraryPage() {
   const user = await getCurrentUser();
 
@@ -50,7 +54,7 @@ export default async function LibraryPage() {
 
             <Link
               href="/portfolio"
-              className="mt-6 inline-flex rounded-full border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-neutral-100"
+              className="mt-6 inline-flex rounded-full border border-neutral-3  00 bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-neutral-100"
             >
               Browse Assets
             </Link>
@@ -83,7 +87,7 @@ export default async function LibraryPage() {
                     Order: {order.status}
                   </p>
 
-                  <SecureDownloadButton orderId={order._id} />
+                  <SecureDownloadButton orderId={String(order._id)} />
                 </div>
               </article>
             ))}

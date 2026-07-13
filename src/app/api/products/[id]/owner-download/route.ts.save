@@ -1,0 +1,8 @@
+cd ~/Desktop/luxury-3d-platform
+
+mkdir -p backup
+
+mongodump \
+  --uri="$MONGODB_URI" \
+  --out="backup/lux3d-$(date +%Y%m%d-%H%M%S)"
+

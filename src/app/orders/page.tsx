@@ -9,11 +9,16 @@ import Order from "@/models/Order";
 async function getOrders(userId: string) {
   await connectDB();
 
-  return Order.find({
-    userId,
-  })
-    .sort({ createdAt: -1 })
-    .lean();
+ const orders = await Order.find({
+  userId,
+})
+  .sort({ createdAt: -1 })
+  .lean();
+
+return orders.map((order: any) => ({
+  ...order,
+  _id: order._id.toString(),
+}));
 }
 
 export default async function OrdersPage() {
@@ -142,7 +147,7 @@ export default async function OrdersPage() {
 
                       {order.status === "Paid" && order.downloadEnabled && (
                         <div className="w-full sm:max-w-xs">
-                          <SecureDownloadButton orderId={order._id} />
+                          <SecureDownloadButton orderId={String(order._id)} />
                         </div>
                       )}
                     </div>
