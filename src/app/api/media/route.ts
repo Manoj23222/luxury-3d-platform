@@ -15,6 +15,7 @@ const MAX_SIZE_BY_TYPE: Record<string, number> = {
   obj: 200 * MB,
   stl: 200 * MB,
   zip: 400 * MB,
+  paymentScreenshot: 10 * MB,
 };
 
 function getExt(fileName: string) {
@@ -74,7 +75,10 @@ export async function POST(req: Request) {
       cloudinary.uploader
         .upload_stream(
           {
-            resource_type: uploadType === "thumbnail" ? "image" : "raw",
+            resource_type:
+  uploadType === "thumbnail" || uploadType === "paymentScreenshot"
+    ? "image"
+    : "raw",
             folder: `lux3d-media-library/${uploadType}`,
             use_filename: true,
             unique_filename: true,
