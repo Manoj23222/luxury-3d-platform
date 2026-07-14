@@ -22,8 +22,18 @@ export default function EditProjectPage() {
     tags: "",
     videoUrl: "",
     thumbnail: "",
-    galleryImages: [],
-    price: 0,
+galleryImages: [],
+
+modelUrl: "",
+glbUrl: "",
+gltfUrl: "",
+fbxUrl: "",
+blendUrl: "",
+objUrl: "",
+stlUrl: "",
+zipUrl: "",
+
+price: 0,
     isFree: "true",
     downloadType: "Free",
     downloadZipUrl: "",
@@ -33,6 +43,65 @@ export default function EditProjectPage() {
   const update = (key: string, value: any) => {
     setForm((prev: any) => ({ ...prev, [key]: value }));
   };
+  function ReplaceFileBox({
+  label,
+  accept,
+  currentUrl,
+  uploading,
+  onChange,
+}: {
+  label: string;
+  accept: string;
+  currentUrl?: string;
+  uploading?: boolean;
+  onChange: (file: File) => void;
+}) {
+  const currentName = currentUrl
+    ? decodeURIComponent(currentUrl.split("/").pop()?.split("?")[0] || "")
+    : "";
+
+  return (
+    <div className="rounded-2xl border border-neutral-200 bg-white p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-black">{label}</p>
+
+          <p className="mt-1 truncate text-xs text-neutral-500">
+            {currentName || "No current file"}
+          </p>
+        </div>
+
+        {currentUrl && (
+          <a
+            href={currentUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs font-bold text-blue-600 hover:underline"
+          >
+            Open Current
+          </a>
+        )}
+      </div>
+
+      <input
+        type="file"
+        accept={accept}
+        disabled={uploading}
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) onChange(file);
+        }}
+        className="mt-4 block w-full rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-4 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-black file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white disabled:opacity-50"
+      />
+
+      {uploading && (
+        <p className="mt-3 text-sm font-bold text-blue-700">
+          Uploading replacement file...
+        </p>
+      )}
+    </div>
+  );
+}
 
   const uploadImage = async (file: File) => {
     const fd = new FormData();
@@ -52,6 +121,71 @@ export default function EditProjectPage() {
     if (url) update("thumbnail", url);
   };
 
+const [uploadingFile, setUploadingFile] = useState("");
+
+const uploadAssetFile = async (
+  key:
+    | "model"
+    | "glb"
+    | "gltf"
+    | "fbx"
+    | "blend"
+    | "obj"
+    | "stl"
+    | "zip",
+  file: File
+) => {
+  try {
+    setUploadingFile(key);
+
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("title", file.name);
+    fd.append("uploadType", key);
+
+    const res = await fetch("/api/media", {
+      method: "POST",
+      body: fd,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      alert(data.message || `${key.toUpperCase()} upload failed`);
+      return;
+    }
+
+    const url = data.url || data.media?.url || "";
+
+    if (!url) {
+      alert("Uploaded URL not received");
+      return;
+    }
+
+    const fieldMap = {
+      model: "modelUrl",
+      glb: "glbUrl",
+      gltf: "gltfUrl",
+      fbx: "fbxUrl",
+      blend: "blendUrl",
+      obj: "objUrl",
+      stl: "stlUrl",
+      zip: "zipUrl",
+    } as const;
+
+    update(fieldMap[key], url);
+
+    if (key === "zip") {
+      update("downloadZipUrl", url);
+    }
+
+    alert(`${file.name} uploaded successfully`);
+  } catch {
+    alert(`${key.toUpperCase()} upload failed`);
+  } finally {
+    setUploadingFile("");
+  }
+};
   const uploadGallery = async (files: FileList | null) => {
     if (!files) return;
 
@@ -99,6 +233,14 @@ export default function EditProjectPage() {
           videoUrl: p.videoUrl || "",
           thumbnail: p.thumbnail || "",
           galleryImages: Array.isArray(p.galleryImages) ? p.galleryImages : [],
+          modelUrl: p.modelUrl || "",
+glbUrl: p.glbUrl || "",
+gltfUrl: p.gltfUrl || "",
+fbxUrl: p.fbxUrl || "",
+blendUrl: p.blendUrl || "",
+objUrl: p.objUrl || "",
+stlUrl: p.stlUrl || "",
+zipUrl: p.zipUrl || "",
           price: p.price || 0,
           isFree: String(p.isFree ?? true),
           downloadType: p.downloadType || "Free",
@@ -118,10 +260,19 @@ export default function EditProjectPage() {
 
     const payload = {
       ...form,
+      modelUrl: form.modelUrl,
+glbUrl: form.glbUrl,
+gltfUrl: form.gltfUrl,
+fbxUrl: form.fbxUrl,
+blendUrl: form.blendUrl,
+objUrl: form.objUrl,
+stlUrl: form.stlUrl,
+downloadZipUrl: form.zipUrl,
       price: Number(form.price || 0),
       featured: form.featured === "true",
       isFree: form.isFree === "true",
       softwareUsed: form.softwareUsed
+      
         .split(",")
         .map((x: string) => x.trim())
         .filter(Boolean),
@@ -238,10 +389,88 @@ export default function EditProjectPage() {
                   >
                     Delete
                   </button>
+
+                  
                 </div>
               ))}
             </div>
+            
           </div>
+
+<div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-5">
+  <div>
+    <h2 className="text-xl font-bold text-black">3D Files</h2>
+    <p className="mt-1 text-sm text-neutral-500">
+      Replace existing marketplace files. Save changes after uploads finish.
+    </p>
+  </div>
+
+  <div className="mt-5 grid gap-4">
+    <ReplaceFileBox
+      label="Preview Model"
+      accept=".glb,.gltf"
+      currentUrl={form.modelUrl}
+      uploading={uploadingFile === "model"}
+      onChange={(file) => uploadAssetFile("model", file)}
+    />
+
+    <ReplaceFileBox
+      label="GLB File"
+      accept=".glb"
+      currentUrl={form.glbUrl}
+      uploading={uploadingFile === "glb"}
+      onChange={(file) => uploadAssetFile("glb", file)}
+    />
+
+    <ReplaceFileBox
+      label="GLTF File"
+      accept=".gltf"
+      currentUrl={form.gltfUrl}
+      uploading={uploadingFile === "gltf"}
+      onChange={(file) => uploadAssetFile("gltf", file)}
+    />
+
+    <ReplaceFileBox
+      label="FBX File"
+      accept=".fbx"
+      currentUrl={form.fbxUrl}
+      uploading={uploadingFile === "fbx"}
+      onChange={(file) => uploadAssetFile("fbx", file)}
+    />
+
+    <ReplaceFileBox
+      label="BLEND File"
+      accept=".blend"
+      currentUrl={form.blendUrl}
+      uploading={uploadingFile === "blend"}
+      onChange={(file) => uploadAssetFile("blend", file)}
+    />
+
+    <ReplaceFileBox
+      label="OBJ File"
+      accept=".obj"
+      currentUrl={form.objUrl}
+      uploading={uploadingFile === "obj"}
+      onChange={(file) => uploadAssetFile("obj", file)}
+    />
+
+    <ReplaceFileBox
+      label="STL File"
+      accept=".stl"
+      currentUrl={form.stlUrl}
+      uploading={uploadingFile === "stl"}
+      onChange={(file) => uploadAssetFile("stl", file)}
+    />
+
+    <ReplaceFileBox
+      label="ZIP Package"
+      accept=".zip"
+      currentUrl={form.zipUrl}
+      uploading={uploadingFile === "zip"}
+      onChange={(file) => uploadAssetFile("zip", file)}
+    />
+  </div>
+</div>
 
           <input
             value={form.softwareUsed}
@@ -322,10 +551,15 @@ export default function EditProjectPage() {
 
           <button
             onClick={saveProject}
-            disabled={saving}
+            disabled={saving || Boolean(uploadingFile)}
             className="rounded-full bg-black px-8 py-4 font-semibold text-white disabled:opacity-50"
           >
-            {saving ? "Saving..." : "Save Changes"}
+            
+            {uploadingFile
+  ? "Uploading File..."
+  : saving
+  ? "Saving..."
+  : "Save Changes"}
           </button>
         </div>
       </div>
