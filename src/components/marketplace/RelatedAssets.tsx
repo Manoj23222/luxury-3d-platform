@@ -34,57 +34,57 @@ export default async function RelatedAssets({
   if (related.length === 0) return null;
 
   return (
-    <section className="mt-10 rounded-[2rem] border border-neutral-200 bg-white p-6 shadow-sm">
-      <div className="mb-6 flex items-center justify-between">
+    <section className="mt-8 rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-black">Related Assets</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Similar premium 3D marketplace assets.
+          <h2 className="text-lg font-bold text-black">Related 3D Works</h2>
+          <p className="mt-0.5 text-xs text-neutral-500">
+            More projects from {category || "3D archive"}.
           </p>
         </div>
 
         <Link
           href="/portfolio"
-          className="text-sm font-semibold text-neutral-500 hover:text-black"
+          className="text-xs font-semibold text-neutral-500 hover:text-black"
         >
           View All →
         </Link>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {related.map((item: any) => {
-          const free = item.isFree ?? true;
-
           return (
             <Link
               key={item._id}
               href={`/portfolio/${item._id}`}
-              className="group overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xs transition duration-300 hover:-translate-y-1 hover:border-neutral-400 hover:shadow-md"
             >
-              {item.thumbnail ? (
-                <img
-                  src={item.thumbnail}
-                  alt={item.name}
-                  className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div className="flex aspect-square items-center justify-center bg-neutral-100 text-neutral-400">
-                  No Image
-                </div>
-              )}
+              <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
+                {item.thumbnail ? (
+                  <img
+                    src={item.thumbnail}
+                    alt={item.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xs text-neutral-400">
+                    No Preview
+                  </div>
+                )}
+              </div>
 
-              <div className="p-4">
-                <h3 className="line-clamp-1 font-bold text-black">
+              <div className="p-2.5">
+                <h3 className="line-clamp-1 text-xs font-bold text-black">
                   {item.name || "Untitled Asset"}
                 </h3>
 
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600">
+                <div className="mt-1.5 flex items-center justify-between">
+                  <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold text-neutral-600">
                     {item.category || "3D"}
                   </span>
 
-                  <span className="text-sm font-bold text-black">
-                    {free ? "Free" : `₹${item.price || 0}`}
+                  <span className="text-[10px] font-semibold text-neutral-400">
+                    {item.views || 0} views
                   </span>
                 </div>
               </div>

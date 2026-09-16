@@ -2,25 +2,69 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-neutral-200 bg-white px-5 py-10 text-neutral-900 sm:px-6 lg:px-10">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-lg font-bold tracking-wide text-black">LUX3D</h2>
-          <p className="mt-2 text-sm text-neutral-500">
-            Premium 3D asset marketplace for product visualization.
-          </p>
+    <footer className="border-t border-neutral-200 bg-white py-10 text-neutral-900">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-8 border-b border-neutral-100">
+          {/* Brand Identity */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black text-sm font-black text-white shadow-xs">
+              3D
+            </div>
+            <div>
+              <h2 className="text-base font-black tracking-tight text-black">
+                Ashok Meena
+              </h2>
+              <p className="text-[11px] font-bold text-neutral-500">
+                Senior 3D & Digital Fashion Designer
+              </p>
+            </div>
+          </div>
+
+          {/* Location & Contact Chips in Luxury White Theme */}
+          <div className="flex flex-wrap items-center gap-2.5 text-xs font-semibold">
+            {/* Location */}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-neutral-700 shadow-xs">
+              <span>📍</span>
+              <span>Sardarshahar, Rajasthan, India</span>
+            </span>
+
+            {/* Email Contact */}
+            <a
+              href="mailto:3ddesigner5546@gmail.com"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-neutral-800 shadow-xs transition hover:border-black hover:bg-white"
+            >
+              <span>✉️</span>
+              <span className="font-bold">3ddesigner5546@gmail.com</span>
+            </a>
+
+            {/* Phone Contact */}
+            <a
+              href="tel:+918000093300"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-neutral-800 shadow-xs transition hover:border-black hover:bg-white"
+            >
+              <span>📞</span>
+              <span className="font-bold">+91 80000 93300</span>
+            </a>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-5 text-sm font-semibold text-neutral-600">
-          <Link href="/" className="hover:text-black">
-            Home
-          </Link>
-          <Link href="/portfolio" className="hover:text-black">
-            Assets
-          </Link>
-          <Link href="/contact" className="hover:text-black">
-            Hire Me
-          </Link>
+        {/* Navigation Links (Home, About, Contact Only) & Copyright */}
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs font-bold text-neutral-500">
+          <div className="flex flex-wrap items-center gap-6">
+            <Link href="/" className="hover:text-black transition">
+              Home
+            </Link>
+            <Link href="/about" className="hover:text-black transition">
+              About
+            </Link>
+            <Link href="/contact" className="hover:text-black transition">
+              Contact
+            </Link>
+          </div>
+
+          <p className="text-[11px] text-neutral-400 font-normal">
+            © {new Date().getFullYear()} Ashok Meena. All Rights Reserved.
+          </p>
         </div>
       </div>
     </footer>

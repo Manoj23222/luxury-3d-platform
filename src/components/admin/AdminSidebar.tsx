@@ -1,48 +1,61 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const menu = [
-  { name: "Overview", href: "/admin" },
-  { name: "Users", href: "/admin/users" },
-  { name: "Products", href: "/admin/products" },
-  { name: "Categories", href: "/admin/categories" },
-  { name: "Orders", href: "/admin/orders" },
-  { name: "Roles", href: "/admin/roles" },
-  { name: "Permissions", href: "/admin/permissions" },
-  { name: "Settings", href: "/admin/settings" },
+  { name: "Admin Dashboard", href: "/admin", icon: "📊" },
+  { name: "3D File Uploading", href: "/admin/upload-3d", icon: "📦" },
+  { name: "Photo Editor Uploading", href: "/admin/upload-photo", icon: "🎨" },
 ];
 
 export default function AdminSidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-neutral-200 bg-white p-6 lg:block">
+    <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-neutral-200 bg-white p-5 lg:block overflow-y-auto">
       <Link href="/admin" className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-sm font-bold text-white">
-          A
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black text-xs font-black text-white shadow-xs">
+          3D
         </div>
 
         <div>
-          <h2 className="text-lg font-bold tracking-wide text-black">LUX3D</h2>
-          <p className="-mt-1 text-xs text-neutral-500">Admin Control</p>
+          <h2 className="text-base font-extrabold tracking-tight text-black">Portfolio</h2>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+            Admin Studio
+          </p>
         </div>
       </Link>
 
-      <nav className="mt-10 space-y-2">
-        {menu.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="block rounded-2xl px-4 py-3 text-sm font-semibold text-neutral-600 transition hover:bg-black hover:text-white"
-          >
-            {item.name}
-          </Link>
-        ))}
+      <nav className="mt-8 space-y-1.5">
+        {menu.map((item) => {
+          const isActive = pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-bold transition ${
+                isActive
+                  ? "bg-black text-white shadow-xs"
+                  : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
+              }`}
+            >
+              <span>{item.icon}</span>
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
       </nav>
 
-      <Link
-        href="/dashboard"
-        className="absolute bottom-6 left-6 right-6 rounded-full border border-neutral-300 px-4 py-3 text-center text-sm font-semibold text-black transition hover:border-black"
-      >
-        Creator Dashboard
-      </Link>
+      <div className="pt-8 mt-8 border-t border-neutral-100">
+        <Link
+          href="/"
+          className="block w-full rounded-2xl border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-center text-xs font-bold text-neutral-800 transition hover:border-black hover:bg-black hover:text-white"
+        >
+          ← View Public Website
+        </Link>
+      </div>
     </aside>
   );
 }

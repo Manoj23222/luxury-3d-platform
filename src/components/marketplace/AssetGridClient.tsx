@@ -9,24 +9,11 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState("Newest");
 
-  const trackDownload = async (item: any) => {
-    if (!item.downloadZipUrl) {
-      alert("Download ZIP not available");
-      return;
-    }
-<WishlistButton id={item._id} />
-    await fetch("/api/products/download", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: item._id }),
-    });
-
-    window.open(item.downloadZipUrl, "_blank");
-  };
-
   const categories = useMemo(() => {
-    const list = assets.map((x) => x.category).filter(Boolean);
-    return ["All", "Free", "Paid", ...Array.from(new Set(list))];
+    const list = assets
+      .map((x) => x.category)
+      .filter((x): x is string => Boolean(x) && x !== "Free" && x !== "Paid");
+    return ["All", ...Array.from(new Set(list))];
   }, [assets]);
 
   const filteredAssets = useMemo(() => {
@@ -43,20 +30,19 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
       );
     }
 
-    if (filter === "Free") data = data.filter((x) => x.isFree !== false);
-    else if (filter === "Paid") data = data.filter((x) => x.isFree === false);
-    else if (filter !== "All") data = data.filter((x) => x.category === filter);
-
-    if (sort === "Price Low") {
-      data.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+    if (filter !== "All") {
+      data = data.filter(
+        (x) => String(x.category || "").toLowerCase() === filter.toLowerCase()
+      );
     }
 
-    if (sort === "Price High") {
-      data.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
-    }
-
-    if (sort === "Most Downloaded") {
-      data.sort((a, b) => Number(b.downloads || 0) - Number(a.downloads || 0));
+    if (sort === "Most Viewed") {
+      data.sort((a, b) => Number(b.views || 0) - Number(a.views || 0));
+    } else if (sort === "Name A-Z") {
+      data.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+    } else {
+      // Newest default (by createdAt or array order)
+      data.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
     }
 
     return data;
@@ -64,104 +50,168 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
 
   return (
     <>
-      <section className="border-b border-neutral-200 bg-white pt-24">
-       
-          
+      {/* Portfolio Header & Filter Bar */}
+      <section className="border-b border-neutral-200 bg-white pt-28 pb-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-400">
+                Luxury 3D Archive
+              </p>
+              <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+                3D Portfolio & Models
+              </h1>
+              <p className="mt-1 text-xs text-neutral-500">
+                Explore interactive 3D visualizations, CGI renders, and custom assets.
+              </p>
+            </div>
+
+            {/* Search Input & Sort */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search 3D works..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-56 rounded-full border border-neutral-300 bg-neutral-50 py-1.5 pl-9 pr-4 text-xs font-medium text-black placeholder-neutral-400 transition focus:border-black focus:bg-white focus:outline-none"
+                />
+                <svg
+                  className="absolute left-3 top-2 h-4 w-4 text-neutral-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:border-black focus:border-black focus:outline-none"
+              >
+                <option value="Newest">Newest First</option>
+                <option value="Most Viewed">Most Viewed</option>
+                <option value="Name A-Z">Name (A-Z)</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="mx-auto flex max-w-7xl gap-3 overflow-x-auto px-5 py-6 sm:px-6 lg:px-10">
-        {categories.map((x) => (
-          <button
-            key={x}
-            onClick={() => setFilter(x)}
-            className={`whitespace-nowrap rounded-full border px-5 py-2 text-sm font-semibold shadow-sm transition ${
-              filter === x
-                ? "border-black bg-black text-white"
-                : "border-neutral-200 bg-white text-neutral-700 hover:border-black"
-            }`}
-          >
-            {x}
-          </button>
-        ))}
+      {/* Category Pills */}
+      <section className="border-b border-neutral-100 bg-white">
+        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8 scrollbar-none">
+          {categories.map((x) => (
+            <button
+              key={x}
+              onClick={() => setFilter(x)}
+              style={{
+                backgroundColor: filter === x ? "#000000" : "#ffffff",
+                color: filter === x ? "#ffffff" : "#404040",
+              }}
+              className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold shadow-xs transition ${
+                filter === x
+                  ? "border-black bg-black text-white"
+                  : "border-neutral-200 bg-white text-neutral-700 hover:border-black hover:text-black"
+              }`}
+            >
+              {x}
+            </button>
+          ))}
+        </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-6 lg:px-10">
-        <p className="mb-5 text-sm font-semibold text-neutral-500">
-          Showing {filteredAssets.length} assets
-        </p>
+      {/* Asset Grid: 6 Columns on XL */}
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-5 flex items-center justify-between">
+          <p className="text-xs font-semibold text-neutral-500">
+            Showing <span className="text-black font-bold">{filteredAssets.length}</span> works
+          </p>
+        </div>
 
         {filteredAssets.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-12 text-center shadow-sm">
-            <p className="text-lg font-bold text-black">No assets found</p>
-            <p className="mt-2 text-sm text-neutral-500">
-              Try another search or filter.
+          <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-12 text-center shadow-xs">
+            <p className="text-base font-bold text-black">No 3D projects found</p>
+            <p className="mt-1 text-xs text-neutral-500">
+              Try adjusting your search terms or category filter.
             </p>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5">
             {filteredAssets.map((item: any) => {
-              const free = item.isFree ?? true;
-
               return (
                 <article
                   key={item._id}
-                  className="group overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xs transition duration-300 hover:-translate-y-1 hover:border-neutral-400 hover:shadow-lg flex flex-col justify-between"
                 >
-                  <Link href={`/portfolio/${item._id}`}>
-                    <div className="relative bg-neutral-100">
-                      {item.thumbnail ? (
-                        <img
-                          src={item.thumbnail}
-                          alt={item.name}
-                          className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex aspect-square items-center justify-center text-neutral-400">
-                          No Image
-                        </div>
+                  <div>
+                    <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
+                      <Link href={`/portfolio/${item._id}`} className="block h-full w-full">
+                        {item.thumbnail ? (
+                          <img
+                            src={item.thumbnail}
+                            alt={item.name}
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-xs text-neutral-400">
+                            No Preview
+                          </div>
+                        )}
+                      </Link>
+
+                      {/* Wishlist Floating Button */}
+                      <div className="absolute right-2 top-2 z-10 scale-90">
+                        <WishlistButton id={item._id} />
+                      </div>
+
+                      {/* 3D Indicator */}
+                      {item.modelUrl && (
+                        <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-black/75 px-2 py-0.5 text-[9px] font-bold tracking-wider text-white backdrop-blur-md uppercase">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          3D Room
+                        </span>
                       )}
-
-                      <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-bold text-black shadow-sm">
-                        {free ? "FREE" : "PAID"}
-                      </span>
-                    </div>
-                  </Link>
-
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <h2 className="line-clamp-1 text-base font-bold text-black">
-                        {item.name || "Untitled Asset"}
-                      </h2>
-
-                      <span className="shrink-0 text-sm font-bold text-black">
-                        {free ? "₹0" : `₹${item.price || 0}`}
-                      </span>
                     </div>
 
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-neutral-500">
-                      {item.description || "Premium 3D Asset"}
-                    </p>
+                    <div className="p-3">
+                      <Link href={`/portfolio/${item._id}`}>
+                        <h2 className="line-clamp-1 text-xs font-bold text-neutral-900 group-hover:text-black">
+                          {item.name || "Untitled Work"}
+                        </h2>
+                      </Link>
 
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600">
-                        {item.category || "3D Model"}
-                      </span>
-
-                      <span className="text-xs font-medium text-neutral-400">
-                        ↓ {item.downloads || 0}
-                      </span>
+                      <p className="mt-0.5 line-clamp-1 text-[11px] text-neutral-500">
+                        {item.category || "3D Visualization"}
+                      </p>
                     </div>
+                  </div>
 
-                    
+                  <div className="px-3 pb-3 pt-1 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-[10px] font-medium text-neutral-400">
+                      {item.views || 0} views
+                    </span>
+
+                    <Link
+                      href={`/portfolio/${item._id}`}
+                      className="rounded-full bg-neutral-100 px-2.5 py-1 text-[10px] font-bold text-black transition hover:bg-black hover:text-white"
+                    >
+                      Inspect
+                    </Link>
                   </div>
                 </article>
               );
             })}
           </div>
         )}
-        
       </section>
-      
     </>
   );
 }

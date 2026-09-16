@@ -16,6 +16,23 @@ export async function GET() {
       );
     }
 
+    if (
+      authUser.id === "admin-master" ||
+      authUser.email?.toLowerCase() === "3ddesigner5546@gmail.com"
+    ) {
+      return NextResponse.json({
+        success: true,
+        user: {
+          id: authUser.id,
+          name: authUser.name || "Ashok Meena",
+          email: "3ddesigner5546@gmail.com",
+          role: "admin",
+          permissions: ["all", "upload_3d", "upload_photo", "manage_assets"],
+          isActive: true,
+        },
+      });
+    }
+
     await connectDB();
 
     const dbUser = await User.findById(authUser.id).select("-password").lean();

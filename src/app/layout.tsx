@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "LUX3D — Premium 3D Asset Marketplace",
+  title: "Portfolio — Ashok Meena | Senior 3D Designer & Photo Editor",
   description:
-    "Premium 3D models, Blender assets, GLB, FBX, OBJ files and product visualization marketplace.",
+    "Official Portfolio of Ashok Meena — Senior 3D Designer & Photo Editor specializing in Blender 3D, CLO 3D apparel, real-time GLB assets, and high-end photo retouching.",
 };
 
 export default function RootLayout({
