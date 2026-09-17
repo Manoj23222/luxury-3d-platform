@@ -303,17 +303,24 @@ export default function HeroRotatingCards() {
             {/* Quick Action CTAs */}
             <div className="flex flex-wrap items-center gap-2.5 pt-2">
               <Link
-                href="/portfolio"
+                href="#my-work"
                 className="rounded-full bg-black px-6 py-3 text-xs font-bold text-white shadow-md transition duration-200 hover:bg-neutral-800 hover:scale-105"
               >
-                Explore 3D Portfolio →
+                Explore My Work ↓
+              </Link>
+
+              <Link
+                href="/portfolio"
+                className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black"
+              >
+                3D Models
               </Link>
 
               <Link
                 href="/photo-editing"
                 className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black"
               >
-                Photo Retouching
+                Branding & Creative
               </Link>
 
               <a

@@ -1,26 +1,29 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import PhotoEditingGrid from "@/components/photo-editing/PhotoEditingGrid";
 import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
 
 export const metadata: Metadata = {
-  title: "Photo Editing Work Library — High-End Retouching & Grading | LUX3D",
+  title: "Photo Retouching & Commercial Graphic Design Showcase | LUX3D",
   description:
-    "Explore luxury photo editing, commercial product retouching, frequency separation, and color grading showcase with interactive Before & After comparisons.",
+    "Explore luxury photo retouching, Before & After split comparisons, commercial social media advertising banners, product posters, and high-end color grading.",
 };
 
 const FALLBACK_PHOTO_WORKS = [
+  // Retouching Pairs
   {
     _id: "pw-white-background-resize",
     title: "White background & Resize",
     slug: "white-background-and-resize",
+    workType: "before_after",
     category: "White background & Resize",
     shortDescription:
       "Original images Dimensions: 3448 × 5168 to White background And Resize 1366 × 2048",
     description:
-      "Original images Dimensions: 3448 × 5168 to White background And Resize 1366 × 2048. High-precision studio product isolation to seamless pure white background with natural drop shadow retention and proportional resize.",
+      "Original images Dimensions: 3448 × 5168 to White background And Resize 1366 × 2048. High-precision studio product isolation to seamless pure white background with natural drop shadow retention.",
     beforeImage:
       "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80",
     afterImage:
@@ -40,6 +43,7 @@ const FALLBACK_PHOTO_WORKS = [
     _id: "pw-background-change-resize",
     title: "Background change & Resize",
     slug: "background-change-and-resize",
+    workType: "before_after",
     category: "Background change & Resize",
     shortDescription:
       "Original images Dimensions: 3448 × 5168 to White background And Resize 1366 × 2048",
@@ -64,6 +68,7 @@ const FALLBACK_PHOTO_WORKS = [
     _id: "pw-luxury-perfume",
     title: "Luxury Perfume Bottle High-End Commercial Retouching",
     slug: "luxury-perfume-bottle-retouching",
+    workType: "before_after",
     category: "Product Retouching",
     shortDescription:
       "Advanced dust/scratch cleanup, metallic highlight sculpting, glass reflection enhancement and background color harmonization.",
@@ -88,6 +93,7 @@ const FALLBACK_PHOTO_WORKS = [
     _id: "pw-editorial-fashion",
     title: "High-Fashion Editorial Beauty & Skin Micro-Dodge & Burn",
     slug: "high-fashion-editorial-beauty-retouching",
+    workType: "before_after",
     category: "Fashion & Portrait",
     shortDescription:
       "Natural skin texture preservation with frequency separation, micro dodge & burn, hair flyaway cleanup and subtle color toning.",
@@ -112,6 +118,7 @@ const FALLBACK_PHOTO_WORKS = [
     _id: "pw-cinematic-color",
     title: "Cinematic Mood & Atmospheric Teal/Orange Color Grading",
     slug: "cinematic-mood-atmospheric-color-grading",
+    workType: "before_after",
     category: "Color Grading",
     shortDescription:
       "Hollywood-style cinematic color grading, highlights roll-off, film grain emulation, and dynamic range exposure blending.",
@@ -136,7 +143,8 @@ const FALLBACK_PHOTO_WORKS = [
     _id: "pw-luxury-watch",
     title: "Swiss Chronograph Watch Metal & Crystal Micro Retouching",
     slug: "swiss-chronograph-watch-retouching",
-    category: "Jewelry & Luxury",
+    workType: "before_after",
+    category: "Jewelry & Luxury Ads",
     shortDescription:
       "Sapphire crystal anti-glare cleanup, brushed titanium bevel sharpening, dial alignment, and studio glare correction.",
     description:
@@ -156,77 +164,343 @@ const FALLBACK_PHOTO_WORKS = [
     views: 1650,
     likes: 420,
   },
+
+  // Creative Banners & Social Ads
   {
-    _id: "pw-creative-manipulation",
-    title: "Surreal Floating Product Island Creative Manipulation",
-    slug: "surreal-creative-photo-manipulation",
-    category: "Photo Manipulation",
+    _id: "pw-banner-burger-menu",
+    title: "Super Delicious Burger Menu Social Media Creative Banner",
+    slug: "super-delicious-burger-menu-social-banner",
+    workType: "banner",
+    category: "Food & Beverage Ads",
     shortDescription:
-      "Multi-plate photo compositing with accurate shadow projection, volumetric lighting, particle effects, and atmospheric fog.",
+      "High-converting promotional food ad creative with flame-grilled typography, contrast enhancement, and appetizing color saturation.",
     description:
-      "Complex advertising composite combining 14 distinct photographic elements into a seamless fantasy landscape. Realistic light wrap, contact shadows, atmospheric particles, depth fog, and global color harmonization.",
-    beforeImage:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "Commercial social media campaign creative for restaurant delivery brand. Features custom typography layout, dynamic ingredient highlights, color enhancement for warmth, and promotional pricing badges.",
+    beforeImage: "",
     afterImage:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80",
     thumbnail:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
-    softwareUsed: ["Adobe Photoshop", "Procreate", "Blender Lighting Plate"],
-    resolution: "7680 x 4320 (8K)",
-    clientName: "Cosmic Beverages",
+      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Adobe Illustrator", "Canva Pro"],
+    resolution: "2048 × 2048 (1:1 Square Feed)",
+    clientName: "Gourmet Burgers Co.",
     projectYear: "2026",
-    tags: ["Compositing", "Surreal", "Advertising", "Lighting Wrap", "Fantasy"],
-    featured: false,
-    views: 1320,
-    likes: 310,
-  },
-  {
-    _id: "pw-ecommerce-apparel",
-    title: "Ghost Mannequin & Apparel Wrinkle Removal Retouching",
-    slug: "ghost-mannequin-apparel-retouching",
-    category: "Background Replacement",
-    shortDescription:
-      "Seamless neck joint ghost mannequin stitching, fabric smoothing, symmetrical shape warping, and shadow alignment.",
-    description:
-      "E-commerce catalog post-production for luxury streetwear collection. Seamless collar stitching, symmetrical sleeve alignment, fiber artifact reduction, fabric crease moderation, and neutral studio gradient backdrop.",
-    beforeImage:
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80",
-    afterImage:
-      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=1200&q=80",
-    thumbnail:
-      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=600&q=80",
-    softwareUsed: ["Adobe Photoshop", "Pen Tool Precision Masking"],
-    resolution: "4K E-Commerce Master",
-    clientName: "Nordic Apparel Co.",
-    projectYear: "2026",
-    tags: ["Ghost Mannequin", "Apparel", "E-commerce", "Fabric Smoothing"],
-    featured: false,
-    views: 940,
-    likes: 245,
-  },
-  {
-    _id: "pw-real-estate-hdr",
-    title: "Luxury Architecture & Real Estate Twilight HDR Blending",
-    slug: "luxury-architecture-real-estate-hdr",
-    category: "Real Estate & HDR",
-    shortDescription:
-      "Window view pull, interior/exterior exposure bracket blending, vertical perspective straightening, and warm ambient glow.",
-    description:
-      "Premium architectural showcase combining 5-bracket RAW exposures. Window views preserved with zero blowout, vertical lens correction, color cast neutralization, and realistic dusk sky replacement with warm interior lamp glows.",
-    beforeImage:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-    afterImage:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
-    thumbnail:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80",
-    softwareUsed: ["Adobe Lightroom Classic", "Photoshop HDR Pro", "PTGui"],
-    resolution: "6000 x 4000 Ultra Res",
-    clientName: "Sotheby's Realty Portfolio",
-    projectYear: "2026",
-    tags: ["Architecture", "Real Estate", "HDR", "Twilight", "Perspective"],
+    tags: ["Banner", "Social Media", "Food", "Burger", "Creative", "Poster"],
     featured: true,
-    views: 1120,
-    likes: 295,
+    views: 2450,
+    likes: 680,
+  },
+  {
+    _id: "pw-banner-pizza-promo",
+    title: "Italian Artisan Crust Pizza Commercial Social Banner",
+    slug: "italian-artisan-pizza-commercial-banner",
+    workType: "banner",
+    category: "Food & Beverage Ads",
+    shortDescription:
+      "Artisan food packaging and social media feed advertisement featuring wooden board staging and crisp text hierarchy.",
+    description:
+      "High-impact social advertising graphic designed for Instagram & Facebook campaigns with appetizing saturation, brand logo placement, and discount callouts.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Lightroom", "Illustrator"],
+    resolution: "2048 × 2048 (1:1 Square)",
+    clientName: "Napoli Express",
+    projectYear: "2026",
+    tags: ["Pizza", "Food", "Social Media", "Banner", "Advertising"],
+    featured: true,
+    views: 1940,
+    likes: 512,
+  },
+  {
+    _id: "pw-banner-ghar-jaisa-khana",
+    title: "Ghar Jaisa Khana Traditional Food Delivery Social Creative",
+    slug: "ghar-jaisa-khana-traditional-food-banner",
+    workType: "banner",
+    category: "Food & Beverage Ads",
+    shortDescription:
+      "Authentic Indian traditional cuisine promotional poster with rustic copper handi staging, warm mood, and clean text badges.",
+    description:
+      "Traditional homestyle food brand campaign ad designed with geometric split layouts, localized typography, and delicious culinary textures.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator"],
+    resolution: "2048 × 2048 (Square Feed)",
+    clientName: "Khozzo Kitchens",
+    projectYear: "2026",
+    tags: ["Indian Food", "Creative Banner", "Social Media", "Restaurant", "Poster"],
+    featured: false,
+    views: 1520,
+    likes: 395,
+  },
+  {
+    _id: "pw-banner-cosmetics-botanical",
+    title: "What’s in the Bottle? Organic Aloe Vera Skincare Creative",
+    slug: "whats-in-the-bottle-aloe-skincare-banner",
+    workType: "banner",
+    category: "Cosmetics & Beauty Ads",
+    shortDescription:
+      "Organic skincare promotional ad featuring fresh botanicals, droplet reflections, ingredient callouts, and clean wellness typography.",
+    description:
+      "Commercial beauty campaign poster with soft natural sunlight shadows, botanical leaf staging, and transparency ingredient highlights.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator"],
+    resolution: "2048 × 2048 (Square Feed)",
+    clientName: "Pores Organic",
+    projectYear: "2026",
+    tags: ["Cosmetics", "Skincare", "Serum", "Beauty", "Banner", "Poster"],
+    featured: true,
+    views: 2280,
+    likes: 540,
+  },
+  {
+    _id: "pw-banner-pores-charcoal",
+    title: "Pores Deep Charcoal Cleanse Face Wash Social Ad Banner",
+    slug: "pores-deep-charcoal-cleanse-face-wash-banner",
+    workType: "banner",
+    category: "Cosmetics & Beauty Ads",
+    shortDescription:
+      "Activated charcoal cosmetic flyer featuring splash textures, clean minimalist backdrop, and refreshing mint styling.",
+    description:
+      "High-conversion e-commerce and social feed advertisement with crisp packaging typography and pore purification infographics.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator"],
+    resolution: "2048 × 2048 HD",
+    clientName: "Pores Care Ltd",
+    projectYear: "2026",
+    tags: ["Charcoal", "Face Wash", "Cosmetics", "Social Ad", "Banner"],
+    featured: false,
+    views: 1730,
+    likes: 420,
+  },
+  {
+    _id: "pw-banner-summer-vitaminc",
+    title: "Enjoy the Sunny Summer Vitamin C Range Brightening Ad",
+    slug: "enjoy-sunny-summer-vitamin-c-banner",
+    workType: "banner",
+    category: "Cosmetics & Beauty Ads",
+    shortDescription:
+      "Bright summer sunshine cosmetic promo poster with sun protection callouts and citrus gradient glow.",
+    description:
+      "Vibrant summer seasonal ad for Vitamin C skincare trio. Balanced lighting, warm tone curves, and bold headline branding.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Lightroom"],
+    resolution: "2048 × 2048 (1:1 Feed)",
+    clientName: "Pores Glow",
+    projectYear: "2026",
+    tags: ["Vitamin C", "Summer", "Sunscreen", "Beauty Ad", "Banner"],
+    featured: true,
+    views: 2110,
+    likes: 580,
+  },
+  {
+    _id: "pw-banner-jewelry-rings",
+    title: "Luxury Gold & Diamond Rings Commercial Showcase Creative",
+    slug: "luxury-gold-diamond-rings-showcase-creative",
+    workType: "banner",
+    category: "Jewelry & Luxury Ads",
+    shortDescription:
+      "Clean silk-draped jewelry marketing banner with sparkling specular reflections and elegant brand typography.",
+    description:
+      "High-end luxury jewelry social media ad and e-commerce hero banner. Features polished macro gems, custom lighting flare highlights, and sophisticated brand branding.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator", "Frequency Separation"],
+    resolution: "2160 × 2160 4K",
+    clientName: "Aura Royale Jewels",
+    projectYear: "2026",
+    tags: ["Jewelry", "Luxury", "Gold", "Diamonds", "Commercial Banner"],
+    featured: true,
+    views: 3120,
+    likes: 890,
+  },
+  {
+    _id: "pw-banner-diamond-pendant",
+    title: "The Praise You Emerald & Gold Heritage Royal Pendant Banner",
+    slug: "the-praise-you-emerald-gold-pendant-banner",
+    workType: "banner",
+    category: "Jewelry & Luxury Ads",
+    shortDescription:
+      "Fine heritage jewelry promotional card with petal arrangements, soft luxury illumination, and cursive headline.",
+    description:
+      "Bridal & royal collection jewelry poster showcasing hand-crafted filigree detailing, emerald cuts, and bespoke typography.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator"],
+    resolution: "2160 × 2160 4K",
+    clientName: "The Praise You Jewels",
+    projectYear: "2026",
+    tags: ["Pendant", "Emerald", "Gold", "Heritage", "Luxury Ad"],
+    featured: false,
+    views: 1840,
+    likes: 460,
+  },
+  {
+    _id: "pw-banner-khozzo-hotel",
+    title: "Khozzo Luxury Executive Hotel Rooms & Suites Ad Banner",
+    slug: "khozzo-luxury-hotel-rooms-suites-banner",
+    workType: "banner",
+    category: "Real Estate & Interior Ads",
+    shortDescription:
+      "Modern hospitality booking creative with clean geometric layout, luxury bed chamber visuals, and booking CTA.",
+    description:
+      "Hotel chain social media promotion card designed for travel platforms. High dynamic range interior exposure, sleek slate & gold color accents.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Lightroom", "Illustrator"],
+    resolution: "2048 × 2048 (Square Feed)",
+    clientName: "Khozzo Rooms",
+    projectYear: "2026",
+    tags: ["Hotel", "Real Estate", "Hospitality", "Rooms", "Banner"],
+    featured: true,
+    views: 1970,
+    likes: 520,
+  },
+  {
+    _id: "pw-banner-gurjan-plywood",
+    title: "Gurjan Premium Plywood Modern Living Room Sofa Creative",
+    slug: "gurjan-plywood-modern-living-room-banner",
+    workType: "banner",
+    category: "Real Estate & Interior Ads",
+    shortDescription:
+      "Architectural plywood & furniture brand promotional banner with interior staging, soft ambient light, and brand motto.",
+    description:
+      "Interior materials & furnishings campaign graphic with warm pastel tones, architectural layout balance, and brand identity.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator"],
+    resolution: "2048 × 2048 HD",
+    clientName: "Gurjan Plywood Co.",
+    projectYear: "2026",
+    tags: ["Plywood", "Interior", "Furniture", "Living Room", "Ad"],
+    featured: false,
+    views: 1650,
+    likes: 410,
+  },
+  {
+    _id: "pw-banner-luxury-interior",
+    title: "Nordic Minimalist Living Room Interior Design Creative Ad",
+    slug: "nordic-minimalist-living-room-interior-ad",
+    workType: "banner",
+    category: "Real Estate & Interior Ads",
+    shortDescription:
+      "Contemporary architectural furniture promotional banner with natural daylight grading and architectural text.",
+    description:
+      "Promotional social media creative for luxury furniture brand and interior studio. Balanced exposure blending, natural wood grain warmth, and crisp commercial branding.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Lightroom", "Illustrator"],
+    resolution: "2048 × 2048 Square",
+    clientName: "Nordic Living Studio",
+    projectYear: "2026",
+    tags: ["Interior", "Furniture", "Real Estate", "Architecture", "Banner"],
+    featured: false,
+    views: 1410,
+    likes: 360,
+  },
+  {
+    _id: "pw-banner-t20-cricket",
+    title: "Indian T20 League Matchday Yellow vs Orange Epic Clash Banner",
+    slug: "indian-t20-league-matchday-cricket-banner",
+    workType: "banner",
+    category: "Sports & Infographics",
+    shortDescription:
+      "High-energy cricket league matchday poster with stadium floodlight atmospheric effects, batsman silhouettes, and match stats.",
+    description:
+      "Sports broadcasting and social media engagement poster with vibrant dual-team color split, glowing typography, and live match countdown.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "Illustrator", "After Effects"],
+    resolution: "2048 × 2048 (1:1 Feed)",
+    clientName: "Premier Sports Media",
+    projectYear: "2026",
+    tags: ["Cricket", "T20", "Sports", "Matchday", "Infographic", "Banner"],
+    featured: true,
+    views: 2890,
+    likes: 740,
+  },
+  {
+    _id: "pw-banner-fashion-footwear",
+    title: "Forever Haute Couture High Heels Fashion Campaign Banner",
+    slug: "forever-haute-couture-high-heels-banner",
+    workType: "banner",
+    category: "Fashion & Apparel Creatives",
+    shortDescription:
+      "Minimalist studio high-fashion footwear advertisement with warm tone gradient and geometric layout.",
+    description:
+      "Commercial catalog poster for luxury designer footwear. Precision product isolation, soft contact shadows, and editorial luxury typography.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "InDesign", "Capture One"],
+    resolution: "2048 × 2048 HD",
+    clientName: "Forever Footwear",
+    projectYear: "2026",
+    tags: ["Fashion", "High Heels", "Footwear", "Editorial", "Banner"],
+    featured: true,
+    views: 1890,
+    likes: 470,
+  },
+  {
+    _id: "pw-banner-silk-organza-blouse",
+    title: "High-Fashion Silk Organza Blouse Editorial Promo Card",
+    slug: "silk-organza-blouse-editorial-promo-card",
+    workType: "banner",
+    category: "Fashion & Apparel Creatives",
+    shortDescription:
+      "Pastel pink editorial apparel showcase with 3-panel split photoshoot layout and subtle studio framing.",
+    description:
+      "Fashion catalog social grid creative showcasing garment sleeve drape, fabric transparency, and editorial model posing.",
+    beforeImage: "",
+    afterImage:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80",
+    thumbnail:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+    softwareUsed: ["Adobe Photoshop", "InDesign"],
+    resolution: "2048 × 2048 (1:1 Square)",
+    clientName: "Aura Haute Couture",
+    projectYear: "2026",
+    tags: ["Fashion", "Blouse", "Apparel", "Editorial", "Promo Card"],
+    featured: false,
+    views: 1720,
+    likes: 430,
   },
 ];
 
@@ -256,138 +530,73 @@ export default async function PhotoEditingPage() {
     <main className="min-h-screen bg-neutral-50 text-black">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="border-b border-neutral-200 bg-white pt-32 pb-16">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
+      {/* Luxury Hero Banner Section */}
+      <section className="relative overflow-hidden border-b border-neutral-800 bg-black pt-28 pb-14 text-white">
+        {/* Background Banner Image Clearly Visible */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <img
+            src="/creative-portfolio-hero-banner.png"
+            alt="Creative Portfolio Luxury Banner"
+            className="h-full w-full object-cover object-center opacity-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/30" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
-              <span className="inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-neutral-600 shadow-sm">
-                Photo Editing Work Library
+              {/* Luxury Badge */}
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-bold text-white backdrop-blur-md shadow-md">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Ashok Meena • Selected Creative Showcase</span>
               </span>
 
-              <h1 className="mt-5 text-4xl font-black tracking-tight text-black sm:text-6xl">
-                High-End Photo Retouching & Color Grading.
+              {/* Main Headline */}
+              <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-5xl">
+                Creative Design & Visual Portfolio
               </h1>
 
-              <p className="mt-4 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                Explore our commercial photo editing portfolio with interactive
-                Before & After sliders. From e-commerce product enhancement and
-                luxury jewelry retouching to editorial beauty and cinematic color
-                grading.
-              </p>
-
-              {/* Stats Counters */}
-              <div className="mt-8 grid grid-cols-3 gap-3 max-w-md">
-                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3.5 text-center">
-                  <p className="text-xl font-black text-black">100%</p>
-                  <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">
-                    Hand Retouched
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3.5 text-center">
-                  <p className="text-xl font-black text-black">16-Bit</p>
-                  <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">
-                    RAW Precision
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3.5 text-center">
-                  <p className="text-xl font-black text-black">4K - 8K</p>
-                  <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">
-                    Ultra Resolution
-                  </p>
-                </div>
+              {/* Luxury Domain & Skills Strip */}
+              <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs sm:text-sm font-semibold text-neutral-300">
+                <span className="text-white font-bold">All Work</span>
+                <span className="text-neutral-500">•</span>
+                <span>3D Design</span>
+                <span className="text-neutral-500">•</span>
+                <span>Photo Editing</span>
+                <span className="text-neutral-500">•</span>
+                <span>Graphic Design</span>
+                <span className="text-neutral-500">•</span>
+                <span>Digital Fashion</span>
+                <span className="text-neutral-500">•</span>
+                <span>Product Visualization</span>
               </div>
             </div>
 
-            {/* Quick Action CTA */}
-            <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
+            {/* Quick Action CTAs */}
+            <div className="flex shrink-0 flex-wrap items-center gap-2.5">
               <Link
-                href="/contact?subject=Custom%20Photo%20Editing%20Order"
-                className="rounded-full bg-black px-8 py-4 text-center text-sm font-bold text-white shadow-md transition hover:bg-neutral-800"
+                href="/contact?subject=Photo%20Editing%20%26%20Design%20Order"
+                className="rounded-full bg-white px-6 py-3 text-center text-xs font-black text-black shadow-lg transition hover:bg-neutral-200 hover:scale-105"
               >
-                Hire for Photo Editing
+                Hire for Project ✉️
               </Link>
 
               <Link
                 href="/portfolio"
-                className="rounded-full border border-neutral-300 bg-white px-8 py-4 text-center text-sm font-bold text-black transition hover:border-black"
+                className="rounded-full border border-white/30 bg-black/40 backdrop-blur-md px-5 py-3 text-center text-xs font-bold text-white shadow-md transition hover:border-white hover:bg-white/10"
               >
-                View 3D Marketplace
+                Explore 3D Models
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Interactive Grid */}
+      {/* Main Dual-Mode Showcase Grid (4-Column Pure Image Grid) */}
       <PhotoEditingGrid initialWorks={works} />
 
-      {/* Service Capabilities Strip */}
-      <section className="border-t border-neutral-200 bg-white py-16">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
-          <div className="text-center">
-            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
-              Post-Production Capabilities
-            </span>
-            <h2 className="mt-2 text-3xl font-black text-black">
-              Comprehensive Post-Processing Services
-            </h2>
-          </div>
-
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                title: "Product Retouching",
-                desc: "Dust, scratch, reflection cleanup, shadow creation, pure white background for Amazon/Shopify.",
-              },
-              {
-                title: "High-End Beauty",
-                desc: "Natural skin texture preservation, frequency separation, micro dodge & burn, hair flyaway removal.",
-              },
-              {
-                title: "Color Grading & LUTs",
-                desc: "Cinematic tone mapping, highlight roll-off, film grain emulation, and commercial palette matching.",
-              },
-              {
-                title: "Complex Compositing",
-                desc: "Multi-image blending, light wrapping, atmospheric fog, perspective matching and surreal VFX.",
-              },
-            ].map((srv) => (
-              <div
-                key={srv.title}
-                className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-sm font-black text-white">
-                  ✦
-                </div>
-                <h3 className="mt-4 text-base font-bold text-black">
-                  {srv.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-neutral-600">
-                  {srv.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom CTA Banner */}
-          <div className="mt-12 rounded-3xl border border-neutral-200 bg-black p-8 text-white text-center sm:p-12">
-            <h3 className="text-2xl font-black sm:text-3xl">
-              Need custom photo editing or batch e-commerce retouching?
-            </h3>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-neutral-400">
-              Fast turnaround, high-resolution masters, and dedicated support for
-              brands, photographers, and agencies.
-            </p>
-            <Link
-              href="/contact?subject=Photo%20Retouching%20Quote"
-              className="mt-6 inline-block rounded-full bg-white px-8 py-3.5 text-sm font-bold text-black transition hover:bg-neutral-200"
-            >
-              Get Free Sample & Quote
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Luxury Footer */}
+      <Footer />
     </main>
   );
 }

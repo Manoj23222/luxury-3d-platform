@@ -25,8 +25,9 @@ type PhotoWork = {
   _id: string;
   title: string;
   slug?: string;
+  workType?: "before_after" | "banner";
   category: string;
-  beforeImage: string;
+  beforeImage?: string;
   afterImage: string;
   thumbnail?: string;
   resolution?: string;
@@ -674,86 +675,99 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100">
-                    {filteredPhotoWorks.map((work) => (
-                      <tr key={work._id} className="hover:bg-neutral-50/80 transition">
-                        <td className="py-4 pl-2">
-                          <div className="flex items-center gap-3">
-                            <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100">
-                              <img
-                                src={work.afterImage || work.thumbnail}
-                                alt={work.title}
-                                className="h-full w-full object-cover"
-                              />
+                    {filteredPhotoWorks.map((work) => {
+                      const isBeforeAfter =
+                        (work.workType === "before_after" || !work.workType) &&
+                        Boolean(work.beforeImage) &&
+                        work.beforeImage !== work.afterImage;
+
+                      return (
+                        <tr key={work._id} className="hover:bg-neutral-50/80 transition">
+                          <td className="py-4 pl-2">
+                            <div className="flex items-center gap-3">
+                              <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100">
+                                <img
+                                  src={work.afterImage || work.thumbnail}
+                                  alt={work.title}
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-bold text-black text-sm max-w-xs truncate">
+                                  {work.title}
+                                </p>
+                                <span
+                                  className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.2 text-[9.5px] font-bold ${
+                                    isBeforeAfter
+                                      ? "bg-purple-50 text-purple-700 border border-purple-200"
+                                      : "bg-blue-50 text-blue-700 border border-blue-200"
+                                  }`}
+                                >
+                                  {isBeforeAfter ? "⚡ Before / After" : "🎨 Creative Banner"}
+                                </span>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-bold text-black text-sm max-w-xs truncate">
-                                {work.title}
-                              </p>
-                              <p className="text-[11px] text-neutral-400">
-                                Interactive Before/After Asset
-                              </p>
-                            </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="py-4">
-                          <span className="rounded-lg bg-neutral-100 px-2.5 py-1 text-[11px] font-semibold text-neutral-700">
-                            {work.category}
-                          </span>
-                        </td>
+                          <td className="py-4">
+                            <span className="rounded-lg bg-neutral-100 px-2.5 py-1 text-[11px] font-semibold text-neutral-700">
+                              {work.category}
+                            </span>
+                          </td>
 
-                        <td className="py-4">
-                          <p className="font-semibold text-neutral-700">
-                            {work.resolution || "4K Ultra HD"}
-                          </p>
-                          <p className="text-[10px] text-neutral-400 truncate max-w-[140px]">
-                            {Array.isArray(work.softwareUsed)
-                              ? work.softwareUsed.join(", ")
-                              : "Photoshop"}
-                          </p>
-                        </td>
+                          <td className="py-4">
+                            <p className="font-semibold text-neutral-700">
+                              {work.resolution || "4K Ultra HD"}
+                            </p>
+                            <p className="text-[10px] text-neutral-400 truncate max-w-[140px]">
+                              {Array.isArray(work.softwareUsed)
+                                ? work.softwareUsed.join(", ")
+                                : "Photoshop"}
+                            </p>
+                          </td>
 
-                        <td className="py-4">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                              work.status === "Published"
-                                ? "bg-blue-50 border border-blue-200 text-blue-800"
-                                : "bg-amber-50 border border-amber-200 text-amber-800"
-                            }`}
-                          >
+                          <td className="py-4">
                             <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                work.status === "Published" ? "bg-blue-500" : "bg-amber-500"
+                              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                                work.status === "Published"
+                                  ? "bg-blue-50 border border-blue-200 text-blue-800"
+                                  : "bg-amber-50 border border-amber-200 text-amber-800"
                               }`}
-                            />
-                            {work.status || "Published"}
-                          </span>
-                        </td>
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${
+                                  work.status === "Published" ? "bg-blue-500" : "bg-amber-500"
+                                }`}
+                              />
+                              {work.status || "Published"}
+                            </span>
+                          </td>
 
-                        <td className="py-4 pr-2 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => setEditingPhoto(work)}
-                              className="rounded-lg border border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs font-bold text-black hover:border-black hover:bg-white transition shadow-xs cursor-pointer"
-                            >
-                              Edit ✏️
-                            </button>
-                            <button
-                              onClick={() => setPreviewPhoto(work)}
-                              className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-800 hover:border-black transition shadow-xs cursor-pointer"
-                            >
-                              Preview Slider 👁️
-                            </button>
-                            <button
-                              onClick={() => deletePhotoWork(work._id, work.title)}
-                              className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100 transition cursor-pointer"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                          <td className="py-4 pr-2 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => setEditingPhoto(work)}
+                                className="rounded-lg border border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs font-bold text-black hover:border-black hover:bg-white transition shadow-xs cursor-pointer"
+                              >
+                                Edit ✏️
+                              </button>
+                              <button
+                                onClick={() => setPreviewPhoto(work)}
+                                className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-800 hover:border-black transition shadow-xs cursor-pointer"
+                              >
+                                {isBeforeAfter ? "Preview Slider 👁️" : "Preview Banner 👁️"}
+                              </button>
+                              <button
+                                onClick={() => deletePhotoWork(work._id, work.title)}
+                                className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100 transition cursor-pointer"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1313,15 +1327,23 @@ export default function AdminPage() {
               </button>
             </div>
 
-            <div className="mt-5 aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-950">
-              <BeforeAfterSlider
-                beforeImage={previewPhoto.beforeImage}
-                afterImage={previewPhoto.afterImage}
-                aspectRatio="aspect-[4/3]"
-                fitMode="contain"
-                showFitToggle={true}
-                enableAutoScan={true}
-              />
+            <div className="mt-5 aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-950 flex items-center justify-center">
+              {previewPhoto.beforeImage && previewPhoto.beforeImage !== previewPhoto.afterImage ? (
+                <BeforeAfterSlider
+                  beforeImage={previewPhoto.beforeImage}
+                  afterImage={previewPhoto.afterImage}
+                  aspectRatio="aspect-[4/3]"
+                  fitMode="contain"
+                  showFitToggle={true}
+                  enableAutoScan={true}
+                />
+              ) : (
+                <img
+                  src={previewPhoto.afterImage || previewPhoto.thumbnail}
+                  alt={previewPhoto.title}
+                  className="max-h-full max-w-full object-contain"
+                />
+              )}
             </div>
           </div>
         </div>

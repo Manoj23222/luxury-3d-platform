@@ -208,7 +208,7 @@ export default function AboutPage() {
       </section>
 
       {/* Company Team & Office Workplace Gallery */}
-      <section className="py-20 bg-white border-b border-neutral-200">
+      <section className="py-10 bg-white border-b border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200">
             <div>
@@ -270,11 +270,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Direct Contact & Project Inquiry Section */}
-      <AboutContactCard />
+    
 
-      {/* Specialized Software & Creative Tools (Auto Infinite Logo Marquee) */}
-      <SoftwareSkillsSlider />
 
       {/* Footer */}
       <Footer />

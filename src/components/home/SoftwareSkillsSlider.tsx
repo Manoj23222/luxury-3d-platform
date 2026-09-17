@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Official Real Brand Vector / Logos
-function BlenderLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+// Official Real Brand Vector / Logos (Compact & Crisp)
+function BlenderLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <img
       src="/blender_logo.png"
@@ -13,57 +13,57 @@ function BlenderLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: 
   );
 }
 
-function Clo3dLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function Clo3dLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-black text-white font-black text-base sm:text-lg tracking-wider shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-black text-white font-black text-xs sm:text-sm tracking-wider shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
       <span className="text-[#00e5ff] mr-0.5">C</span>LO
     </div>
   );
 }
 
-function PhotoshopLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function PhotoshopLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-[#001e36] border border-[#31a8ff]/40 text-[#31a8ff] font-black text-lg sm:text-xl tracking-tight shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-[#001e36] border border-[#31a8ff]/40 text-[#31a8ff] font-black text-xs sm:text-sm tracking-tight shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
       Ps
     </div>
   );
 }
 
-function IllustratorLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function IllustratorLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-[#330000] border border-[#ff9a00]/40 text-[#ff9a00] font-black text-lg sm:text-xl tracking-tight shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-[#330000] border border-[#ff9a00]/40 text-[#ff9a00] font-black text-xs sm:text-sm tracking-tight shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
       Ai
     </div>
   );
 }
 
-function LightroomLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function LightroomLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-[#001e36] border border-[#31a8ff]/40 text-[#31a8ff] font-black text-lg sm:text-xl tracking-tight shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-[#001e36] border border-[#31a8ff]/40 text-[#31a8ff] font-black text-xs sm:text-sm tracking-tight shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
       Lr
     </div>
   );
 }
 
-function CanvaLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function CanvaLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-gradient-to-tr from-[#00c4cc] to-[#7d2ae8] text-white font-serif font-black text-xl sm:text-2xl italic shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-gradient-to-tr from-[#00c4cc] to-[#7d2ae8] text-white font-serif font-black text-xs sm:text-sm italic shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
       C
     </div>
   );
 }
 
-function ExcelLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function ExcelLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <img
       src="/excel_logo.png"
@@ -73,12 +73,12 @@ function ExcelLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: st
   );
 }
 
-function AiSparkleLogo({ className = "h-10 w-10 sm:h-12 sm:w-12" }: { className?: string }) {
+function AiSparkleLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-amber-400 text-white shadow-xs transition-transform duration-300 group-hover:scale-110`}
+      className={`${className} flex items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-amber-400 text-white shadow-2xs transition-transform duration-300 group-hover:scale-110`}
     >
-      <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 2L14.4 7.6L20 10L14.4 12.4L12 18L9.6 12.4L4 10L9.6 7.6L12 2Z" />
         <path d="M19 15L20.2 17.8L23 19L20.2 20.2L19 23L17.8 20.2L15 19L17.8 17.8L19 15Z" opacity="0.8" />
       </svg>
@@ -119,7 +119,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-blue-600",
     description:
       "High-end frequency separation, non-destructive retouching, e-commerce catalog, and product enhancement.",
-    renderLogo: () => <PhotoshopLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <PhotoshopLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "Image Resizing",
       "Photo Retouching",
@@ -147,7 +147,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-amber-600",
     description:
       "Vector tracing, brand identities, apparel trims, technical tech-packs, and commercial packaging design.",
-    renderLogo: () => <IllustratorLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <IllustratorLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "Vector Tracing",
       "Logo Designing",
@@ -172,7 +172,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-orange-600",
     description:
       "Precision hard-surface modeling, procedural PBR texturing, studio lighting, low-poly optimization, and CGI renders.",
-    renderLogo: () => <BlenderLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <BlenderLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "3D Modeling",
       "Hard Surface Modeling",
@@ -199,7 +199,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-purple-600",
     description:
       "3D apparel patterning, realistic fabric physics, avatar drape simulation, and real-time fashion configurator assets.",
-    renderLogo: () => <Clo3dLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <Clo3dLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "3D Garment Design",
       "Virtual Fashion",
@@ -224,7 +224,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-sky-600",
     description:
       "Non-destructive 16-bit RAW image post-processing, batch cataloging, tonal curve balancing, and color harmony.",
-    renderLogo: () => <LightroomLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <LightroomLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "Photo Enhancement",
       "Color Correction",
@@ -249,7 +249,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-teal-600",
     description:
       "Rapid marketing collateral, social media assets, commercial pitch decks, brand kits, and presentation layouts.",
-    renderLogo: () => <CanvaLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <CanvaLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "Graphic Design",
       "Social Media Design",
@@ -274,7 +274,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-emerald-600",
     description:
       "Structured product catalog data entry, SKU taxonomy, BOM tech-pack sheets, and spreadsheet inventory formatting.",
-    renderLogo: () => <ExcelLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <ExcelLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "Data Entry",
       "Formatting & Cleanup",
@@ -298,7 +298,7 @@ const softwareCards: SoftwareCardData[] = [
     checkColor: "text-pink-600",
     description:
       "Cutting-edge AI image synthesis, prompt design, AI texture generation, concept ideation, and image enhancement.",
-    renderLogo: () => <AiSparkleLogo className="h-11 w-11 shrink-0" />,
+    renderLogo: () => <AiSparkleLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
     skills: [
       "AI Image Generation",
       "AI Image Editing",
@@ -339,7 +339,7 @@ export default function SoftwareSkillsSlider() {
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
-    const scrollAmount = 400;
+    const scrollAmount = 320;
     scrollRef.current.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
@@ -355,75 +355,71 @@ export default function SoftwareSkillsSlider() {
   ];
 
   return (
-    <section className="relative overflow-hidden border-b border-neutral-200 bg-white py-14">
-      {/* 1. TOP HEADER & LOGO INFINITE MARQUEE: Specialized Software & Creative Tools */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-6 text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
-          Technical Stack
-        </span>
-        <h2 className="mt-1 text-2xl font-black tracking-tight text-black sm:text-3xl">
+    <section className="relative overflow-hidden border-b border-neutral-200 bg-white py-8 sm:py-5">
+      {/* 1. TOP HEADER: Specialized Software & Creative Tools */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-3 text-center">
+      
+        <h2 className="mt-0.5 text-xl font-black tracking-tight text-black sm:text-2xl">
           Specialized Software & Creative Tools
         </h2>
       </div>
 
-      {/* Auto Horizontal Scrolling Infinite Marquee Track */}
-      <div
-        className="relative w-full overflow-hidden mb-14"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Left & Right Soft Fade Gradients */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-36 bg-gradient-to-r from-white via-white/80 to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-36 bg-gradient-to-l from-white via-white/80 to-transparent" />
-
-        {/* Continuous Auto-Scrolling Container */}
+      {/* Auto Horizontal Scrolling Infinite Marquee Track with Left & Right container padding */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-7">
         <div
-          className={`flex w-max items-center gap-5 sm:gap-7 py-3 ${
-            isHovered ? "[animation-play-state:paused]" : ""
-          }`}
-          style={{
-            animation: "logoMarqueeScroll 24s linear infinite",
-          }}
+          className="relative w-full overflow-hidden rounded-2xl border border-black-100 bg-black py-2"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          {repeatedLogos.map((item, index) => (
-            <div
-              key={`${item.id}-${index}`}
-              className="group flex h-20 w-20 sm:h-24 sm:w-24 shrink-0 items-center justify-center rounded-3xl border border-neutral-200 bg-white p-3.5 shadow-xs transition-all duration-300 hover:border-black hover:shadow-md hover:-translate-y-1 cursor-pointer"
-            >
-              {item.render()}
-            </div>
-          ))}
+          {/* Continuous Auto-Scrolling Container */}
+          <div
+            className={`flex w-max items-center gap-3 sm:gap-4 px-3 ${
+              isHovered ? "[animation-play-state:paused]" : ""
+            }`}
+            style={{
+              animation: "logoMarqueeScroll 22s linear infinite",
+            }}
+          >
+            {repeatedLogos.map((item, index) => (
+              <div
+                key={`${item.id}-${index}`}
+                className="group flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white p-2.5 shadow-2xs transition-all duration-300 hover:border-black hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+              >
+                {item.render()}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* 2. DETAILED SOFTWARE SKILLS CARDS CAROUSEL */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1 text-xs font-bold text-neutral-700 shadow-xs">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-[10px] font-bold text-neutral-700 shadow-2xs">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Software Working & Skills Breakdown</span>
             </div>
-            <h3 className="mt-2 text-xl font-black tracking-tight text-black sm:text-2xl">
+            <h3 className="mt-1 text-lg font-black tracking-tight text-black sm:text-xl">
               Specialized 3D & Digital Design Domains
             </h3>
-            <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-2xl">
+            <p className="mt-0.5 text-[11px] sm:text-xs text-neutral-500 max-w-2xl">
               Individual software workstations with full breakdown of production capabilities and specialized design skills.
             </p>
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className="text-xs text-neutral-400 mr-2 font-medium hidden sm:inline">
-              Scroll horizontally →
+          <div className="flex items-center gap-1.5 self-start sm:self-auto">
+            <span className="text-[10.5px] text-neutral-400 mr-1.5 font-medium hidden sm:inline">
+              Scroll →
             </span>
             <button
               onClick={() => handleScroll("left")}
               disabled={!canScrollLeft}
               aria-label="Scroll left"
-              className={`flex h-9 w-9 items-center justify-center rounded-xl border transition ${
+              className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs transition ${
                 canScrollLeft
-                  ? "border-neutral-300 bg-white text-black shadow-xs hover:border-black hover:bg-neutral-50 cursor-pointer"
+                  ? "border-neutral-300 bg-white text-black shadow-2xs hover:border-black hover:bg-neutral-50 cursor-pointer"
                   : "border-neutral-200 bg-neutral-100 text-neutral-300 cursor-not-allowed"
               }`}
             >
@@ -433,9 +429,9 @@ export default function SoftwareSkillsSlider() {
               onClick={() => handleScroll("right")}
               disabled={!canScrollRight}
               aria-label="Scroll right"
-              className={`flex h-9 w-9 items-center justify-center rounded-xl border transition ${
+              className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs transition ${
                 canScrollRight
-                  ? "border-neutral-300 bg-white text-black shadow-xs hover:border-black hover:bg-neutral-50 cursor-pointer"
+                  ? "border-neutral-300 bg-white text-black shadow-2xs hover:border-black hover:bg-neutral-50 cursor-pointer"
                   : "border-neutral-200 bg-neutral-100 text-neutral-300 cursor-not-allowed"
               }`}
             >
@@ -445,67 +441,65 @@ export default function SoftwareSkillsSlider() {
         </div>
       </div>
 
-      {/* Horizontal Scrolling Card Track */}
-      <div className="relative w-full">
-        {/* Left & Right Fade Masks */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 bg-gradient-to-r from-white to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 bg-gradient-to-l from-white to-transparent" />
+      {/* Horizontal Scrolling Card Track with Left/Right margins */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full">
+          <div
+            ref={scrollRef}
+            onScroll={checkScroll}
+            className="flex gap-3.5 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth"
+            style={{ scrollSnapType: "x mandatory" }}
+          >
+            {softwareCards.map((card) => (
+              <div
+                key={card.id}
+                style={{ scrollSnapAlign: "start" }}
+                className="group relative flex w-[255px] sm:w-[285px] shrink-0 flex-col justify-between rounded-2xl border border-neutral-200/90 bg-white p-4 sm:p-4.5 shadow-2xs transition duration-300 hover:border-black hover:shadow-md hover:-translate-y-0.5"
+              >
+                <div>
+                  {/* Header: Logo, Title, Subtitle */}
+                  <div className="flex items-start gap-2.5 border-b border-neutral-100 pb-2.5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neutral-50 border border-neutral-200 shadow-2xs group-hover:scale-105 transition duration-200">
+                      {card.renderLogo()}
+                    </div>
 
-        <div
-          ref={scrollRef}
-          onScroll={checkScroll}
-          className="flex gap-4 sm:gap-5 overflow-x-auto px-4 sm:px-6 lg:px-8 pb-6 pt-2 no-scrollbar scroll-smooth"
-          style={{ scrollSnapType: "x mandatory" }}
-        >
-          {softwareCards.map((card) => (
-            <div
-              key={card.id}
-              style={{ scrollSnapAlign: "start" }}
-              className="group relative flex w-[300px] sm:w-[360px] shrink-0 flex-col justify-between rounded-3xl border border-neutral-200 bg-white p-5 sm:p-6 shadow-xs transition duration-300 hover:border-black hover:shadow-xl hover:-translate-y-1"
-            >
-              <div>
-                {/* Header: Logo, Title, Subtitle */}
-                <div className="flex items-start gap-3.5 border-b border-neutral-100 pb-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-neutral-50 border border-neutral-200 shadow-xs group-hover:scale-105 transition duration-200">
-                    {card.renderLogo()}
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs sm:text-sm font-black text-black truncate group-hover:text-black">
+                        {card.title}
+                      </h4>
+                      <p className={`mt-0.5 text-[10px] font-bold ${card.subtitleColor} truncate`}>
+                        {card.subtitle}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm sm:text-base font-black text-black truncate group-hover:text-black">
-                      {card.title}
-                    </h4>
-                    <p className={`mt-0.5 text-xs font-bold ${card.subtitleColor} truncate`}>
-                      {card.subtitle}
-                    </p>
+                  {/* Description */}
+                  <p className="mt-2 text-[11px] leading-relaxed text-neutral-600">
+                    {card.description}
+                  </p>
+
+                  {/* Skills Pills with checkmarks */}
+                  <div className="mt-2.5 flex flex-wrap gap-1">
+                    {card.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-0.5 text-[10px] font-semibold text-neutral-800 transition hover:border-black hover:bg-white cursor-default"
+                      >
+                        <span className={`mr-1 font-bold ${card.checkColor}`}>✓</span>
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className="mt-3.5 text-xs leading-relaxed text-neutral-600">
-                  {card.description}
-                </p>
-
-                {/* Skills Pills with checkmarks */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {card.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center rounded-xl border border-neutral-200 bg-neutral-50 px-2.5 py-1 text-[11px] font-semibold text-neutral-800 transition hover:border-black hover:bg-white cursor-default"
-                    >
-                      <span className={`mr-1.5 font-bold ${card.checkColor}`}>✓</span>
-                      {skill}
-                    </span>
-                  ))}
+                {/* Bottom Card Footer */}
+                <div className="mt-3.5 pt-2 border-t border-neutral-100 flex items-center justify-between text-[10px] text-neutral-400">
+                  <span className="font-semibold text-neutral-600">{card.name}</span>
+                  <span className="font-bold text-black">{card.skills.length} Skills</span>
                 </div>
               </div>
-
-              {/* Bottom Card Footer */}
-              <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                <span className="font-semibold text-neutral-600">{card.name}</span>
-                <span className="font-bold text-black">{card.skills.length} Skills</span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

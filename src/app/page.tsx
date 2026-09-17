@@ -1,7 +1,11 @@
 import Navbar from "@/components/layout/Navbar";
 import HeroRotatingCards from "@/components/home/HeroRotatingCards";
+import MyWorkSection from "@/components/home/MyWorkSection";
 import SoftwareSkillsSlider from "@/components/home/SoftwareSkillsSlider";
-import ProductionShowcase from "@/components/home/ProductionShowcase";
+import ServicesSection from "@/components/home/ServicesSection";
+import ProcessSection from "@/components/home/ProcessSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import ContactCTA from "@/components/home/ContactCTA";
 import Footer from "@/components/layout/Footer";
 
 export default function HomePage() {
@@ -9,16 +13,28 @@ export default function HomePage() {
     <main className="min-h-screen bg-white text-neutral-950">
       <Navbar />
 
-      {/* 2-Column Luxury Hero: Left Details & Right Auto-Rotating Cards Frame */}
+      {/* 1. 2-Column Luxury Hero: Intro, Details & Right Auto-Rotating Cards Frame */}
       <HeroRotatingCards />
 
-      {/* Software Workstations & Skills: Horizontal Scrolling Cards Showcase */}
+      {/* 2. Unified "My Work" Showcase: 3D Portfolio & Photo Retouching with Interactive Tabs */}
+      <MyWorkSection />
+
+      {/* 3. Specialized Software & Creative Workstations Slider */}
       <SoftwareSkillsSlider />
 
-      {/* High-End Photo Retouching & 3D Modeling (Visuals Showcase) */}
-      <ProductionShowcase />
+      {/* 4. Specialized Creative Services & Production Solutions */}
+      <ServicesSection />
 
-      {/* Luxury Footer */}
+      {/* 5. 4-Phase Creative Production Workflow */}
+      <ProcessSection />
+
+      {/* 6. Client Testimonials & Trust */}
+      <TestimonialsSection />
+
+      {/* 7. Collaboration & Hire Me Banner */}
+      <ContactCTA />
+
+      {/* 8. Luxury Footer */}
       <Footer />
     </main>
   );

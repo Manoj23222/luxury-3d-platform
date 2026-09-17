@@ -4,6 +4,11 @@ const PhotoWorkSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
     slug: { type: String, default: "", trim: true },
+    workType: {
+      type: String,
+      enum: ["before_after", "banner"],
+      default: "before_after",
+    },
     category: {
       type: String,
       required: true,
@@ -13,8 +18,8 @@ const PhotoWorkSchema = new Schema(
     description: { type: String, default: "" },
     shortDescription: { type: String, default: "" },
 
-    // Primary Before/After Images
-    beforeImage: { type: String, required: true },
+    // Primary Before/After or Banner Images
+    beforeImage: { type: String, default: "" },
     afterImage: { type: String, required: true },
     thumbnail: { type: String, default: "" },
     galleryImages: { type: [String], default: [] },
@@ -43,6 +48,7 @@ const PhotoWorkSchema = new Schema(
 );
 
 PhotoWorkSchema.index({ category: 1 });
+PhotoWorkSchema.index({ workType: 1 });
 PhotoWorkSchema.index({ status: 1 });
 PhotoWorkSchema.index({ featured: 1 });
 

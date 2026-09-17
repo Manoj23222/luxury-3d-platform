@@ -6,22 +6,30 @@ import Link from "next/link";
 import BeforeAfterSlider from "@/components/photo-editing/BeforeAfterSlider";
 
 const DEFAULT_CATEGORIES = [
+  "Social Media Banners & Ads",
+  "Food & Beverage Ads",
+  "Cosmetics & Beauty Ads",
+  "Jewelry & Luxury Ads",
+  "Fashion & Apparel Creatives",
+  "Real Estate & Interior Ads",
+  "Sports & Infographics",
   "Background change & Resize",
   "White background & Resize",
   "Product Retouching",
   "Fashion & Portrait",
   "Color Grading",
   "Photo Manipulation",
-  "Jewelry & Luxury",
-  "Real Estate & HDR",
   "Background Replacement",
 ];
 
 export default function AdminUploadPhotoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [workType, setWorkType] = useState<"before_after" | "banner">("before_after");
+
   const [uploadingBefore, setUploadingBefore] = useState(false);
   const [uploadingAfter, setUploadingAfter] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
 
   const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
   const [isCustomCategory, setIsCustomCategory] = useState(false);
@@ -29,14 +37,15 @@ export default function AdminUploadPhotoPage() {
 
   const [beforeUrl, setBeforeUrl] = useState("");
   const [afterUrl, setAfterUrl] = useState("");
+  const [bannerUrl, setBannerUrl] = useState("");
 
   const [form, setForm] = useState({
     title: "",
-    category: "Product Retouching",
+    category: "Social Media Banners & Ads",
     description: "",
     shortDescription: "",
-    softwareUsed: "Adobe Photoshop, Capture One",
-    resolution: "4K / Ultra HD",
+    softwareUsed: "Adobe Photoshop, Adobe Illustrator",
+    resolution: "2048 × 2048 (4K Ultra HD)",
     clientName: "",
     projectYear: "2026",
     tags: "",
@@ -78,9 +87,10 @@ export default function AdminUploadPhotoPage() {
     setIsCustomCategory(false);
   };
 
-  const uploadImage = async (file: File, type: "before" | "after") => {
+  const uploadImage = async (file: File, type: "before" | "after" | "banner") => {
     if (type === "before") setUploadingBefore(true);
-    else setUploadingAfter(true);
+    else if (type === "after") setUploadingAfter(true);
+    else setUploadingBanner(true);
 
     const data = new FormData();
     data.append("file", file);
@@ -102,17 +112,22 @@ export default function AdminUploadPhotoPage() {
 
       const url = result.url || result.media?.url;
       if (type === "before") setBeforeUrl(url);
-      else setAfterUrl(url);
+      else if (type === "after") setAfterUrl(url);
+      else {
+        setBannerUrl(url);
+        setAfterUrl(url);
+      }
     } catch {
       alert("Image upload failed");
     } finally {
       if (type === "before") setUploadingBefore(false);
-      else setUploadingAfter(false);
+      else if (type === "after") setUploadingAfter(false);
+      else setUploadingBanner(false);
     }
   };
 
   const submit = async (statusOverride = "") => {
-    if (uploadingBefore || uploadingAfter) {
+    if (uploadingBefore || uploadingAfter || uploadingBanner) {
       alert("Please wait for images to finish uploading.");
       return;
     }
@@ -127,25 +142,37 @@ export default function AdminUploadPhotoPage() {
       return;
     }
 
-    if (!beforeUrl || !afterUrl) {
-      alert("Both Before Image and After Image are required for retouching showcase.");
-      return;
+    // Validation per workType
+    if (workType === "before_after") {
+      if (!beforeUrl || !afterUrl) {
+        alert("Both Before Image and After Image are required for Before/After comparison.");
+        return;
+      }
+    } else {
+      if (!bannerUrl && !afterUrl) {
+        alert("Banner / Creative artwork image is required.");
+        return;
+      }
     }
 
     setLoading(true);
 
     try {
+      const finalAfterImage = workType === "before_after" ? afterUrl : (bannerUrl || afterUrl);
+      const finalBeforeImage = workType === "before_after" ? beforeUrl : "";
+
       const res = await fetch("/api/photo-works", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: form.title,
+          workType,
           category: form.category.trim(),
           description: form.description,
           shortDescription: form.shortDescription || form.description?.slice(0, 120),
-          beforeImage: beforeUrl,
-          afterImage: afterUrl,
-          thumbnail: afterUrl,
+          beforeImage: finalBeforeImage,
+          afterImage: finalAfterImage,
+          thumbnail: finalAfterImage,
           softwareUsed: form.softwareUsed.split(",").map((s) => s.trim()).filter(Boolean),
           resolution: form.resolution,
           clientName: form.clientName,
@@ -160,14 +187,18 @@ export default function AdminUploadPhotoPage() {
       setLoading(false);
 
       if (result.success) {
-        alert("✅ Photo retouching project added successfully!");
+        alert(
+          workType === "before_after"
+            ? "✅ Before & After retouching project uploaded successfully!"
+            : "✅ Creative Banner / Graphic Design artwork uploaded successfully!"
+        );
         router.push("/admin");
       } else {
-        alert(result.message || "Failed to add photo retouching work.");
+        alert(result.message || "Failed to add work.");
       }
     } catch {
       setLoading(false);
-      alert("Failed to submit photo project.");
+      alert("Failed to submit project.");
     }
   };
 
@@ -177,13 +208,13 @@ export default function AdminUploadPhotoPage() {
       <div className="mb-8 flex flex-col justify-between gap-4 rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs sm:flex-row sm:items-center">
         <div>
           <span className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-neutral-600">
-            Retouching Studio Admin
+            Creative Works & Retouching Studio Admin
           </span>
           <h1 className="mt-2 text-2xl font-black tracking-tight text-black sm:text-3xl">
-            Upload Photo Retouching Work
+            Upload Creative Work / Photo Retouching
           </h1>
           <p className="mt-1 text-xs text-neutral-500">
-            Upload Before & After images with live comparison slider preview and custom category management.
+            Upload interactive Before & After retouching pairs or single graphic design banners and social media ads.
           </p>
         </div>
 
@@ -193,6 +224,72 @@ export default function AdminUploadPhotoPage() {
         >
           ← Back to Dashboard
         </Link>
+      </div>
+
+      {/* ========================================================= */}
+      {/* WORK TYPE SELECTOR BAR (BEFORE/AFTER vs CREATIVE BANNER)  */}
+      {/* ========================================================= */}
+      <div className="mb-6 rounded-3xl border border-neutral-200 bg-white p-5 shadow-xs">
+        <label className="block text-xs font-bold text-neutral-700 mb-2">
+          Select Showcase Format:
+        </label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {/* Option 1: Before & After */}
+          <button
+            type="button"
+            onClick={() => setWorkType("before_after")}
+            className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition cursor-pointer ${
+              workType === "before_after"
+                ? "border-black bg-neutral-900 text-white shadow-md"
+                : "border-neutral-200 bg-neutral-50/60 text-neutral-800 hover:border-neutral-400 hover:bg-white"
+            }`}
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-xl">
+              ⚡
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black">Before & After Retouching</span>
+                {workType === "before_after" && (
+                  <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                    Active
+                  </span>
+                )}
+              </div>
+              <p className={`mt-0.5 text-xs ${workType === "before_after" ? "text-neutral-300" : "text-neutral-500"}`}>
+                Upload 2 images (Raw Before + Retouched After) with interactive comparison slider.
+              </p>
+            </div>
+          </button>
+
+          {/* Option 2: Single Creative Banner */}
+          <button
+            type="button"
+            onClick={() => setWorkType("banner")}
+            className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition cursor-pointer ${
+              workType === "banner"
+                ? "border-black bg-neutral-900 text-white shadow-md"
+                : "border-neutral-200 bg-neutral-50/60 text-neutral-800 hover:border-neutral-400 hover:bg-white"
+            }`}
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-xl">
+              🎨
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black">Creative Banner / Single Artwork</span>
+                {workType === "banner" && (
+                  <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                    Active
+                  </span>
+                )}
+              </div>
+              <p className={`mt-0.5 text-xs ${workType === "banner" ? "text-neutral-300" : "text-neutral-500"}`}>
+                Upload 1 high-resolution banner, social media poster, product ad, or artwork.
+              </p>
+            </div>
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
@@ -211,7 +308,11 @@ export default function AdminUploadPhotoPage() {
                   type="text"
                   value={form.title}
                   onChange={(e) => update("title", e.target.value)}
-                  placeholder="e.g. High-Fashion Editorial Beauty & Skin Retouching"
+                  placeholder={
+                    workType === "before_after"
+                      ? "e.g. High-Fashion Editorial Beauty & Skin Retouching"
+                      : "e.g. Super Delicious Burger Menu Social Media Creative Banner"
+                  }
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                 />
               </label>
@@ -289,13 +390,13 @@ export default function AdminUploadPhotoPage() {
 
                 <label className="block">
                   <span className="mb-1.5 block text-xs font-bold text-neutral-700">
-                    Resolution / Quality
+                    Resolution / Dimensions
                   </span>
                   <input
                     type="text"
                     value={form.resolution}
                     onChange={(e) => update("resolution", e.target.value)}
-                    placeholder="e.g. 6000 x 4000 (24 MP Raw)"
+                    placeholder="e.g. 2048 × 2048 (Square Feed)"
                     className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                   />
                 </label>
@@ -309,7 +410,7 @@ export default function AdminUploadPhotoPage() {
                   rows={4}
                   value={form.description}
                   onChange={(e) => update("description", e.target.value)}
-                  placeholder="Describe the retouching techniques used: dodge & burn, frequency separation, color grading, background cleaning..."
+                  placeholder="Describe your design concept, typography layout, color palette, or retouching techniques used..."
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-medium text-black outline-none focus:border-black focus:bg-white"
                 />
               </label>
@@ -322,77 +423,127 @@ export default function AdminUploadPhotoPage() {
                   type="text"
                   value={form.tags}
                   onChange={(e) => update("tags", e.target.value)}
-                  placeholder="beauty, skin, fashion, dodge-burn, commercial"
+                  placeholder="banner, social-media, poster, food, advertising, branding"
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                 />
               </label>
             </div>
           </div>
 
-          {/* Before & After Image Uploads */}
+          {/* ======================================================== */}
+          {/* IMAGE UPLOADER: DYNAMIC ACCORDING TO SELECTED WORKTYPE   */}
+          {/* ======================================================== */}
           <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-xs">
-            <h2 className="text-base font-bold text-black">Before & After Images</h2>
-            <p className="mt-1 text-xs text-neutral-500">
-              Upload high-resolution images to generate the interactive before/after split slider.
-            </p>
-
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              {/* Before Image */}
-              <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-4">
-                <span className="block text-xs font-bold text-neutral-800">
-                  1. Raw / Before Image *
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) uploadImage(file, "before");
-                  }}
-                  className="mt-2 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-neutral-800 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white cursor-pointer"
-                />
-
-                {uploadingBefore && (
-                  <div className="mt-2 text-xs font-semibold text-blue-600 animate-pulse">
-                    Uploading Before image...
-                  </div>
-                )}
-
-                {beforeUrl && !uploadingBefore && (
-                  <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200 aspect-video bg-neutral-950">
-                    <img src={beforeUrl} alt="Before Preview" className="h-full w-full object-contain" />
-                  </div>
-                )}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-base font-bold text-black">
+                  {workType === "before_after" ? "Before & After Images" : "Banner / Artwork Image"}
+                </h2>
+                <p className="mt-0.5 text-xs text-neutral-500">
+                  {workType === "before_after"
+                    ? "Upload high-resolution images to generate the interactive before/after split slider."
+                    : "Upload single high-resolution graphic design poster or promotional banner."}
+                </p>
               </div>
 
-              {/* After Image */}
-              <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-4">
-                <span className="block text-xs font-bold text-neutral-800">
-                  2. Retouched / After Image *
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) uploadImage(file, "after");
-                  }}
-                  className="mt-2 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-black file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white cursor-pointer"
-                />
-
-                {uploadingAfter && (
-                  <div className="mt-2 text-xs font-semibold text-blue-600 animate-pulse">
-                    Uploading After image...
-                  </div>
-                )}
-
-                {afterUrl && !uploadingAfter && (
-                  <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200 aspect-video bg-neutral-950">
-                    <img src={afterUrl} alt="After Preview" className="h-full w-full object-contain" />
-                  </div>
-                )}
-              </div>
+              <span className="rounded-full bg-neutral-100 px-3 py-1 text-[11px] font-bold text-neutral-700">
+                {workType === "before_after" ? "2 Files Required" : "1 File Required"}
+              </span>
             </div>
+
+            {workType === "before_after" ? (
+              /* DUAL BEFORE/AFTER UPLOADER */
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                {/* Before Image */}
+                <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-4">
+                  <span className="block text-xs font-bold text-neutral-800">
+                    1. Raw / Before Image *
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) uploadImage(file, "before");
+                    }}
+                    className="mt-2 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-neutral-800 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white cursor-pointer"
+                  />
+
+                  {uploadingBefore && (
+                    <div className="mt-2 text-xs font-semibold text-blue-600 animate-pulse">
+                      Uploading Before image...
+                    </div>
+                  )}
+
+                  {beforeUrl && !uploadingBefore && (
+                    <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200 aspect-video bg-neutral-950">
+                      <img src={beforeUrl} alt="Before Preview" className="h-full w-full object-contain" />
+                    </div>
+                  )}
+                </div>
+
+                {/* After Image */}
+                <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-4">
+                  <span className="block text-xs font-bold text-neutral-800">
+                    2. Retouched / After Image *
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) uploadImage(file, "after");
+                    }}
+                    className="mt-2 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-black file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white cursor-pointer"
+                  />
+
+                  {uploadingAfter && (
+                    <div className="mt-2 text-xs font-semibold text-blue-600 animate-pulse">
+                      Uploading After image...
+                    </div>
+                  )}
+
+                  {afterUrl && !uploadingAfter && (
+                    <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200 aspect-video bg-neutral-950">
+                      <img src={afterUrl} alt="After Preview" className="h-full w-full object-contain" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* SINGLE BANNER UPLOADER */
+              <div className="mt-5">
+                <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-5">
+                  <span className="block text-xs font-bold text-neutral-800">
+                    Upload Banner / Graphic Artwork Image *
+                  </span>
+                  <p className="mt-0.5 text-[11px] text-neutral-500">
+                    PNG, JPG, WebP (Square 1:1, 4:5 Portrait, or 16:9 Landscape)
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) uploadImage(file, "banner");
+                    }}
+                    className="mt-3 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-black file:px-4 file:py-2 file:text-xs file:font-bold file:text-white cursor-pointer"
+                  />
+
+                  {uploadingBanner && (
+                    <div className="mt-3 text-xs font-semibold text-blue-600 animate-pulse">
+                      Uploading banner artwork...
+                    </div>
+                  )}
+
+                  {bannerUrl && !uploadingBanner && (
+                    <div className="mt-4 overflow-hidden rounded-xl border border-neutral-200 aspect-[4/3] max-w-md mx-auto bg-neutral-950">
+                      <img src={bannerUrl} alt="Banner Preview" className="h-full w-full object-contain" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Additional Options */}
@@ -407,7 +558,7 @@ export default function AdminUploadPhotoPage() {
                   type="text"
                   value={form.softwareUsed}
                   onChange={(e) => update("softwareUsed", e.target.value)}
-                  placeholder="Adobe Photoshop, Lightroom, Capture One"
+                  placeholder="Adobe Photoshop, Illustrator, Canva"
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                 />
               </label>
@@ -420,7 +571,7 @@ export default function AdminUploadPhotoPage() {
                   type="text"
                   value={form.clientName}
                   onChange={(e) => update("clientName", e.target.value)}
-                  placeholder="e.g. Vogue Series / Aura Cosmetics"
+                  placeholder="e.g. Social Media Campaign / Gourmet Foods"
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                 />
               </label>
@@ -441,7 +592,7 @@ export default function AdminUploadPhotoPage() {
 
               <label className="block">
                 <span className="mb-1.5 block text-xs font-bold text-neutral-700">
-                  Feature in Retouching Library
+                  Feature in Showcase
                 </span>
                 <select
                   value={form.featured}
@@ -459,31 +610,56 @@ export default function AdminUploadPhotoPage() {
         {/* Right Sidebar: Live Preview & Submit */}
         <div className="space-y-6">
           <div className="sticky top-28 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
-            <h3 className="text-base font-bold text-black">Live Slider Preview</h3>
+            <h3 className="text-base font-bold text-black">
+              {workType === "before_after" ? "Live Slider Preview" : "Live Banner Preview"}
+            </h3>
             <p className="mt-1 text-xs text-neutral-500">
-              Interactive preview with mouse follow.
+              {workType === "before_after" ? "Interactive comparison slider preview." : "Banner artwork presentation."}
             </p>
 
             <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-950">
-              {beforeUrl && afterUrl ? (
-                <BeforeAfterSlider
-                  beforeImage={beforeUrl}
-                  afterImage={afterUrl}
-                  aspectRatio="aspect-[4/3]"
-                  fitMode="contain"
-                  showFitToggle={true}
-                  enableAutoScan={true}
-                />
+              {workType === "before_after" ? (
+                beforeUrl && afterUrl ? (
+                  <BeforeAfterSlider
+                    beforeImage={beforeUrl}
+                    afterImage={afterUrl}
+                    aspectRatio="aspect-[4/3]"
+                    fitMode="contain"
+                    showFitToggle={true}
+                    enableAutoScan={true}
+                  />
+                ) : (
+                  <div className="flex aspect-[4/3] flex-col items-center justify-center p-6 text-center text-xs text-neutral-400">
+                    <span className="text-3xl mb-2">⚡</span>
+                    <span>Upload both Before and After images to see interactive comparison slider</span>
+                  </div>
+                )
               ) : (
-                <div className="flex aspect-[4/3] flex-col items-center justify-center p-6 text-center text-xs text-neutral-400">
-                  <span className="text-3xl mb-2">🎨</span>
-                  <span>Upload both Before and After images to see interactive comparison slider</span>
-                </div>
+                bannerUrl || afterUrl ? (
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-950 flex items-center justify-center p-2">
+                    <img
+                      src={bannerUrl || afterUrl}
+                      alt="Banner Preview"
+                      className="max-h-full max-w-full object-contain rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex aspect-[4/3] flex-col items-center justify-center p-6 text-center text-xs text-neutral-400">
+                    <span className="text-3xl mb-2">🎨</span>
+                    <span>Upload banner image to see live preview</span>
+                  </div>
+                )
               )}
             </div>
 
             {/* Quick Summary */}
             <div className="mt-4 space-y-2 border-t border-neutral-100 pt-4 text-xs">
+              <div className="flex justify-between">
+                <span className="text-neutral-500">Format:</span>
+                <span className="font-bold text-black">
+                  {workType === "before_after" ? "⚡ Before & After" : "🎨 Creative Banner"}
+                </span>
+              </div>
               <div className="flex justify-between">
                 <span className="text-neutral-500">Title:</span>
                 <span className="font-bold text-black truncate max-w-[180px]">
@@ -505,16 +681,16 @@ export default function AdminUploadPhotoPage() {
               <button
                 type="button"
                 onClick={() => submit("Published")}
-                disabled={loading || uploadingBefore || uploadingAfter}
+                disabled={loading || uploadingBefore || uploadingAfter || uploadingBanner}
                 className="w-full rounded-2xl bg-black py-3.5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 disabled:opacity-50 cursor-pointer"
               >
-                {loading ? "Publishing Work..." : "Publish to Retouching Library 🚀"}
+                {loading ? "Publishing Work..." : "Publish to Creative Showcase 🚀"}
               </button>
 
               <button
                 type="button"
                 onClick={() => submit("Draft")}
-                disabled={loading || uploadingBefore || uploadingAfter}
+                disabled={loading || uploadingBefore || uploadingAfter || uploadingBanner}
                 className="w-full rounded-2xl border border-neutral-300 bg-white py-3 text-xs font-bold text-neutral-700 transition hover:border-black hover:text-black disabled:opacity-50 cursor-pointer"
               >
                 Save as Draft

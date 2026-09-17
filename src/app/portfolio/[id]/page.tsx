@@ -3,8 +3,6 @@ import ModelViewer from "@/components/3d/ModelViewer";
 import Navbar from "@/components/layout/Navbar";
 import ViewTracker from "@/components/marketplace/ViewTracker";
 import RelatedAssets from "@/components/marketplace/RelatedAssets";
-import ReviewsSection from "@/components/marketplace/ReviewsSection";
-import WishlistButton from "@/components/marketplace/WishlistButton";
 
 async function getProject(id: string) {
   try {
@@ -78,10 +76,6 @@ export default async function ProjectDetailPage({
           >
             ← Back to 3D Portfolio
           </Link>
-
-          <div className="flex items-center gap-2">
-            <WishlistButton id={id} />
-          </div>
         </div>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
@@ -134,12 +128,7 @@ export default async function ProjectDetailPage({
               </p>
             </div>
 
-            {/* Reviews Section */}
-            <div className="mt-6">
-              <ReviewsSection productId={id} />
-            </div>
-
-            {/* Related 3D Assets */}
+            {/* Related 3D Works */}
             <RelatedAssets currentId={id} category={project.category} />
           </div>
 

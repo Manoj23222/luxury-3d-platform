@@ -47,25 +47,7 @@ export default function Footer() {
             </a>
           </div>
         </div>
-
-        {/* Navigation Links (Home, About, Contact Only) & Copyright */}
-        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs font-bold text-neutral-500">
-          <div className="flex flex-wrap items-center gap-6">
-            <Link href="/" className="hover:text-black transition">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-black transition">
-              About
-            </Link>
-            <Link href="/contact" className="hover:text-black transition">
-              Contact
-            </Link>
-          </div>
-
-          <p className="text-[11px] text-neutral-400 font-normal">
-            © {new Date().getFullYear()} Ashok Meena. All Rights Reserved.
-          </p>
-        </div>
+        
       </div>
     </footer>
   );

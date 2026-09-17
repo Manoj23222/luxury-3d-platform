@@ -24,7 +24,7 @@ export default function BeforeAfterSlider({
   aspectRatio = "aspect-[4/3]",
   defaultPosition = 50,
   enableAutoScan = true,
-  fitMode: initialFitMode = "contain",
+  fitMode: initialFitMode = "cover",
   showFitToggle = false,
 }: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(defaultPosition);
@@ -128,7 +128,7 @@ export default function BeforeAfterSlider({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`group relative select-none overflow-hidden rounded-2xl bg-neutral-950 ${aspectRatio} ${className} cursor-ew-resize`}
+      className={`group relative select-none overflow-hidden rounded-2xl bg-neutral-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:12px_12px] ${aspectRatio} ${className} cursor-ew-resize`}
       style={{ touchAction: "none" }}
     >
       {/* 1. AFTER / RETOUCHED IMAGE (Full Base Layer) */}
@@ -136,7 +136,7 @@ export default function BeforeAfterSlider({
         src={afterImage}
         alt="Retouched result"
         className={`pointer-events-none absolute inset-0 h-full w-full ${
-          fitMode === "contain" ? "object-contain" : "object-cover"
+          fitMode === "contain" ? "object-contain object-center" : "object-cover object-center"
         }`}
         draggable={false}
       />
@@ -146,7 +146,7 @@ export default function BeforeAfterSlider({
         src={beforeImage}
         alt="Original unedited photo"
         className={`pointer-events-none absolute inset-0 h-full w-full ${
-          fitMode === "contain" ? "object-contain" : "object-cover"
+          fitMode === "contain" ? "object-contain object-center" : "object-cover object-center"
         }`}
         style={{
           clipPath: `inset(0 ${Math.max(0, 100 - sliderPosition)}% 0 0)`,
@@ -156,12 +156,12 @@ export default function BeforeAfterSlider({
       />
 
       {/* 3. LABELS */}
-      <div className="pointer-events-none absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-black/80 px-2.5 py-1 text-[10.5px] font-extrabold uppercase tracking-widest text-white shadow-sm backdrop-blur-md">
+      <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex items-center gap-1.5 rounded-full bg-black/75 px-2 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider text-white shadow-xs backdrop-blur-md">
         <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
         <span>{beforeLabel}</span>
       </div>
 
-      <div className="pointer-events-none absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-black/80 px-2.5 py-1 text-[10.5px] font-extrabold uppercase tracking-widest text-white shadow-sm backdrop-blur-md">
+      <div className="pointer-events-none absolute right-2.5 top-2.5 z-10 flex items-center gap-1.5 rounded-full bg-black/75 px-2 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider text-white shadow-xs backdrop-blur-md">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
         <span>{afterLabel}</span>
       </div>

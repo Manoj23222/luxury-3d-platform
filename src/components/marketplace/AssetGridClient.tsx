@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import WishlistButton from "./WishlistButton";
 
 export default function AssetGridClient({ assets }: { assets: any[] }) {
   const [search, setSearch] = useState("");
@@ -50,20 +49,52 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
 
   return (
     <>
-      {/* Portfolio Header & Filter Bar */}
-      <section className="border-b border-neutral-200 bg-white pt-28 pb-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-400">
+      {/* Luxury 3D Portfolio Hero Section with Background Banner */}
+      <section className="relative overflow-hidden border-b border-neutral-200 bg-[#fbf9f5] pt-28 pb-10 text-neutral-900">
+        {/* Background Banner Image clearly visible */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <img
+            src="/portfolio-3d-hero-banner.png"
+            alt="Luxury 3D Archive Banner"
+            className="h-full w-full object-cover object-center opacity-90"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white/90 px-3.5 py-1 text-xs font-bold text-neutral-900 backdrop-blur-md shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Ashok Meena • 3D Creative Studio</span>
+              </span>
+
+              <p className="mt-3 text-xs font-bold uppercase tracking-[0.25em] text-neutral-700">
                 Luxury 3D Archive
               </p>
-              <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+              
+              <h1 className="mt-1 text-3xl font-black tracking-tight text-black sm:text-5xl">
                 3D Portfolio & Models
               </h1>
-              <p className="mt-1 text-xs text-neutral-500">
+              
+              <p className="mt-2 text-xs sm:text-sm font-semibold text-neutral-800">
                 Explore interactive 3D visualizations, CGI renders, and custom assets.
               </p>
+
+              {/* Skills/Tags Mini Strip */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-bold text-neutral-800">
+                <span className="text-black font-extrabold">Architecture</span>
+                <span>•</span>
+                <span>Product</span>
+                <span>•</span>
+                <span>Game Assets</span>
+                <span>•</span>
+                <span>Interior</span>
+                <span>•</span>
+                <span>Characters</span>
+                <span>•</span>
+                <span>3D Fashion</span>
+              </div>
             </div>
 
             {/* Search Input & Sort */}
@@ -74,10 +105,10 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
                   placeholder="Search 3D works..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-56 rounded-full border border-neutral-300 bg-neutral-50 py-1.5 pl-9 pr-4 text-xs font-medium text-black placeholder-neutral-400 transition focus:border-black focus:bg-white focus:outline-none"
+                  className="w-56 rounded-full border border-neutral-300 bg-white/95 backdrop-blur-md py-2 pl-9 pr-4 text-xs font-semibold text-black placeholder-neutral-500 shadow-sm transition focus:border-black focus:bg-white focus:outline-none"
                 />
                 <svg
-                  className="absolute left-3 top-2 h-4 w-4 text-neutral-400"
+                  className="absolute left-3 top-2.5 h-4 w-4 text-neutral-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -94,7 +125,7 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:border-black focus:border-black focus:outline-none"
+                className="rounded-full border border-neutral-300 bg-white/95 backdrop-blur-md px-3.5 py-2 text-xs font-bold text-neutral-800 shadow-sm transition hover:border-black focus:border-black focus:outline-none cursor-pointer"
               >
                 <option value="Newest">Newest First</option>
                 <option value="Most Viewed">Most Viewed</option>
@@ -166,11 +197,6 @@ export default function AssetGridClient({ assets }: { assets: any[] }) {
                           </div>
                         )}
                       </Link>
-
-                      {/* Wishlist Floating Button */}
-                      <div className="absolute right-2 top-2 z-10 scale-90">
-                        <WishlistButton id={item._id} />
-                      </div>
 
                       {/* 3D Indicator */}
                       {item.modelUrl && (
