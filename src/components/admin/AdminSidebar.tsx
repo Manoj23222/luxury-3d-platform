@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const menu = [
   { name: "Admin Dashboard", href: "/admin", icon: "📊" },
+  { name: "Live Visitors & Locations", href: "/admin/visitors", icon: "📍" },
   { name: "3D File Uploading", href: "/admin/upload-3d", icon: "📦" },
   { name: "Photo Editor Uploading", href: "/admin/upload-photo", icon: "🎨" },
 ];
