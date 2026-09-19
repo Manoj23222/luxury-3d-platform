@@ -205,3 +205,21 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    await connectDB();
+    const result = await VisitorLog.deleteMany({});
+    return NextResponse.json({
+      success: true,
+      message: "All visitor tracking logs have been reset to 0.",
+      deletedCount: result.deletedCount,
+    });
+  } catch (error: any) {
+    console.error("Admin analytics reset error:", error?.message);
+    return NextResponse.json(
+      { success: false, error: "Failed to reset analytics" },
+      { status: 500 }
+    );
+  }
+}
