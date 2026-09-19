@@ -7,8 +7,7 @@ export async function sendContactNotificationEmail(data: {
   message: string;
 }) {
   const adminEmail =
-    process.env.ADMIN_NOTIFICATION_EMAIL ||
-    "ashokm3414@gmail.com,3ddesigner5546@gmail.com";
+    process.env.ADMIN_NOTIFICATION_EMAIL || "ashokm3414@gmail.com";
 
   // Check for SMTP credentials in .env.local
   const smtpUser =
