@@ -187,7 +187,7 @@ export async function POST(req: Request) {
         size: file.size,
         creatorId: currentUser.id || "admin-master",
         creatorName: currentUser.name || "Ashok Meena",
-        creatorEmail: currentUser.email || "ashokm3414@gmail.com",
+        creatorEmail: currentUser.email || "3ddesigner5546@gmail.com",
       });
     } catch {
       // Ignore DB error if offline
