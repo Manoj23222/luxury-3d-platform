@@ -170,6 +170,7 @@ export default function VisitorAnalyticsView() {
   const [showAllRecent, setShowAllRecent] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [searchQuery, setSearchQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   const fetchAnalytics = useCallback(async () => {
     try {
@@ -190,6 +191,7 @@ export default function VisitorAnalyticsView() {
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     fetchAnalytics();
     const interval = setInterval(fetchAnalytics, 30000);
     return () => clearInterval(interval);
@@ -270,8 +272,8 @@ export default function VisitorAnalyticsView() {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <span className="text-[11px] text-neutral-400">
-            Updated: {lastRefreshed.toLocaleTimeString()}
+          <span suppressHydrationWarning className="text-[11px] text-neutral-400">
+            Updated: {mounted ? lastRefreshed.toLocaleTimeString() : "--:--:--"}
           </span>
           <button
             onClick={() => fetchAnalytics()}
@@ -709,13 +711,14 @@ export default function VisitorAnalyticsView() {
                         <td className="py-3.5 px-4 align-middle text-right">
                           <div className="flex items-center justify-end gap-2.5">
                             <span
+                              suppressHydrationWarning
                               className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                                 isVeryRecent
                                   ? "bg-emerald-100 text-emerald-800"
                                   : "bg-neutral-100 text-neutral-600"
                               }`}
                             >
-                              {formatTimeAgo(v.createdAt)}
+                              {mounted ? formatTimeAgo(v.createdAt) : "Recently"}
                             </span>
 
                             {/* Open Page Button (opens in new tab) */}
@@ -771,6 +774,7 @@ export default function VisitorAnalyticsView() {
                       </p>
                     </div>
                     <span
+                      suppressHydrationWarning
                       className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold flex items-center gap-1 ${
                         isVeryRecent
                           ? "bg-emerald-100 text-emerald-800 animate-pulse"
@@ -778,7 +782,7 @@ export default function VisitorAnalyticsView() {
                       }`}
                     >
                       {isVeryRecent && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />}
-                      {formatTimeAgo(v.createdAt)}
+                      {mounted ? formatTimeAgo(v.createdAt) : "Recently"}
                     </span>
                   </div>
 
