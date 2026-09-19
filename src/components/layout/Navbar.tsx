@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -33,15 +34,18 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur-xl">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo with /images/logo.svg (Zoomed & Prominent) */}
+        {/* Brand Logo with Next.js Optimized Image */}
         <Link
           href="/"
           className="group relative flex shrink-0 items-center justify-center py-1 transition-transform duration-200"
         >
-          <img
-            src="/images/logo.svg?v=3"
+          <Image
+            src="/images/logo.svg"
             alt="Portfolio 3D & Photo Editor"
-            className="h-12 sm:h-14 lg:h-[80px] w-auto max-w-[240px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
+            width={180}
+            height={56}
+            priority
+            className="h-11 sm:h-13 lg:h-[54px] w-auto max-w-[220px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
           />
         </Link>
 
