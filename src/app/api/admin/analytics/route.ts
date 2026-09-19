@@ -132,10 +132,10 @@ export async function GET() {
       { $limit: 6 },
     ]);
 
-    // 8. Recent Visitor Logs (Last 15 with location)
+    // 8. Recent Visitor Logs (Last 30 with location & system details)
     const recentVisits = await VisitorLog.find()
       .sort({ createdAt: -1 })
-      .limit(15)
+      .limit(30)
       .lean();
 
     // 9. Last 7 Days Daily Breakdown

@@ -26,37 +26,91 @@ export default function AnalyticsTracker() {
       visitorId = "anon_" + Math.random().toString(36).substring(2, 10);
     }
 
-    // 2. Detect Device Type
+    // 2. Comprehensive System, Device, Browser & Screen Detection
     const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const maxTouchPoints = typeof navigator !== "undefined" ? navigator.maxTouchPoints || 0 : 0;
+    const navPlatform = typeof navigator !== "undefined" ? navigator.platform || "" : "";
+
     let device: "Mobile" | "Desktop" | "Tablet" = "Desktop";
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    let os = "Other";
+    let systemName = "PC / Workstation";
+    let browser = "Other";
+
+    // Detect Device Type
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua) || (navPlatform === "MacIntel" && maxTouchPoints > 1)) {
       device = "Tablet";
-    } else if (
-      /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/i.test(
-        ua
-      )
-    ) {
+    } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/i.test(ua)) {
       device = "Mobile";
+    } else {
+      device = "Desktop";
     }
 
-    // 3. Detect Browser Name
-    let browser = "Other";
-    if (ua.includes("Firefox/")) browser = "Firefox";
-    else if (ua.includes("Edg/")) browser = "Edge";
-    else if (ua.includes("Chrome/")) browser = "Chrome";
-    else if (ua.includes("Safari/")) browser = "Safari";
-    else if (ua.includes("Opera") || ua.includes("OPR/")) browser = "Opera";
+    // Detect OS & System Name
+    if (/iPhone/i.test(ua)) {
+      os = "iOS";
+      systemName = "Apple iPhone";
+    } else if (/iPad/i.test(ua) || (navPlatform === "MacIntel" && maxTouchPoints > 1)) {
+      os = "iPadOS";
+      systemName = "Apple iPad";
+    } else if (/Macintosh|Mac OS X|MacIntel/i.test(ua)) {
+      os = "macOS";
+      systemName = "Apple Mac (macOS)";
+    } else if (/Windows NT 10.0/i.test(ua)) {
+      os = "Windows";
+      systemName = "Windows 11 / 10 PC";
+    } else if (/Windows NT/i.test(ua) || /Windows/i.test(ua)) {
+      os = "Windows";
+      systemName = "Windows PC";
+    } else if (/Android/i.test(ua)) {
+      os = "Android";
+      const match = ua.match(/Android\s+([\d.]+);\s+([^;)]+)/i);
+      if (match && match[2]) {
+        systemName = `Android (${match[2].trim()})`;
+      } else {
+        systemName = "Android Device";
+      }
+    } else if (/CrOS/i.test(ua)) {
+      os = "ChromeOS";
+      systemName = "Chromebook / ChromeOS";
+    } else if (/Linux/i.test(ua)) {
+      os = "Linux";
+      systemName = "Linux PC";
+    }
 
-    // 4. Detect OS
-    let os = "Other";
-    if (ua.includes("Win")) os = "Windows";
-    else if (ua.includes("Mac")) os = "macOS";
-    else if (ua.includes("Android")) os = "Android";
-    else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
-    else if (ua.includes("Linux")) os = "Linux";
+    // Detect Browser Name
+    if (/Edg\//i.test(ua)) {
+      browser = "Microsoft Edge";
+    } else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) {
+      browser = "Opera";
+    } else if (/SamsungBrowser\//i.test(ua)) {
+      browser = "Samsung Internet";
+    } else if (/Chrome\//i.test(ua)) {
+      browser = "Google Chrome";
+    } else if (/Firefox\//i.test(ua)) {
+      browser = "Mozilla Firefox";
+    } else if (/Safari\//i.test(ua)) {
+      browser = "Apple Safari";
+    }
+
+    // Screen resolution & language
+    const screenRes = typeof window !== "undefined" && window.screen ? `${window.screen.width}×${window.screen.height}` : "";
+    const language = typeof navigator !== "undefined" ? (navigator.language || "") : "";
 
     // 5. Get Referrer
-    const referrer = typeof document !== "undefined" && document.referrer ? document.referrer : "Direct";
+    let referrer = typeof document !== "undefined" && document.referrer ? document.referrer : "Direct";
+    if (referrer.includes(window.location.hostname)) {
+      referrer = "Direct / Internal";
+    } else if (referrer.includes("google.")) {
+      referrer = "Google Search";
+    } else if (referrer.includes("instagram.")) {
+      referrer = "Instagram";
+    } else if (referrer.includes("wa.me") || referrer.includes("whatsapp.")) {
+      referrer = "WhatsApp";
+    } else if (referrer.includes("linkedin.")) {
+      referrer = "LinkedIn";
+    } else if (referrer.includes("facebook.") || referrer.includes("fb.com")) {
+      referrer = "Facebook";
+    }
 
     // 6. Send payload to analytics endpoint
     try {
@@ -70,6 +124,9 @@ export default function AnalyticsTracker() {
           device,
           browser,
           os,
+          systemName,
+          screenRes,
+          language,
         }),
         keepalive: true,
       }).catch(() => {

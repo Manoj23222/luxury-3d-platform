@@ -14,10 +14,14 @@ type AnalyticsData = {
   topCities?: { city: string; country: string; views: number; uniqueVisitors: number }[];
   recentVisits: {
     _id: string;
+    visitorId?: string;
     path: string;
     device: string;
     browser?: string;
     os?: string;
+    systemName?: string;
+    screenRes?: string;
+    language?: string;
     referrer?: string;
     city?: string;
     country?: string;
@@ -28,10 +32,142 @@ type AnalyticsData = {
   dailyChart: { date: string; views: number; uniqueVisitors: number }[];
 };
 
+const countryMap: Record<string, string> = {
+  IN: "India",
+  US: "United States",
+  GB: "United Kingdom",
+  AE: "United Arab Emirates",
+  CA: "Canada",
+  AU: "Australia",
+  DE: "Germany",
+  FR: "France",
+  SG: "Singapore",
+  SA: "Saudi Arabia",
+  NL: "Netherlands",
+  JP: "Japan",
+  IT: "Italy",
+  ES: "Spain",
+  BR: "Brazil",
+  RU: "Russia",
+  ZA: "South Africa",
+  NZ: "New Zealand",
+  PK: "Pakistan",
+  BD: "Bangladesh",
+  NP: "Nepal",
+  LK: "Sri Lanka",
+  QA: "Qatar",
+  KW: "Kuwait",
+  OM: "Oman",
+  BH: "Bahrain",
+  MY: "Malaysia",
+  ID: "Indonesia",
+  TH: "Thailand",
+  VN: "Vietnam",
+  PH: "Philippines",
+  CH: "Switzerland",
+  SE: "Sweden",
+  NO: "Norway",
+  DK: "Denmark",
+  FI: "Finland",
+  IE: "Ireland",
+  BE: "Belgium",
+  AT: "Austria",
+  PL: "Poland",
+  TR: "Turkey",
+  EG: "Egypt",
+  NG: "Nigeria",
+  KE: "Kenya",
+  MX: "Mexico",
+};
+
+function getCountryFlag(countryCode?: string): string {
+  if (!countryCode || countryCode === "Unknown" || countryCode === "Local Dev") {
+    return "🌐";
+  }
+  const clean = countryCode.trim().toUpperCase();
+  if (clean.length === 2 && /^[A-Z]{2}$/.test(clean)) {
+    try {
+      const codePoints = clean
+        .split("")
+        .map((char) => 127397 + char.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
+    } catch {
+      return "🌐";
+    }
+  }
+  return "🌐";
+}
+
+function getCountryFullName(countryCode?: string): string {
+  if (!countryCode || countryCode === "Unknown") return "Global Visitor";
+  if (countryCode === "Local Dev") return "Local Dev / Test";
+  const clean = countryCode.trim().toUpperCase();
+  return countryMap[clean] || countryCode;
+}
+
+function formatVisitorLocation(city?: string, region?: string, country?: string) {
+  if (country === "Local Dev" || city === "Local Workstation") {
+    return {
+      flag: "💻",
+      main: "Local Dev Workstation",
+      sub: "Internal Dev Session",
+    };
+  }
+
+  const flag = getCountryFlag(country);
+  const countryName = getCountryFullName(country);
+  const hasCity = city && city !== "Unknown" && city !== "Local Workstation";
+  const hasRegion = region && region !== "Unknown" && region !== "Dev";
+
+  if (hasCity) {
+    return {
+      flag,
+      main: `${city}${hasRegion ? `, ${region}` : ""}`,
+      sub: `${countryName} ${flag}`,
+    };
+  }
+
+  if (country && country !== "Unknown") {
+    return {
+      flag,
+      main: countryName,
+      sub: `${country} ${flag}`,
+    };
+  }
+
+  return {
+    flag: "🌐",
+    main: "Direct Web Visitor",
+    sub: "Global Location",
+  };
+}
+
+function formatVisitorSystem(
+  systemName?: string,
+  os?: string,
+  browser?: string,
+  screenRes?: string,
+  device?: string
+) {
+  const sys =
+    systemName ||
+    (os && os !== "Unknown" ? `${os} System` : device === "Mobile" ? "Mobile Device" : "PC / Laptop");
+  const brw = browser && browser !== "Unknown" ? browser : "Web Browser";
+  const icon = device === "Mobile" ? "📱" : device === "Tablet" ? "📟" : "💻";
+
+  return {
+    icon,
+    sysTitle: sys,
+    browserTitle: brw,
+    screen: screenRes || "",
+  };
+}
+
 export default function VisitorAnalyticsView() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   const fetchAnalytics = useCallback(async () => {
     try {
@@ -53,7 +189,6 @@ export default function VisitorAnalyticsView() {
 
   useEffect(() => {
     fetchAnalytics();
-    // Auto refresh every 30 seconds for live counters
     const interval = setInterval(fetchAnalytics, 30000);
     return () => clearInterval(interval);
   }, [fetchAnalytics]);
@@ -75,8 +210,9 @@ export default function VisitorAnalyticsView() {
 
   const getPageTitle = (path: string) => {
     if (path === "/") return "🏠 Home (Portfolio Showcase)";
-    if (path === "/portfolio") return "🧊 3D Models & Archive";
-    if (path.startsWith("/portfolio/")) return "📦 3D Project View (" + path.replace("/portfolio/", "") + ")";
+    if (path === "/portfolio") return "🧊 3D Models Archive";
+    if (path.startsWith("/portfolio/"))
+      return "📦 3D Project View (" + path.replace("/portfolio/", "") + ")";
     if (path === "/photo-editing") return "✨ Creative & Retouching";
     if (path === "/contact") return "✉️ Contact Form";
     if (path === "/about") return "👤 About Ashok Meena";
@@ -90,6 +226,10 @@ export default function VisitorAnalyticsView() {
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
   };
+
+  const visibleVisits = showAllRecent
+    ? data?.recentVisits || []
+    : (data?.recentVisits || []).slice(0, 12);
 
   return (
     <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-xs">
@@ -106,10 +246,10 @@ export default function VisitorAnalyticsView() {
             </span>
           </div>
           <h3 className="mt-1 text-2xl font-black text-black">
-            Website Traffic & Visitor Counter
+            Website Traffic & Live Visitor Monitor
           </h3>
           <p className="text-xs text-neutral-500 mt-0.5">
-            Real-time analytics for your portfolio visits, unique visitors, and device breakdown.
+            Real-time analytics for your portfolio visits, system/device details, and geo-locations.
           </p>
         </div>
 
@@ -311,7 +451,7 @@ export default function VisitorAnalyticsView() {
           </div>
 
           <div className="mt-6 pt-4 border-t border-neutral-200 text-[11px] text-neutral-500">
-            💡 <strong className="text-neutral-800">Pro Tip:</strong> Har bar jab koi naya user aapka portfolio kholta hai, woh yahan real-time record hota hai bina website slow hue.
+            💡 <strong className="text-neutral-800">Pro Tip:</strong> Har bar jab koi user aapka portfolio kholta hai, uska Location aur Device/System yahan real-time live log hota hai.
           </div>
         </div>
       </div>
@@ -339,7 +479,9 @@ export default function VisitorAnalyticsView() {
                   {data.topCountries.map((c) => (
                     <div key={c.country} className="flex items-center justify-between text-xs">
                       <span className="font-bold text-neutral-800 flex items-center gap-1.5">
-                        <span>🚩</span> {c.country === "IN" ? "🇮🇳 India" : c.country === "US" ? "🇺🇸 United States" : c.country}
+                        <span className="text-base">{getCountryFlag(c.country)}</span>
+                        <span>{getCountryFullName(c.country)}</span>
+                        <span className="text-[10px] text-neutral-400 font-normal">({c.country})</span>
                       </span>
                       <span className="rounded-md bg-white border border-neutral-200 px-2 py-0.5 font-bold text-neutral-700">
                         {c.views} views ({c.uniqueVisitors} visitors)
@@ -362,7 +504,7 @@ export default function VisitorAnalyticsView() {
                   {data.topCities.map((city) => (
                     <div key={city.city} className="flex items-center justify-between text-xs">
                       <span className="font-bold text-neutral-800 flex items-center gap-1.5 truncate max-w-[200px]">
-                        <span>📍</span> {city.city} {city.country ? `(${city.country})` : ""}
+                        <span>📍</span> {city.city} {city.country ? `(${getCountryFullName(city.country)} ${getCountryFlag(city.country)})` : ""}
                       </span>
                       <span className="rounded-md bg-white border border-neutral-200 px-2 py-0.5 font-bold text-neutral-700 shrink-0">
                         {city.views} views
@@ -378,63 +520,143 @@ export default function VisitorAnalyticsView() {
         </div>
       ) : null}
 
-      {/* Live Recent Visitor Stream */}
+      {/* ⏱️ Live Recent Visitor Activity Stream with System Name & Location Name */}
       <div className="mt-8 pt-6 border-t border-neutral-200">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-black text-black flex items-center gap-2">
-            <span>⏱️ Recent Visitor Activity Stream</span>
-          </h4>
+          <div>
+            <h4 className="text-base font-black text-black flex items-center gap-2">
+              <span>⏱️ Recent Visitor Activity Stream</span>
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                Live Feed
+              </span>
+            </h4>
+            <p className="text-xs text-neutral-500 mt-0.5">
+              Detailed list of who viewed which page, their exact system/device, and geo-location.
+            </p>
+          </div>
           <span className="text-[11px] font-bold text-neutral-400">
-            Latest {data?.recentVisits?.length || 0} visits
+            Showing {visibleVisits.length} of {data?.recentVisits?.length || 0} visits
           </span>
         </div>
 
         {!data?.recentVisits || data.recentVisits.length === 0 ? (
-          <div className="py-6 text-center text-xs text-neutral-400">
-            No recent activity recorded yet.
+          <div className="py-10 text-center text-xs text-neutral-400 rounded-2xl border border-neutral-100 bg-neutral-50">
+            No recent activity recorded yet. Open the website on your phone or laptop to test live logging!
           </div>
         ) : (
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {data.recentVisits.map((v) => {
-              const locationStr =
-                v.city && v.city !== "Unknown"
-                  ? `${v.city}${v.country && v.country !== "Unknown" ? `, ${v.country}` : ""}`
-                  : v.country && v.country !== "Unknown"
-                  ? v.country
-                  : "Online Visitor";
+          <>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {visibleVisits.map((v) => {
+                const loc = formatVisitorLocation(v.city, v.region, v.country);
+                const sys = formatVisitorSystem(
+                  v.systemName,
+                  v.os,
+                  v.browser,
+                  v.screenRes,
+                  v.device
+                );
+                const isVeryRecent =
+                  Date.now() - new Date(v.createdAt).getTime() < 1000 * 60 * 5;
 
-              return (
-                <div
-                  key={v._id}
-                  className="flex items-center justify-between rounded-xl border border-neutral-100 bg-neutral-50/80 p-3 text-xs shadow-2xs hover:border-neutral-300 transition"
-                >
-                  <div className="min-w-0 pr-2">
-                    <p className="font-bold text-black truncate text-[11.5px]">
-                      {getPageTitle(v.path)}
-                    </p>
-                    <p className="text-[10px] text-neutral-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
-                      <span className="font-semibold text-emerald-700">📍 {locationStr}</span>
-                      <span>•</span>
-                      <span>{v.device === "Mobile" ? "📱 Mobile" : "💻 Desktop"}</span>
-                      <span>•</span>
-                      <span>{v.browser || "Web"}</span>
-                      {v.referrer && v.referrer !== "Direct" && (
-                        <>
-                          <span>•</span>
-                          <span className="truncate max-w-[80px]">From {v.referrer}</span>
-                        </>
-                      )}
-                    </p>
+                return (
+                  <div
+                    key={v._id}
+                    className="flex flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-4 text-xs shadow-2xs hover:border-black/30 hover:shadow-xs transition-all duration-200"
+                  >
+                    {/* Top: Visited Page & Time Badge */}
+                    <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-neutral-100">
+                      <div className="min-w-0">
+                        <p className="font-extrabold text-neutral-900 truncate text-[12px] leading-tight">
+                          {getPageTitle(v.path)}
+                        </p>
+                        <p className="text-[10.5px] text-neutral-400 mt-0.5 font-mono">
+                          {v.path}
+                        </p>
+                      </div>
+                      <span
+                        className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold flex items-center gap-1 ${
+                          isVeryRecent
+                            ? "bg-emerald-100 text-emerald-800 animate-pulse"
+                            : "bg-neutral-100 text-neutral-600"
+                        }`}
+                      >
+                        {isVeryRecent && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />}
+                        {formatTimeAgo(v.createdAt)}
+                      </span>
+                    </div>
+
+                    {/* Middle: Prominent Location & System Badges */}
+                    <div className="my-3 space-y-2">
+                      {/* 📍 Location Name Box */}
+                      <div className="flex items-start gap-2 rounded-xl bg-emerald-50/70 border border-emerald-100 p-2 text-emerald-950">
+                        <span className="text-base shrink-0 leading-none mt-0.5">
+                          {loc.flag}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-[11px] leading-tight truncate">
+                            📍 {loc.main}
+                          </p>
+                          <p className="text-[10px] text-emerald-700/90 font-medium truncate mt-0.5">
+                            {loc.sub}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* 💻 System Name & Device Box */}
+                      <div className="flex items-start gap-2 rounded-xl bg-blue-50/70 border border-blue-100 p-2 text-blue-950">
+                        <span className="text-base shrink-0 leading-none mt-0.5">
+                          {sys.icon}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-[11px] leading-tight truncate">
+                            💻 {sys.sysTitle}
+                          </p>
+                          <p className="text-[10px] text-blue-700/90 font-medium truncate mt-0.5 flex items-center gap-1.5">
+                            <span>🌐 {sys.browserTitle}</span>
+                            {sys.screen && (
+                              <>
+                                <span>•</span>
+                                <span>🖥️ {sys.screen}</span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom: Visitor ID & Source Footnote */}
+                    <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[10px] text-neutral-500">
+                      <span className="font-mono text-neutral-400">
+                        ID: #{v.visitorId ? v.visitorId.slice(-6) : "anon"}
+                      </span>
+                      <span className="font-semibold text-neutral-600 truncate max-w-[150px]">
+                        {v.referrer && v.referrer !== "Direct" && v.referrer !== "Direct / Internal"
+                          ? `🔗 Via ${v.referrer}`
+                          : "⚡ Direct Visit"}
+                      </span>
+                    </div>
                   </div>
-                  <span className="shrink-0 rounded-md bg-white border border-neutral-200 px-2 py-0.5 text-[10px] font-bold text-neutral-600">
-                    {formatTimeAgo(v.createdAt)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+
+            {/* View More / Show Less toggle if more than 12 */}
+            {(data?.recentVisits?.length || 0) > 12 && (
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => setShowAllRecent(!showAllRecent)}
+                  className="rounded-full border border-neutral-300 bg-white px-5 py-2 text-xs font-bold text-neutral-800 hover:bg-neutral-50 hover:border-black transition cursor-pointer"
+                >
+                  {showAllRecent
+                    ? "Show Less Recent Visits ▲"
+                    : `View All ${data?.recentVisits?.length} Recent Visits ▼`}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
   );
 }
+

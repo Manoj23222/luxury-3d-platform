@@ -7,6 +7,9 @@ export interface IVisitorLog extends Document {
   device: "Mobile" | "Desktop" | "Tablet";
   browser?: string;
   os?: string;
+  systemName?: string;
+  screenRes?: string;
+  language?: string;
   city?: string;
   country?: string;
   region?: string;
@@ -42,6 +45,18 @@ const VisitorLogSchema = new Schema<IVisitorLog>(
     os: {
       type: String,
       default: "Unknown",
+    },
+    systemName: {
+      type: String,
+      default: "Unknown Device",
+    },
+    screenRes: {
+      type: String,
+      default: "",
+    },
+    language: {
+      type: String,
+      default: "",
     },
     city: {
       type: String,
