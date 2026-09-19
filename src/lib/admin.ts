@@ -1,7 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 
 export const ADMIN_EMAILS = [
-  "3ddesigner5546@gmail.com",
   "ashokm3414@gmail.com",
   "admin@luxury3d.com",
 ];
@@ -13,7 +12,7 @@ export async function requireAdmin() {
     return {
       id: "admin-master",
       name: "Ashok Meena",
-      email: "3ddesigner5546@gmail.com",
+      email: "ashokm3414@gmail.com",
       role: "admin",
       permissions: ["all", "upload_3d", "upload_photo", "manage_assets"],
     };

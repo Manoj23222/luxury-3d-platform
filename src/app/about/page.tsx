@@ -83,10 +83,10 @@ export default function AboutPage() {
                 {/* Action Contact Buttons */}
                 <div className="mt-6 flex flex-wrap items-center gap-3">
                   <a
-                    href="mailto:3ddesigner5546@gmail.com"
+                    href="mailto:ashokm3414@gmail.com"
                     className="rounded-full bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-neutral-800"
                   >
-                    ✉️ 3ddesigner5546@gmail.com
+                    ✉️ ashokm3414@gmail.com
                   </a>
                   <a
                     href="tel:+918000093300"
@@ -201,6 +201,140 @@ export default function AboutPage() {
               <div className="mt-6 pt-4 border-t border-neutral-200 flex items-center justify-between text-xs">
                 <span className="font-bold text-neutral-700">Languages:</span>
                 <span className="font-medium text-neutral-600">Hindi (Native) • English (Proficient)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured AI Web Engineering & Full-Stack Projects */}
+      <section className="py-16 bg-neutral-50/50 border-b border-neutral-200 text-neutral-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-bold text-neutral-800 shadow-2xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Full-Stack & AI Software Engineering</span>
+              </div>
+              <h2 className="mt-2.5 text-2xl font-black text-black sm:text-3xl lg:text-4xl tracking-tight">
+                Featured Web Platforms & AI Applications
+              </h2>
+              <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 max-w-2xl">
+                Combining <strong>M.Sc. Computer Science</strong> technical engineering with advanced <strong>AI Prompt Engineering</strong> to build and deploy production web applications at scale.
+              </p>
+            </div>
+
+            <Link
+              href="/contact?subject=Full-Stack%20Web%20Development%20Inquiry"
+              className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-neutral-800 shrink-0"
+            >
+              <span>Hire for Web Development</span>
+              <span>✉️</span>
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            {/* Project 1: BootKit */}
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-0.5 text-[11px] font-bold text-emerald-800">
+                    🛒 Full-Stack E-Commerce & PWA
+                  </span>
+                  <span className="rounded-full bg-black text-white px-3 py-0.5 text-[10.5px] font-bold">
+                    🤖 AI Prompt Engineered
+                  </span>
+                </div>
+
+                <h3 className="mt-4 text-xl font-black text-black">
+                  BootKiT — Quick-Commerce & Grocery Delivery Platform
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-neutral-500">
+                  Next.js • React • TypeScript • Supabase • Tailwind CSS • Vercel • PWA
+                </p>
+
+                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-700">
+                  Built a full-fledged quick-commerce progressive web app using AI-assisted rapid engineering. Features instant category indexing, live voice/text search, localized delivery addresses, dynamic cart & checkout management, and mobile PWA native navigation.
+                </p>
+
+                <div className="mt-4 rounded-2xl border border-neutral-100 bg-neutral-50/70 p-3.5 space-y-1.5 text-xs text-neutral-700">
+                  <p className="font-bold text-[10.5px] uppercase tracking-wider text-neutral-400">Highlights:</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> 10–20 minute delivery workflow & multi-category product catalog</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> Progressive Web App (PWA) installable on mobile devices</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> Production deployed on custom domain (bootkit.in)</p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://www.bootkit.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full bg-black px-4 py-2 text-xs font-bold text-white hover:bg-neutral-800 transition"
+                  >
+                    Visit bootkit.in ↗
+                  </a>
+                  <a
+                    href="https://bootkit.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-black transition"
+                  >
+                    Vercel Mirror ↗
+                  </a>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700">● Live Production</span>
+              </div>
+            </div>
+
+            {/* Project 2: Lux3D */}
+            <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="rounded-full bg-purple-50 border border-purple-200 px-3 py-0.5 text-[11px] font-bold text-purple-800">
+                    🧊 3D WebGL & Creative Platform
+                  </span>
+                  <span className="rounded-full bg-black text-white px-3 py-0.5 text-[10.5px] font-bold">
+                    🤖 AI-Assisted Architecture
+                  </span>
+                </div>
+
+                <h3 className="mt-4 text-xl font-black text-black">
+                  Lux3D — 3D & AI Creative Web Platform
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-neutral-500">
+                  Next.js 16 • TypeScript • Three.js / WebGL • MongoDB • Tailwind CSS 4
+                </p>
+
+                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-700">
+                  Architected an interactive 3D WebGL asset viewer and creative photo retouching showcase platform. Integrated 60 FPS Three.js orbit controls, Before/After image split sliders, and custom real-time traffic tracking analytics.
+                </p>
+
+                <div className="mt-4 rounded-2xl border border-neutral-100 bg-neutral-50/70 p-3.5 space-y-1.5 text-xs text-neutral-700">
+                  <p className="font-bold text-[10.5px] uppercase tracking-wider text-neutral-400">Highlights:</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> 60 FPS real-time Three.js WebGL orbit viewer for Blender GLB assets</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> Interactive Before/After split sliders & high-res image modals</p>
+                  <p className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold">✓</span> Real-time live visitor tracking engine & admin traffic dashboard</p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/portfolio"
+                    className="rounded-full bg-black px-4 py-2 text-xs font-bold text-white hover:bg-neutral-800 transition"
+                  >
+                    Explore 3D Platform ↗
+                  </Link>
+                  <Link
+                    href="/photo-editing"
+                    className="rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-black transition"
+                  >
+                    Photo Retouching ↗
+                  </Link>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700">● Live Production</span>
               </div>
             </div>
           </div>

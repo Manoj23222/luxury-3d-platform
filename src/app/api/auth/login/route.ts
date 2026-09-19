@@ -7,7 +7,7 @@ import User from "@/models/User";
 const JWT_SECRET = process.env.JWT_SECRET || "lux3d_secret_key";
 
 const MASTER_ADMIN = {
-  email: "3ddesigner5546@gmail.com",
+  email: "ashokm3414@gmail.com",
   password: "Ash@7424",
   name: "Ashok Meena",
   role: "admin",

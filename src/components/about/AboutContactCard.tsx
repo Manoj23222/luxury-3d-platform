@@ -26,7 +26,7 @@ export default function AboutContactCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          targetEmail: "3ddesigner5546@gmail.com",
+          targetEmail: "ashokm3414@gmail.com",
         }),
       });
 
@@ -38,7 +38,7 @@ export default function AboutContactCard() {
         alert(data.message || "Failed to send message");
       }
     } catch {
-      alert("Failed to send message. Please email directly at 3ddesigner5546@gmail.com");
+      alert("Failed to send message. Please email directly at ashokm3414@gmail.com");
     } finally {
       setLoading(false);
     }

@@ -93,7 +93,7 @@ export async function PATCH(
         featured: updateData.featured ?? fallbackItem?.featured ?? true,
         creatorId: user.id || "admin-master",
         creatorName: user.name || "Master Studio Admin",
-        creatorEmail: user.email || "3ddesigner5546@gmail.com",
+        creatorEmail: user.email || "ashokm3414@gmail.com",
       });
 
       return NextResponse.json({ success: true, product: created });

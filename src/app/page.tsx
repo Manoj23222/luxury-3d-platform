@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import HeroRotatingCards from "@/components/home/HeroRotatingCards";
 import MyWorkSection from "@/components/home/MyWorkSection";
 import SoftwareSkillsSlider from "@/components/home/SoftwareSkillsSlider";
+import AiWebProjectsSection from "@/components/home/AiWebProjectsSection";
 import ServicesSection from "@/components/home/ServicesSection";
 import ProcessSection from "@/components/home/ProcessSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
@@ -22,7 +23,10 @@ export default function HomePage() {
       {/* 3. Specialized Software & Creative Workstations Slider */}
       <SoftwareSkillsSlider />
 
-      {/* 4. Specialized Creative Services & Production Solutions */}
+      {/* 4. AI-Assisted Web Engineering & Full-Stack Projects Showcase (BootKit & Lux3D) */}
+      <AiWebProjectsSection />
+
+      {/* 5. Specialized Creative Services & Production Solutions */}
       <ServicesSection />
 
       {/* 5. 4-Phase Creative Production Workflow */}

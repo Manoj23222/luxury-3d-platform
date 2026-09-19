@@ -30,11 +30,11 @@ export default function Footer() {
 
             {/* Email Contact */}
             <a
-              href="mailto:3ddesigner5546@gmail.com"
+              href="mailto:ashokm3414@gmail.com"
               className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-neutral-800 shadow-xs transition hover:border-black hover:bg-white"
             >
               <span>✉️</span>
-              <span className="font-bold">3ddesigner5546@gmail.com</span>
+              <span className="font-bold">ashokm3414@gmail.com</span>
             </a>
 
             {/* Phone Contact */}

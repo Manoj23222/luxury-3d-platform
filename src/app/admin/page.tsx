@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import AdminStats from "@/components/admin/AdminStats";
+import VisitorAnalyticsView from "@/components/admin/VisitorAnalyticsView";
 import BeforeAfterSlider from "@/components/photo-editing/BeforeAfterSlider";
 
 type Product = {
@@ -328,6 +329,11 @@ export default function AdminPage() {
     <div className="pb-20 max-w-7xl">
       {/* Top Stats */}
       <AdminStats />
+
+      {/* Live Visitor Analytics & Traffic Dashboard */}
+      <div className="mt-8">
+        <VisitorAnalyticsView />
+      </div>
 
       {/* Main Upload Portals (2 Hero Cards) */}
       <div className="mt-8">

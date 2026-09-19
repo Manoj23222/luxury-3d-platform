@@ -18,14 +18,14 @@ export async function GET() {
 
     if (
       authUser.id === "admin-master" ||
-      authUser.email?.toLowerCase() === "3ddesigner5546@gmail.com"
+      authUser.email?.toLowerCase() === "ashokm3414@gmail.com"
     ) {
       return NextResponse.json({
         success: true,
         user: {
           id: authUser.id,
           name: authUser.name || "Ashok Meena",
-          email: "3ddesigner5546@gmail.com",
+          email: "ashokm3414@gmail.com",
           role: "admin",
           permissions: ["all", "upload_3d", "upload_photo", "manage_assets"],
           isActive: true,

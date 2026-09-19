@@ -11,12 +11,10 @@ export default function ContactCTA() {
           <div className="pointer-events-none absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-blue-100/40 blur-3xl" />
 
           <div className="relative mx-auto max-w-3xl text-center space-y-4">
-            {/* Live Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-bold text-neutral-800 shadow-2xs">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>✉️ Let’s Work Together</span>
-              <span className="text-neutral-300">•</span>
-              <span className="text-emerald-700 font-bold">Open for Remote & Contract Hire</span>
+            {/* Live Designer Badge */}
+            <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 px-4.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
+              <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+              <span>✉️ Let’s Work Together • Open for Remote & Contract Hire</span>
             </div>
 
             <h2 className="text-3xl font-black tracking-tight text-black sm:text-4xl lg:text-5xl">
@@ -52,10 +50,10 @@ export default function ContactCTA() {
               <WhatsAppButton />
 
               <a
-                href="mailto:3ddesigner5546@gmail.com"
+                href="mailto:ashokm3414@gmail.com"
                 className="rounded-full border border-neutral-300 bg-white px-6 py-3.5 text-xs font-bold text-neutral-900 shadow-xs transition duration-200 hover:border-black hover:bg-neutral-50"
               >
-                ✉️ 3ddesigner5546@gmail.com
+                ✉️ ashokm3414@gmail.com
               </a>
             </div>
 
