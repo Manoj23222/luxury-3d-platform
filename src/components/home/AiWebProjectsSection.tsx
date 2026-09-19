@@ -46,7 +46,7 @@ const projects: WebProject[] = [
       "Production-deployed on Vercel with custom domain integration (bootkit.in)",
     ],
     liveUrl: "https://www.bootkit.in/",
-    liveUrlLabel: "Visit Live App (bootkit.in) ↗",
+    liveUrlLabel: "Visit Live  (bootkit.in) ↗",
     secondaryUrl: "https://bootkit.vercel.app/",
     secondaryUrlLabel: "Vercel Mirror ↗",
     icon: "🛍️",

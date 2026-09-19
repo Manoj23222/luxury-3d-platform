@@ -24,25 +24,17 @@ export default function AdminHeader({
 
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            href="/admin/visitors"
-            className="flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-900 transition hover:bg-emerald-100"
-          >
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Live Visitors 📍</span>
-          </Link>
-
-          <Link
             href="/admin/upload-3d"
             className="flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-xs font-bold text-white transition hover:bg-neutral-800"
           >
-            <span>+</span> 3D Upload
+            <span>+</span> 3D File Upload
           </Link>
 
           <Link
             href="/admin/upload-photo"
             className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-50 px-4 py-2 text-xs font-bold text-black transition hover:border-black hover:bg-white"
           >
-            <span>+</span> Photo Upload
+            <span>+</span> Photo Editor Upload
           </Link>
 
           <Link

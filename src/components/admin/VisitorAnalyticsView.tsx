@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
 
 type AnalyticsData = {
   totalVisits: number;
@@ -169,6 +168,8 @@ export default function VisitorAnalyticsView() {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
   const [showAllRecent, setShowAllRecent] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchAnalytics = useCallback(async () => {
     try {
@@ -213,7 +214,7 @@ export default function VisitorAnalyticsView() {
     if (path === "/") return "🏠 Home (Portfolio Showcase)";
     if (path === "/portfolio") return "🧊 3D Models Archive";
     if (path.startsWith("/portfolio/"))
-      return "📦 3D Project View (" + path.replace("/portfolio/", "") + ")";
+      return "📦 3D Project (" + path.replace("/portfolio/", "") + ")";
     if (path === "/photo-editing") return "✨ Creative & Retouching";
     if (path === "/contact") return "✉️ Contact Form";
     if (path === "/about") return "👤 About Ashok Meena";
@@ -228,9 +229,23 @@ export default function VisitorAnalyticsView() {
     return `${Math.floor(diff / 86400)}d ago`;
   };
 
+  const allVisits = data?.recentVisits || [];
+  const filteredVisits = allVisits.filter((v) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      v.path.toLowerCase().includes(q) ||
+      (v.city && v.city.toLowerCase().includes(q)) ||
+      (v.country && v.country.toLowerCase().includes(q)) ||
+      (v.systemName && v.systemName.toLowerCase().includes(q)) ||
+      (v.browser && v.browser.toLowerCase().includes(q)) ||
+      (v.visitorId && v.visitorId.toLowerCase().includes(q))
+    );
+  });
+
   const visibleVisits = showAllRecent
-    ? data?.recentVisits || []
-    : (data?.recentVisits || []).slice(0, 12);
+    ? filteredVisits
+    : filteredVisits.slice(0, 12);
 
   return (
     <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-xs">
@@ -521,9 +536,9 @@ export default function VisitorAnalyticsView() {
         </div>
       ) : null}
 
-      {/* ⏱️ Live Recent Visitor Activity Stream with System Name & Location Name (List View) */}
+      {/* ⏱️ Live Recent Visitor Activity Stream with List View & Open Page Button */}
       <div className="mt-8 pt-6 border-t border-neutral-200">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
           <div>
             <h4 className="text-base font-black text-black flex items-center gap-2">
               <span>⏱️ Recent Visitor Activity Stream</span>
@@ -532,151 +547,325 @@ export default function VisitorAnalyticsView() {
               </span>
             </h4>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Live records of visitor cities, system hardware, and visited portfolio pages.
+              Real-time feed of pages viewed, system specs, and exact geo-locations with one-click page preview.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/visitors"
-              className="flex items-center gap-1.5 rounded-full border border-black bg-black px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-neutral-800 transition"
-            >
-              <span>📍 Open Full Dedicated Page (अलग पेज)</span>
-              <span>↗</span>
-            </Link>
+          {/* View Toggle & Search Bar */}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Search filter input */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search page, city, device..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-44 sm:w-56 rounded-xl border border-neutral-200 bg-neutral-50/70 px-3 py-1.5 text-xs text-neutral-800 placeholder-neutral-400 focus:bg-white focus:border-black focus:outline-hidden transition"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* View Mode Toggle: List vs Grid */}
+            <div className="flex items-center rounded-xl border border-neutral-200 bg-neutral-100 p-0.5 text-xs">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center gap-1 rounded-lg px-2.5 py-1 font-bold transition cursor-pointer ${
+                  viewMode === "list"
+                    ? "bg-white text-black shadow-2xs"
+                    : "text-neutral-600 hover:text-black"
+                }`}
+                title="List Feed View"
+              >
+                <span>📋</span>
+                <span className="hidden sm:inline">List</span>
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`flex items-center gap-1 rounded-lg px-2.5 py-1 font-bold transition cursor-pointer ${
+                  viewMode === "grid"
+                    ? "bg-white text-black shadow-2xs"
+                    : "text-neutral-600 hover:text-black"
+                }`}
+                title="Cards Grid View"
+              >
+                <span>🎴</span>
+                <span className="hidden sm:inline">Cards</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {!data?.recentVisits || data.recentVisits.length === 0 ? (
-          <div className="py-10 text-center text-xs text-neutral-400 rounded-2xl border border-neutral-100 bg-neutral-50">
-            No recent activity recorded yet. Open the website on your phone or laptop to test live logging!
+        {!filteredVisits || filteredVisits.length === 0 ? (
+          <div className="py-12 text-center text-xs text-neutral-400 rounded-2xl border border-neutral-100 bg-neutral-50">
+            {searchQuery
+              ? `No visitor logs matching "${searchQuery}".`
+              : "No recent activity recorded yet. Open the website on your phone or laptop to test live logging!"}
+          </div>
+        ) : viewMode === "list" ? (
+          /* =================== 📋 LIST FEED VIEW =================== */
+          <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-neutral-200 bg-neutral-50/80 text-[10.5px] font-bold uppercase tracking-wider text-neutral-500">
+                    <th className="py-3 px-4">Visited Page & Route</th>
+                    <th className="py-3 px-4">📍 Location</th>
+                    <th className="py-3 px-4">💻 System & Specs</th>
+                    <th className="py-3 px-4 text-right">Time & Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {visibleVisits.map((v) => {
+                    const loc = formatVisitorLocation(v.city, v.region, v.country);
+                    const sys = formatVisitorSystem(
+                      v.systemName,
+                      v.os,
+                      v.browser,
+                      v.screenRes,
+                      v.device
+                    );
+                    const isVeryRecent =
+                      Date.now() - new Date(v.createdAt).getTime() < 1000 * 60 * 5;
+
+                    return (
+                      <tr
+                        key={v._id}
+                        className="group hover:bg-neutral-50/90 transition-colors"
+                      >
+                        {/* 1. Visited Page & Route */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <div className="flex items-start gap-2.5">
+                            <span
+                              className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                                isVeryRecent
+                                  ? "bg-emerald-500 ring-4 ring-emerald-100 animate-pulse"
+                                  : "bg-neutral-300"
+                              }`}
+                            />
+                            <div className="min-w-0 max-w-[280px]">
+                              <p className="font-extrabold text-neutral-900 truncate text-[12.5px] group-hover:text-black">
+                                {getPageTitle(v.path)}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                <span className="font-mono text-[10.5px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">
+                                  {v.path}
+                                </span>
+                                <span className="text-[10px] text-neutral-400">
+                                  ID: #{v.visitorId ? v.visitorId.slice(-6) : "user"}
+                                </span>
+                                {v.referrer && v.referrer !== "Direct" && v.referrer !== "Direct / Internal" && (
+                                  <span className="text-[10px] font-semibold text-neutral-500 truncate max-w-[120px]">
+                                    🔗 {v.referrer}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 2. 📍 Location */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/70 px-2.5 py-1.5 text-emerald-950">
+                            <span className="text-base leading-none">
+                              {loc.flag}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="font-bold text-[11px] leading-tight truncate max-w-[170px]">
+                                📍 {loc.main}
+                              </p>
+                              <p className="text-[9.5px] text-emerald-700 font-medium truncate mt-0.5">
+                                {loc.sub}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 3. 💻 System & Device */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50/80 border border-blue-200/70 px-2.5 py-1.5 text-blue-950">
+                            <span className="text-base leading-none">
+                              {sys.icon}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="font-bold text-[11px] leading-tight truncate max-w-[180px]">
+                                {sys.sysTitle}
+                              </p>
+                              <p className="text-[9.5px] text-blue-700 font-medium truncate mt-0.5 flex items-center gap-1">
+                                <span>{sys.browserTitle}</span>
+                                {sys.screen && <span>• {sys.screen}</span>}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 4. Time & Open Page Button */}
+                        <td className="py-3.5 px-4 align-middle text-right">
+                          <div className="flex items-center justify-end gap-2.5">
+                            <span
+                              className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                                isVeryRecent
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : "bg-neutral-100 text-neutral-600"
+                              }`}
+                            >
+                              {formatTimeAgo(v.createdAt)}
+                            </span>
+
+                            {/* Open Page Button (opens in new tab) */}
+                            <a
+                              href={v.path}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-xs font-black text-neutral-800 shadow-2xs hover:bg-black hover:text-white hover:border-black transition-all cursor-pointer group/btn"
+                              title={`Open ${v.path} in a new tab`}
+                            >
+                              <span>Open Page</span>
+                              <span className="text-neutral-400 group-hover/btn:text-white transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5">
+                                ↗
+                              </span>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-neutral-200 bg-neutral-50/80 text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-                  <th className="py-3 pl-4">Time</th>
-                  <th className="py-3 px-3">📍 Location Name (City / State)</th>
-                  <th className="py-3 px-3">💻 System & Device</th>
-                  <th className="py-3 px-3">📄 Page Shown</th>
-                  <th className="py-3 px-3">🔗 Source</th>
-                  <th className="py-3 pr-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-100">
-                {visibleVisits.map((v) => {
-                  const loc = formatVisitorLocation(v.city, v.region, v.country);
-                  const sys = formatVisitorSystem(
-                    v.systemName,
-                    v.os,
-                    v.browser,
-                    v.screenRes,
-                    v.device
-                  );
-                  const isVeryRecent =
-                    Date.now() - new Date(v.createdAt).getTime() < 1000 * 60 * 5;
+          /* =================== 🎴 CARDS GRID VIEW =================== */
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleVisits.map((v) => {
+              const loc = formatVisitorLocation(v.city, v.region, v.country);
+              const sys = formatVisitorSystem(
+                v.systemName,
+                v.os,
+                v.browser,
+                v.screenRes,
+                v.device
+              );
+              const isVeryRecent =
+                Date.now() - new Date(v.createdAt).getTime() < 1000 * 60 * 5;
 
-                  return (
-                    <tr
-                      key={v._id}
-                      className="hover:bg-neutral-50/90 transition group"
+              return (
+                <div
+                  key={v._id}
+                  className="flex flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-4 text-xs shadow-2xs hover:border-black/30 hover:shadow-xs transition-all duration-200"
+                >
+                  {/* Top: Visited Page & Time Badge */}
+                  <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-neutral-100">
+                    <div className="min-w-0">
+                      <p className="font-extrabold text-neutral-900 truncate text-[12px] leading-tight">
+                        {getPageTitle(v.path)}
+                      </p>
+                      <p className="text-[10.5px] text-neutral-400 mt-0.5 font-mono">
+                        {v.path}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold flex items-center gap-1 ${
+                        isVeryRecent
+                          ? "bg-emerald-100 text-emerald-800 animate-pulse"
+                          : "bg-neutral-100 text-neutral-600"
+                      }`}
                     >
-                      {/* Time */}
-                      <td className="py-3 pl-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10.5px] font-bold ${
-                            isVeryRecent
-                              ? "bg-emerald-100 text-emerald-900 animate-pulse"
-                              : "bg-neutral-100 text-neutral-600"
-                          }`}
-                        >
-                          {isVeryRecent && (
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      {isVeryRecent && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />}
+                      {formatTimeAgo(v.createdAt)}
+                    </span>
+                  </div>
+
+                  {/* Middle: Prominent Location & System Badges */}
+                  <div className="my-3 space-y-2">
+                    {/* 📍 Location Name Box */}
+                    <div className="flex items-start gap-2 rounded-xl bg-emerald-50/70 border border-emerald-100 p-2 text-emerald-950">
+                      <span className="text-base shrink-0 leading-none mt-0.5">
+                        {loc.flag}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-[11px] leading-tight truncate">
+                          📍 {loc.main}
+                        </p>
+                        <p className="text-[10px] text-emerald-700/90 font-medium truncate mt-0.5">
+                          {loc.sub}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 💻 System Name & Device Box */}
+                    <div className="flex items-start gap-2 rounded-xl bg-blue-50/70 border border-blue-100 p-2 text-blue-950">
+                      <span className="text-base shrink-0 leading-none mt-0.5">
+                        {sys.icon}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-[11px] leading-tight truncate">
+                          💻 {sys.sysTitle}
+                        </p>
+                        <p className="text-[10px] text-blue-700/90 font-medium truncate mt-0.5 flex items-center gap-1.5">
+                          <span>🌐 {sys.browserTitle}</span>
+                          {sys.screen && (
+                            <>
+                              <span>•</span>
+                              <span>🖥️ {sys.screen}</span>
+                            </>
                           )}
-                          {formatTimeAgo(v.createdAt)}
-                        </span>
-                      </td>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-                      {/* Location Name */}
-                      <td className="py-3 px-3">
-                        <div className="flex items-center gap-1.5 max-w-xs">
-                          <span className="text-base shrink-0">{loc.flag}</span>
-                          <div>
-                            <p className="font-bold text-neutral-900 text-xs truncate">
-                              📍 {loc.main}
-                            </p>
-                            <p className="text-[10px] text-emerald-700 font-medium">
-                              {loc.sub}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
+                  {/* Bottom: Visitor ID, Referrer, and Open Page Button */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[10px] text-neutral-500">
+                    <div className="min-w-0 pr-2">
+                      <span className="font-mono text-neutral-400">
+                        ID: #{v.visitorId ? v.visitorId.slice(-6) : "anon"}
+                      </span>
+                      <span className="font-semibold text-neutral-600 truncate block mt-0.5">
+                        {v.referrer && v.referrer !== "Direct" && v.referrer !== "Direct / Internal"
+                          ? `🔗 ${v.referrer}`
+                          : "⚡ Direct Visit"}
+                      </span>
+                    </div>
 
-                      {/* System Name */}
-                      <td className="py-3 px-3">
-                        <div className="max-w-xs">
-                          <p className="font-bold text-neutral-900 text-xs flex items-center gap-1.5 truncate">
-                            <span>{sys.icon}</span>
-                            <span>{sys.sysTitle}</span>
-                          </p>
-                          <p className="text-[10px] text-neutral-500 truncate">
-                            {sys.browserTitle} {sys.screen ? `• ${sys.screen}` : ""}
-                          </p>
-                        </div>
-                      </td>
-
-                      {/* Visited Page */}
-                      <td className="py-3 px-3">
-                        <div className="max-w-xs">
-                          <p className="font-bold text-neutral-800 truncate text-xs">
-                            {getPageTitle(v.path)}
-                          </p>
-                          <p className="text-[10px] font-mono text-neutral-400 truncate">
-                            {v.path}
-                          </p>
-                        </div>
-                      </td>
-
-                      {/* Source */}
-                      <td className="py-3 px-3">
-                        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10.5px] font-semibold text-neutral-700">
-                          {v.referrer && v.referrer !== "Direct" && v.referrer !== "Direct / Internal"
-                            ? v.referrer
-                            : "⚡ Direct"}
-                        </span>
-                      </td>
-
-                      {/* Action */}
-                      <td className="py-3 pr-4 text-right">
-                        <Link
-                          href="/admin/visitors"
-                          className="rounded-lg border border-neutral-300 bg-white px-3 py-1 text-xs font-bold text-neutral-800 hover:border-black hover:bg-black hover:text-white transition shadow-2xs inline-block"
-                        >
-                          Inspect ↗
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    <a
+                      href={v.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 inline-flex items-center gap-1 rounded-xl border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-black text-neutral-800 shadow-2xs hover:bg-black hover:text-white hover:border-black transition-all cursor-pointer group"
+                      title={`Open ${v.path} in a new tab`}
+                    >
+                      <span>Open Page</span>
+                      <span className="text-neutral-400 group-hover:text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        ↗
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 
-        {/* View full page footer link */}
-        <div className="mt-4 flex items-center justify-between text-xs">
-          <span className="text-neutral-400 text-[11px]">
-            Showing recent {visibleVisits.length} entries on dashboard
-          </span>
-          <Link
-            href="/admin/visitors"
-            className="font-bold text-neutral-900 hover:underline flex items-center gap-1"
-          >
-            <span>Open All Visitor Logs & Full Filters (पूरा पेज देखें)</span>
-            <span>→</span>
-          </Link>
-        </div>
+        {/* View More / Show Less toggle if more than 12 */}
+        {filteredVisits.length > 12 && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => setShowAllRecent(!showAllRecent)}
+              className="rounded-full border border-neutral-300 bg-white px-5 py-2 text-xs font-bold text-neutral-800 hover:bg-neutral-50 hover:border-black transition cursor-pointer"
+            >
+              {showAllRecent
+                ? "Show Less Recent Visits ▲"
+                : `View All ${filteredVisits.length} Recent Visits ▼`}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -15,9 +15,6 @@ export async function POST(req: NextRequest) {
       systemName,
       screenRes,
       language,
-      clientCity,
-      clientRegion,
-      clientCountry,
     } = body;
 
     // Do not track empty, admin paths, or internal api paths
@@ -26,23 +23,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Extract Geo IP location headers (Vercel / Cloudflare / Proxies)
-    const headerCountry =
+    let country =
       req.headers.get("x-vercel-ip-country") ||
       req.headers.get("cf-ipcountry") ||
       "";
-    const headerCity =
+    let city =
       req.headers.get("x-vercel-ip-city") ||
       "";
-    const headerRegion =
+    let region =
       req.headers.get("x-vercel-ip-country-region") ||
       "";
     const forwardedFor = req.headers.get("x-forwarded-for") || "";
     const ip = forwardedFor.split(",")[0]?.trim() || "";
-
-    // Prefer high-accuracy client-side city/region if valid, otherwise header data
-    let city = (clientCity && clientCity !== "Unknown" ? clientCity : headerCity) || "";
-    let region = (clientRegion && clientRegion !== "Unknown" ? clientRegion : headerRegion) || "";
-    let country = (clientCountry && clientCountry !== "Unknown" ? clientCountry : headerCountry) || "";
 
     // If running in local dev or headers not present
     if (!country && (!ip || ip === "127.0.0.1" || ip === "::1")) {

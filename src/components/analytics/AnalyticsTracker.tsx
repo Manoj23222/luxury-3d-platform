@@ -96,54 +96,7 @@ export default function AnalyticsTracker() {
     const screenRes = typeof window !== "undefined" && window.screen ? `${window.screen.width}×${window.screen.height}` : "";
     const language = typeof navigator !== "undefined" ? (navigator.language || "") : "";
 
-    // 5. Accurate Location Retrieval (Cached in sessionStorage for fast precision)
-    let clientCity = "";
-    let clientRegion = "";
-    let clientCountry = "";
-
-    try {
-      const cachedGeo = typeof window !== "undefined" ? sessionStorage.getItem("lux3d_geo") : null;
-      if (cachedGeo) {
-        const parsed = JSON.parse(cachedGeo);
-        clientCity = parsed.city || "";
-        clientRegion = parsed.region || "";
-        clientCountry = parsed.country || "";
-      } else if (typeof window !== "undefined") {
-        // Asynchronously fetch accurate town/city name (e.g. Sardarshahar, Churu, Jaipur, Bengaluru)
-        fetch("https://ipapi.co/json/")
-          .then((res) => res.json())
-          .then((data) => {
-            if (data && (data.city || data.country_name)) {
-              const geo = {
-                city: data.city || "",
-                region: data.region || "",
-                country: data.country_code || data.country || "",
-              };
-              sessionStorage.setItem("lux3d_geo", JSON.stringify(geo));
-            }
-          })
-          .catch(() => {
-            // Secondary fallback
-            fetch("https://ipwho.is/")
-              .then((res) => res.json())
-              .then((data) => {
-                if (data && data.success) {
-                  const geo = {
-                    city: data.city || "",
-                    region: data.region || "",
-                    country: data.country_code || "",
-                  };
-                  sessionStorage.setItem("lux3d_geo", JSON.stringify(geo));
-                }
-              })
-              .catch(() => {});
-          });
-      }
-    } catch {
-      // Ignore
-    }
-
-    // 6. Get Referrer
+    // 5. Get Referrer
     let referrer = typeof document !== "undefined" && document.referrer ? document.referrer : "Direct";
     if (referrer.includes(window.location.hostname)) {
       referrer = "Direct / Internal";
@@ -159,7 +112,7 @@ export default function AnalyticsTracker() {
       referrer = "Facebook";
     }
 
-    // 7. Send payload to analytics endpoint
+    // 6. Send payload to analytics endpoint
     try {
       fetch("/api/analytics/track", {
         method: "POST",
@@ -174,9 +127,6 @@ export default function AnalyticsTracker() {
           systemName,
           screenRes,
           language,
-          clientCity,
-          clientRegion,
-          clientCountry,
         }),
         keepalive: true,
       }).catch(() => {
