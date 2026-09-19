@@ -6,6 +6,7 @@ import LogoutButton from "./LogoutButton";
 
 const menu = [
   { name: "Admin Dashboard", href: "/admin", icon: "📊" },
+  { name: "Client Messages", href: "/admin/messages", icon: "📬" },
   { name: "3D File Uploading", href: "/admin/upload-3d", icon: "📦" },
   { name: "Photo Editor Uploading", href: "/admin/upload-photo", icon: "🎨" },
   { name: "Visitor Activity", href: "/admin/visitor-activity", icon: "⏱️" },
