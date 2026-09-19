@@ -32,12 +32,12 @@ export default function Navbar() {
   const isContactActive = pathname.startsWith("/contact");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200/80 bg-gradient-to-r from-neutral-50/90 via-white/85 to-neutral-50/90 backdrop-blur-2xl shadow-2xs">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo with Next.js Optimized Image */}
+        {/* Brand Logo with Unique Light Card Matching Frame */}
         <Link
           href="/"
-          className="group relative flex shrink-0 items-center justify-center py-1 transition-transform duration-200"
+          className="group relative flex shrink-0 items-center justify-center rounded-2xl border border-neutral-200/70 bg-gradient-to-r from-neutral-100/70 via-white/90 to-neutral-50/80 px-3 py-1 shadow-2xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xs hover:scale-[1.02]"
         >
           <Image
             src="/images/logo.svg"
@@ -45,12 +45,12 @@ export default function Navbar() {
             width={180}
             height={56}
             priority
-            className="h-11 sm:h-13 lg:h-[54px] w-auto max-w-[220px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
+            className="h-10 sm:h-12 lg:h-[60px] w-auto max-w-[210px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-1.5 md:flex">
+        {/* Desktop Navigation Capsule */}
+        <div className="hidden items-center gap-1 rounded-full border border-neutral-200/70 bg-neutral-100/60 p-1 backdrop-blur-md shadow-2xs md:flex">
           {/* Home Link */}
           <Link
             href="/"
@@ -58,10 +58,10 @@ export default function Navbar() {
               backgroundColor: isHomeActive ? "#000000" : "transparent",
               color: isHomeActive ? "#ffffff" : "#404040",
             }}
-            className={`relative rounded-full px-4 py-2 text-xs font-bold transition duration-200 ${
+            className={`relative rounded-full px-4 py-1.5 text-xs font-bold transition duration-200 ${
               isHomeActive
                 ? "bg-black text-white shadow-xs"
-                : "text-neutral-700 hover:bg-neutral-100 hover:text-black"
+                : "text-neutral-700 hover:bg-white hover:text-black hover:shadow-2xs"
             }`}
           >
             <span className={isHomeActive ? "text-white font-bold" : "font-semibold"}>
@@ -82,10 +82,10 @@ export default function Navbar() {
                 backgroundColor: isWorkActive ? "#000000" : "transparent",
                 color: isWorkActive ? "#ffffff" : "#404040",
               }}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition duration-200 cursor-pointer ${
                 isWorkActive
                   ? "bg-black text-white shadow-xs"
-                  : "text-neutral-700 hover:bg-neutral-100 hover:text-black"
+                  : "text-neutral-700 hover:bg-white hover:text-black hover:shadow-2xs"
               }`}
               aria-expanded={workDropdownOpen}
             >
@@ -107,14 +107,14 @@ export default function Navbar() {
             {/* Dropdown Menu Container */}
             {workDropdownOpen && (
               <div className="absolute left-0 top-full pt-2 z-50 w-56">
-                <div className="rounded-2xl border border-neutral-200 bg-white/95 backdrop-blur-xl p-1.5 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-150 space-y-1">
+                <div className="rounded-2xl border border-neutral-200/90 bg-gradient-to-b from-white via-neutral-50/95 to-neutral-100/80 backdrop-blur-2xl p-1.5 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-150 space-y-1">
                   <Link
                     href="/portfolio"
                     onClick={() => setWorkDropdownOpen(false)}
                     className={`block w-full rounded-xl px-4 py-2.5 text-xs font-bold tracking-tight transition duration-150 whitespace-nowrap ${
                       pathname.startsWith("/portfolio")
                         ? "bg-black text-white shadow-xs"
-                        : "text-neutral-800 hover:bg-neutral-100 hover:text-black"
+                        : "text-neutral-800 hover:bg-neutral-100/90 hover:text-black"
                     }`}
                   >
                     3D Models
@@ -126,7 +126,7 @@ export default function Navbar() {
                     className={`block w-full rounded-xl px-4 py-2.5 text-xs font-bold tracking-tight transition duration-150 whitespace-nowrap ${
                       pathname.startsWith("/photo-editing")
                         ? "bg-black text-white shadow-xs"
-                        : "text-neutral-800 hover:bg-neutral-100 hover:text-black"
+                        : "text-neutral-800 hover:bg-neutral-100/90 hover:text-black"
                     }`}
                   >
                     Branding & Creative
@@ -143,10 +143,10 @@ export default function Navbar() {
               backgroundColor: isAboutActive ? "#000000" : "transparent",
               color: isAboutActive ? "#ffffff" : "#404040",
             }}
-            className={`relative rounded-full px-4 py-2 text-xs font-bold transition duration-200 ${
+            className={`relative rounded-full px-4 py-1.5 text-xs font-bold transition duration-200 ${
               isAboutActive
                 ? "bg-black text-white shadow-xs"
-                : "text-neutral-700 hover:bg-neutral-100 hover:text-black"
+                : "text-neutral-700 hover:bg-white hover:text-black hover:shadow-2xs"
             }`}
           >
             <span className={isAboutActive ? "text-white font-bold" : "font-semibold"}>
@@ -161,10 +161,10 @@ export default function Navbar() {
               backgroundColor: isContactActive ? "#000000" : "transparent",
               color: isContactActive ? "#ffffff" : "#404040",
             }}
-            className={`relative rounded-full px-4 py-2 text-xs font-bold transition duration-200 ${
+            className={`relative rounded-full px-4 py-1.5 text-xs font-bold transition duration-200 ${
               isContactActive
                 ? "bg-black text-white shadow-xs"
-                : "text-neutral-700 hover:bg-neutral-100 hover:text-black"
+                : "text-neutral-700 hover:bg-white hover:text-black hover:shadow-2xs"
             }`}
           >
             <span className={isContactActive ? "text-white font-bold" : "font-semibold"}>
@@ -176,7 +176,7 @@ export default function Navbar() {
         {/* Mobile Hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-300 text-lg font-bold text-black md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-300 bg-white text-lg font-bold text-black shadow-2xs md:hidden"
           aria-label="Toggle menu"
         >
           {mobileOpen ? "✕" : "☰"}
@@ -185,7 +185,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="border-t border-neutral-200 bg-white p-4 md:hidden">
+        <div className="border-t border-neutral-200/80 bg-neutral-50/95 backdrop-blur-2xl p-4 md:hidden shadow-lg">
           <div className="space-y-2">
             {/* Home */}
             <Link
@@ -193,15 +193,15 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className={`block rounded-xl p-3 text-xs font-bold transition ${
                 isHomeActive
-                  ? "bg-black text-white"
-                  : "bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
+                  ? "bg-black text-white shadow-xs"
+                  : "bg-white text-neutral-800 hover:bg-neutral-100 shadow-2xs"
               }`}
             >
               Home
             </Link>
 
             {/* My Work Category Header & Sublinks */}
-            <div className="rounded-2xl border border-neutral-200 bg-neutral-50/70 p-2.5">
+            <div className="rounded-2xl border border-neutral-200 bg-white/80 p-2.5 shadow-2xs">
               <p className="px-2 py-1 text-[11px] font-black uppercase tracking-wider text-neutral-500">
                 My Work
               </p>
@@ -211,8 +211,8 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={`block w-full rounded-xl p-3 text-xs font-bold transition ${
                     pathname.startsWith("/portfolio")
-                      ? "bg-black text-white"
-                      : "bg-white text-neutral-800 hover:bg-neutral-100 shadow-2xs"
+                      ? "bg-black text-white shadow-xs"
+                      : "bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
                   }`}
                 >
                   3D Models
@@ -223,8 +223,8 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={`block w-full rounded-xl p-3 text-xs font-bold transition ${
                     pathname.startsWith("/photo-editing")
-                      ? "bg-black text-white"
-                      : "bg-white text-neutral-800 hover:bg-neutral-100 shadow-2xs"
+                      ? "bg-black text-white shadow-xs"
+                      : "bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
                   }`}
                 >
                   Branding & Creative
@@ -238,8 +238,8 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className={`block rounded-xl p-3 text-xs font-bold transition ${
                 isAboutActive
-                  ? "bg-black text-white"
-                  : "bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
+                  ? "bg-black text-white shadow-xs"
+                  : "bg-white text-neutral-800 hover:bg-neutral-100 shadow-2xs"
               }`}
             >
               About
@@ -251,8 +251,8 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className={`block rounded-xl p-3 text-xs font-bold transition ${
                 isContactActive
-                  ? "bg-black text-white"
-                  : "bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
+                  ? "bg-black text-white shadow-xs"
+                  : "bg-white text-neutral-800 hover:bg-neutral-100 shadow-2xs"
               }`}
             >
               Contact
