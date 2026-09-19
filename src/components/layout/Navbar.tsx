@@ -34,18 +34,18 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200/80 bg-gradient-to-r from-neutral-50/90 via-white/85 to-neutral-50/90 backdrop-blur-2xl shadow-2xs">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo with Unique Light Card Matching Frame */}
+        {/* Brand Logo - Full Size without extra border */}
         <Link
           href="/"
-          className="group relative flex shrink-0 items-center justify-center rounded-2xl border border-neutral-200/70 bg-gradient-to-r from-neutral-100/70 via-white/90 to-neutral-50/80 px-3 py-1 shadow-2xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xs hover:scale-[1.02]"
+          className="group relative flex shrink-0 items-center justify-center py-0.5 transition-transform duration-200"
         >
           <Image
             src="/images/logo.svg"
             alt="Portfolio 3D & Photo Editor"
-            width={180}
-            height={56}
+            width={240}
+            height={64}
             priority
-            className="h-10 sm:h-12 lg:h-[60px] w-auto max-w-[210px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
+            className="h-12 sm:h-14 lg:h-[56px] w-auto max-w-[260px] object-contain transition-all duration-300 group-hover:scale-105"
           />
         </Link>
 
