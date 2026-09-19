@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
 export default function AdminHeader({
   user,
@@ -43,6 +44,8 @@ export default function AdminHeader({
           >
             View Site ↗
           </Link>
+
+          <LogoutButton variant="header" />
         </div>
       </div>
     </header>

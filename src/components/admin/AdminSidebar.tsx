@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 const menu = [
   { name: "Admin Dashboard", href: "/admin", icon: "📊" },
   { name: "3D File Uploading", href: "/admin/upload-3d", icon: "📦" },
   { name: "Photo Editor Uploading", href: "/admin/upload-photo", icon: "🎨" },
+  { name: "Visitor Activity", href: "/admin/visitor-activity", icon: "⏱️" },
 ];
 
 export default function AdminSidebar() {
@@ -48,13 +50,15 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <div className="pt-8 mt-8 border-t border-neutral-100">
+      <div className="pt-8 mt-8 border-t border-neutral-100 space-y-2">
         <Link
           href="/"
           className="block w-full rounded-2xl border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-center text-xs font-bold text-neutral-800 transition hover:border-black hover:bg-black hover:text-white"
         >
           ← View Public Website
         </Link>
+
+        <LogoutButton variant="sidebar" />
       </div>
     </aside>
   );
