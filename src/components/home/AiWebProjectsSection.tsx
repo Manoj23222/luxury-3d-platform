@@ -87,48 +87,48 @@ export default function AiWebProjectsSection() {
   return (
     <section className="relative overflow-hidden border-b border-neutral-200 bg-white py-12 sm:py-16 text-neutral-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* UNIQUE TECH EMERALD PROMOTIONAL SHOWCASE BANNER CONTAINER */}
-        <div className="relative overflow-hidden rounded-3xl border border-emerald-900/40 bg-gradient-to-br from-[#061814] via-[#09221d] to-[#040e0c] p-6 sm:p-8 lg:p-10 shadow-2xl">
+        {/* UNIQUE TECH EMERALD PROMOTIONAL SHOWCASE BANNER CONTAINER (LIGHT LUXURY THEME) */}
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/60 p-6 sm:p-8 lg:p-10 shadow-xl">
           {/* Ambient Tech Glows & Matrix Texture */}
-          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-teal-400/15 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-teal-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-cyan-100/50 blur-3xl" />
 
           {/* Subtle Circuit / Dot Matrix Texture */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.035]"
             style={{
-              backgroundImage: "radial-gradient(circle at 1px 1px, #10b981 1px, transparent 0)",
+              backgroundImage: "radial-gradient(circle at 1px 1px, #059669 1px, transparent 0)",
               backgroundSize: "22px 22px",
             }}
           />
 
           {/* Banner Top Header */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 sm:pb-8 border-b border-emerald-500/20">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 sm:pb-8 border-b border-emerald-100">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 backdrop-blur-md px-3.5 py-1 text-xs font-semibold text-emerald-300 border border-emerald-500/30 mb-3 shadow-inner">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="tracking-wide uppercase text-[11px] font-bold">Full-Stack & Web Engineering Hub</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/90 border border-emerald-300/80 px-3.5 py-1 text-xs font-bold text-emerald-900 mb-3 shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span className="tracking-wide uppercase text-[11px]">Full-Stack & Web Engineering Hub</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
                 Featured Web Applications & Platforms
               </h2>
 
-              <p className="mt-2 text-xs sm:text-sm text-emerald-100/80 font-normal leading-relaxed">
+              <p className="mt-2 text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed">
                 Production-grade web applications and high-conversion platforms built rapidly using advanced <strong>AI Prompt Engineering</strong>, Next.js, React, TypeScript, and modern cloud databases.
               </p>
 
               {/* Quick Tech Highlights */}
               <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
-                  <span className="text-emerald-400">⚡</span> Next.js 16 & React Architecture
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-emerald-600 font-bold">⚡</span> Next.js 16 & React Architecture
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
-                  <span className="text-cyan-400">🛒</span> E-Commerce & Progressive Web Apps
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-blue-600 font-bold">🛒</span> E-Commerce & Progressive Web Apps
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 text-[11px] font-semibold text-emerald-200">
-                  <span className="text-teal-400">🧊</span> Interactive 3D WebGL Visualizers
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-teal-600 font-bold">🧊</span> Interactive 3D WebGL Visualizers
                 </span>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function AiWebProjectsSection() {
             <div className="flex items-center gap-3 shrink-0 self-start lg:self-auto">
               <Link
                 href="/contact?subject=Web%20Development%20%26%20AI%20App%20Inquiry"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-5 py-2.5 text-xs font-bold text-neutral-950 shadow-md transition hover:from-emerald-300 hover:to-teal-300 hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 hover:scale-105"
               >
                 <span>Hire for Web Development</span>
                 <span>✉️</span>
@@ -249,22 +249,22 @@ export default function AiWebProjectsSection() {
           </div>
 
           {/* Bottom Callout Banner */}
-          <div className="relative z-10 mt-10 rounded-2xl border border-emerald-500/30 bg-emerald-950/60 backdrop-blur-md p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="relative z-10 mt-10 rounded-2xl border border-emerald-200/90 bg-white p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 px-3 py-0.5 text-[10.5px] font-bold text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 border border-emerald-300 px-3 py-0.5 text-[10.5px] font-bold text-emerald-900">
                 ⚡ Rapid Full-Stack Development
               </span>
-              <h4 className="mt-2 text-lg font-black text-white">
+              <h4 className="mt-2 text-lg font-black text-neutral-900">
                 Need a Custom Web App, E-Commerce Store, or 3D Web Configurator?
               </h4>
-              <p className="text-xs text-emerald-200/80 mt-0.5">
+              <p className="text-xs text-neutral-600 mt-0.5">
                 Available for freelance development, frontend/full-stack projects, and innovative AI-assisted web builds.
               </p>
             </div>
 
             <Link
               href="/contact?subject=AI%20Web%20%26%20Full-Stack%20Development%20Inquiry"
-              className="shrink-0 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-6 py-3 text-xs font-bold text-neutral-950 shadow-md transition hover:from-emerald-300 hover:to-teal-300 hover:scale-105"
+              className="shrink-0 rounded-full bg-black px-6 py-3 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 hover:scale-105"
             >
               Inquire for Web Development ✉️
             </Link>

@@ -536,7 +536,7 @@ export default function SoftwareSkillsSlider() {
       {/* Auto Horizontal Scrolling Infinite Marquee Track with Left & Right container padding */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-9">
         <div
-          className="relative w-full overflow-hidden rounded-2xl border border-neutral-200 bg-black py-2.5 shadow-sm"
+          className="relative w-full overflow-hidden rounded-2xl border border-neutral-200/90 bg-neutral-50/80 py-2.5 shadow-2xs"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -561,66 +561,66 @@ export default function SoftwareSkillsSlider() {
         </div>
       </div>
 
-      {/* 2. LUXURY PROMOTIONAL SHOWCASE BANNER CONTAINER */}
+      {/* 2. LUXURY PROMOTIONAL SHOWCASE BANNER CONTAINER (LIGHT LUXURY THEME) */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-[#0c0f17] via-[#080b12] to-[#040509] p-6 sm:p-8 lg:p-10 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-200/80 bg-gradient-to-br from-violet-50/70 via-white to-indigo-50/60 p-6 sm:p-8 lg:p-10 shadow-xl">
           {/* Ambient Lighting Orbs & Grid */}
-          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-indigo-500/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-cyan-500/15 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-cyan-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-violet-100/50 blur-3xl" />
 
           {/* Subtle Cyber / Studio Grid Overlay */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
             style={{
-              backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundImage: "radial-gradient(circle at 1px 1px, #6366f1 1px, transparent 0)",
               backgroundSize: "24px 24px",
             }}
           />
 
           {/* Banner Header Section */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 sm:pb-8 border-b border-white/10">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 sm:pb-8 border-b border-indigo-100">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-3.5 py-1 text-xs font-semibold text-white/90 border border-white/15 mb-3 shadow-inner">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="tracking-wide uppercase text-[11px] font-bold">Creative Workstation Ecosystem</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100/90 border border-indigo-300/80 px-3.5 py-1 text-xs font-bold text-indigo-900 mb-3 shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
+                <span className="tracking-wide uppercase text-[11px]">Creative Workstation Ecosystem</span>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
                 Specialized 3D & Digital Design Domains
               </h3>
 
-              <p className="mt-2 text-xs sm:text-sm text-neutral-300 font-normal leading-relaxed">
+              <p className="mt-2 text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed">
                 Individual software workstations with full breakdown of production capabilities and specialized design skills.
               </p>
 
               {/* Quick Highlight Badges */}
               <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-neutral-200">
-                  <span className="text-cyan-400">⚡</span> 11 Dedicated Workstations
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-indigo-600 font-bold">⚡</span> 11 Dedicated Workstations
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-neutral-200">
-                  <span className="text-amber-400">💎</span> 130+ Specialized Skills
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-amber-600 font-bold">💎</span> 130+ Specialized Skills
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-neutral-200">
-                  <span className="text-emerald-400">✓</span> Production Pipeline Ready
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
+                  <span className="text-emerald-600 font-bold">✓</span> Production Pipeline Ready
                 </span>
               </div>
             </div>
 
             {/* Navigation Controls */}
             <div className="flex items-center gap-3 self-start lg:self-auto">
-              <span className="text-xs text-neutral-400 font-medium hidden sm:inline">
+              <span className="text-xs text-neutral-500 font-medium hidden sm:inline">
                 Scroll Workstations →
               </span>
               <button
                 onClick={() => handleScroll("left")}
                 disabled={!canScrollLeft}
                 aria-label="Scroll left"
-                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-md ${
+                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-xs ${
                   canScrollLeft
-                    ? "border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-black cursor-pointer"
-                    : "border-white/5 bg-white/5 text-neutral-600 cursor-not-allowed"
+                    ? "border-neutral-300 bg-white text-neutral-900 hover:border-black hover:bg-neutral-50 cursor-pointer"
+                    : "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
                 }`}
               >
                 ←
@@ -629,10 +629,10 @@ export default function SoftwareSkillsSlider() {
                 onClick={() => handleScroll("right")}
                 disabled={!canScrollRight}
                 aria-label="Scroll right"
-                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-md ${
+                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-xs ${
                   canScrollRight
-                    ? "border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-black cursor-pointer"
-                    : "border-white/5 bg-white/5 text-neutral-600 cursor-not-allowed"
+                    ? "border-neutral-300 bg-white text-neutral-900 hover:border-black hover:bg-neutral-50 cursor-pointer"
+                    : "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
                 }`}
               >
                 →

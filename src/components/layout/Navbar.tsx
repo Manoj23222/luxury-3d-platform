@@ -33,16 +33,16 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur-xl">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <div className="leading-tight">
-            <h1 className="text-base font-black tracking-tight text-black">
-              Portfolio
-            </h1>
-            <p className="text-[10px] font-semibold tracking-wider text-neutral-900 uppercase">
-              3D & Photo Editor
-            </p>
-          </div>
+        {/* Brand Logo with /images/logo.svg (Zoomed & Prominent) */}
+        <Link
+          href="/"
+          className="group relative flex shrink-0 items-center justify-center py-1 transition-transform duration-200"
+        >
+          <img
+            src="/images/logo.svg?v=3"
+            alt="Portfolio 3D & Photo Editor"
+            className="h-12 sm:h-14 lg:h-[80px] w-auto max-w-[240px] object-contain drop-shadow-xs transition-all duration-300 group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop Navigation */}

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import PhotoEditingGrid from "@/components/photo-editing/PhotoEditingGrid";
 import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
@@ -594,9 +593,6 @@ export default async function PhotoEditingPage() {
 
       {/* Main Dual-Mode Showcase Grid (4-Column Pure Image Grid) */}
       <PhotoEditingGrid initialWorks={works} />
-
-      {/* Luxury Footer */}
-      <Footer />
     </main>
   );
 }

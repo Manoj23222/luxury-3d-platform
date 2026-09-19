@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 
 const projectTypes = [
   {
@@ -478,8 +477,6 @@ export default function ContactPage() {
           <ContactFormContent />
         </Suspense>
       </section>
-
-      <Footer />
     </main>
   );
 }

@@ -7,7 +7,6 @@ import ServicesSection from "@/components/home/ServicesSection";
 import ProcessSection from "@/components/home/ProcessSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import ContactCTA from "@/components/home/ContactCTA";
-import Footer from "@/components/layout/Footer";
 
 export default function HomePage() {
   return (
@@ -37,9 +36,6 @@ export default function HomePage() {
 
       {/* 7. Collaboration & Hire Me Banner */}
       <ContactCTA />
-
-      {/* 8. Luxury Footer */}
-      <Footer />
     </main>
   );
 }

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import SoftwareSkillsSlider from "@/components/home/SoftwareSkillsSlider";
 import AboutContactCard from "@/components/about/AboutContactCard";
 
@@ -407,8 +406,6 @@ export default function AboutPage() {
     
 
 
-      {/* Footer */}
-      <Footer />
     </main>
   );
 }

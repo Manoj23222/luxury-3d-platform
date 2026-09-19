@@ -1,71 +1,45 @@
-import Link from "next/link";
-import WhatsAppButton from "@/components/common/WhatsAppButton";
-
 export default function ContactCTA() {
   return (
-    <section className="bg-white py-16 sm:py-20 text-neutral-900 border-b border-neutral-200">
+    <section className="relative overflow-hidden bg-white py-12 sm:py-16 text-neutral-900 border-b border-neutral-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-neutral-200 bg-gradient-to-br from-neutral-50 via-white to-neutral-100/60 p-8 sm:p-12 shadow-xl">
-          {/* Subtle Ambient Mesh Background */}
-          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-emerald-100/50 blur-3xl" />
-          <div className="pointer-events-none absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-blue-100/40 blur-3xl" />
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/60 p-8 sm:p-12 lg:p-14 shadow-xl text-neutral-900 text-center">
+          {/* Ambient Lighting Orbs */}
+          <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute -left-24 -bottom-24 h-80 w-80 rounded-full bg-teal-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-cyan-100/50 blur-3xl" />
 
-          <div className="relative mx-auto max-w-3xl text-center space-y-4">
-            {/* Live Designer Badge */}
-            <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 px-4.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
-              <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-              <span>✉️ Let’s Work Together • Open for Remote & Contract Hire</span>
-            </div>
+          {/* Subtle Cyber Grid Overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: "radial-gradient(circle at 1px 1px, #059669 1px, transparent 0)",
+              backgroundSize: "22px 22px",
+            }}
+          />
 
-            <h2 className="text-3xl font-black tracking-tight text-black sm:text-4xl lg:text-5xl">
+          <div className="relative z-10 mx-auto max-w-3xl space-y-4 sm:space-y-5">
+            <h2 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl">
               Have a 3D Modeling or Photo Retouching Project?
             </h2>
 
-            <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed max-w-2xl mx-auto">
-              Direct all project inquiries, 3D model commissions, CLO 3D digital apparel simulations, or commercial photo retouching requirements to my official desk. I typically respond within a few hours.
+            <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed max-w-2xl mx-auto font-normal">
+              Direct all 3D product modeling commissions, CLO 3D virtual fashion simulations, and commercial photo retouching requirements to my desk. <strong className="text-neutral-900 font-semibold">Also available for custom website development & web applications built rapidly using advanced AI Prompt Engineering, JavaScript / TypeScript, Next.js, React, and modern cloud databases.</strong>
             </p>
 
             {/* Hiring / Capability Badges */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
-              <span className="rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 font-bold text-neutral-800 shadow-2xs">
-                🌍 Remote Work Worldwide
+              <span className="rounded-xl border border-neutral-200/90 bg-white px-3.5 py-1.5 font-semibold text-neutral-800 shadow-2xs">
+                <span className="text-emerald-600 font-bold">🌐</span> AI Prompt-Engineered Websites & Apps
               </span>
-              <span className="rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 font-bold text-neutral-800 shadow-2xs">
-                💼 Full-Time & Freelance Contract
+              <span className="rounded-xl border border-neutral-200/90 bg-white px-3.5 py-1.5 font-semibold text-neutral-800 shadow-2xs">
+                <span className="text-blue-600 font-bold">⚡</span> JavaScript • TypeScript • Next.js
               </span>
-              <span className="rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 font-bold text-neutral-800 shadow-2xs">
-                ⚡ Rapid Production Turnaround
+              <span className="rounded-xl border border-neutral-200/90 bg-white px-3.5 py-1.5 font-semibold text-neutral-800 shadow-2xs">
+                <span className="text-amber-600 font-bold">🏺</span> 3D CGI • CLO 3D Fashion • Retouching
               </span>
-            </div>
-
-            {/* Contact Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-              <Link
-                href="/contact"
-                className="rounded-full bg-black px-7 py-3.5 text-xs font-bold text-white shadow-md transition duration-200 hover:bg-neutral-800 hover:scale-105"
-              >
-                Start a Project / Hire Me →
-              </Link>
-
-              <WhatsAppButton />
-
-              <a
-                href="mailto:ashokm3414@gmail.com"
-                className="rounded-full border border-neutral-300 bg-white px-6 py-3.5 text-xs font-bold text-neutral-900 shadow-xs transition duration-200 hover:border-black hover:bg-neutral-50"
-              >
-                ✉️ ashokm3414@gmail.com
-              </a>
-            </div>
-
-            {/* Fast Phone / Location Indicator */}
-            <div className="pt-4 border-t border-neutral-200 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-neutral-500">
-              <a href="tel:+918000093300" className="hover:text-black transition">
-                📞 +91 80000 93300
-              </a>
-              <span>•</span>
-              <span>📍 Sardarshahar, Rajasthan, India</span>
-              <span>•</span>
-              <span className="text-emerald-700 font-bold">🟢 Available for New Projects</span>
+              <span className="rounded-xl border border-neutral-200/90 bg-white px-3.5 py-1.5 font-semibold text-neutral-800 shadow-2xs">
+                <span className="text-teal-600 font-bold">🌍</span> Remote Worldwide Availability
+              </span>
             </div>
           </div>
         </div>
