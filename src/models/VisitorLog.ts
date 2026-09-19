@@ -7,6 +7,10 @@ export interface IVisitorLog extends Document {
   device: "Mobile" | "Desktop" | "Tablet";
   browser?: string;
   os?: string;
+  city?: string;
+  country?: string;
+  region?: string;
+  ip?: string;
   createdAt: Date;
 }
 
@@ -39,6 +43,22 @@ const VisitorLogSchema = new Schema<IVisitorLog>(
       type: String,
       default: "Unknown",
     },
+    city: {
+      type: String,
+      default: "Unknown",
+    },
+    country: {
+      type: String,
+      default: "Unknown",
+    },
+    region: {
+      type: String,
+      default: "Unknown",
+    },
+    ip: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
@@ -48,6 +68,7 @@ const VisitorLogSchema = new Schema<IVisitorLog>(
 // Compound indexes for fast aggregations
 VisitorLogSchema.index({ createdAt: -1 });
 VisitorLogSchema.index({ path: 1, createdAt: -1 });
+VisitorLogSchema.index({ country: 1, createdAt: -1 });
 
 export default mongoose.models.VisitorLog ||
   mongoose.model<IVisitorLog>("VisitorLog", VisitorLogSchema);

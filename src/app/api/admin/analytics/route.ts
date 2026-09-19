@@ -78,13 +78,67 @@ export async function GET() {
       }
     });
 
-    // 6. Recent Visitor Logs (Last 12)
+    // 6. Top Countries
+    const topCountries = await VisitorLog.aggregate([
+      {
+        $match: {
+          country: { $ne: "Unknown" },
+        },
+      },
+      {
+        $group: {
+          _id: "$country",
+          views: { $sum: 1 },
+          uniqueVisitors: { $addToSet: "$visitorId" },
+        },
+      },
+      {
+        $project: {
+          country: "$_id",
+          views: 1,
+          uniqueVisitors: { $size: "$uniqueVisitors" },
+          _id: 0,
+        },
+      },
+      { $sort: { views: -1 } },
+      { $limit: 6 },
+    ]);
+
+    // 7. Top Cities
+    const topCities = await VisitorLog.aggregate([
+      {
+        $match: {
+          city: { $ne: "Unknown" },
+        },
+      },
+      {
+        $group: {
+          _id: "$city",
+          country: { $first: "$country" },
+          views: { $sum: 1 },
+          uniqueVisitors: { $addToSet: "$visitorId" },
+        },
+      },
+      {
+        $project: {
+          city: "$_id",
+          country: 1,
+          views: 1,
+          uniqueVisitors: { $size: "$uniqueVisitors" },
+          _id: 0,
+        },
+      },
+      { $sort: { views: -1 } },
+      { $limit: 6 },
+    ]);
+
+    // 8. Recent Visitor Logs (Last 15 with location)
     const recentVisits = await VisitorLog.find()
       .sort({ createdAt: -1 })
-      .limit(12)
+      .limit(15)
       .lean();
 
-    // 7. Last 7 Days Daily Breakdown
+    // 9. Last 7 Days Daily Breakdown
     const dailyChart = await VisitorLog.aggregate([
       {
         $match: {
@@ -121,6 +175,8 @@ export async function GET() {
         activeNow,
         topPages,
         devices,
+        topCountries,
+        topCities,
         recentVisits,
         dailyChart,
       },
@@ -139,6 +195,8 @@ export async function GET() {
           activeNow: 0,
           topPages: [],
           devices: { Mobile: 0, Desktop: 0, Tablet: 0 },
+          topCountries: [],
+          topCities: [],
           recentVisits: [],
           dailyChart: [],
         },

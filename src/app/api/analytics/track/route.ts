@@ -12,6 +12,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, ignored: true });
     }
 
+    // Extract Geo IP location headers (Vercel / Cloudflare / Proxies)
+    const country =
+      req.headers.get("x-vercel-ip-country") ||
+      req.headers.get("cf-ipcountry") ||
+      "Unknown";
+    const city =
+      req.headers.get("x-vercel-ip-city") ||
+      req.headers.get("x-vercel-ip-country-region") ||
+      "Unknown";
+    const region = req.headers.get("x-vercel-ip-country-region") || "Unknown";
+    const forwardedFor = req.headers.get("x-forwarded-for") || "";
+    const ip = forwardedFor.split(",")[0]?.trim() || "";
+
     await connectDB();
 
     await VisitorLog.create({
@@ -21,6 +34,10 @@ export async function POST(req: NextRequest) {
       device: ["Mobile", "Desktop", "Tablet"].includes(device) ? device : "Desktop",
       browser: (browser || "Unknown").slice(0, 50),
       os: (os || "Unknown").slice(0, 50),
+      country: country.slice(0, 50),
+      city: decodeURIComponent(city).slice(0, 80),
+      region: region.slice(0, 50),
+      ip: ip.slice(0, 60),
     });
 
     return NextResponse.json({ success: true });

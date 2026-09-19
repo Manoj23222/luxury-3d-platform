@@ -10,6 +10,8 @@ type AnalyticsData = {
   activeNow: number;
   topPages: { path: string; views: number; uniqueVisitors: number }[];
   devices: { Mobile: number; Desktop: number; Tablet: number };
+  topCountries?: { country: string; views: number; uniqueVisitors: number }[];
+  topCities?: { city: string; country: string; views: number; uniqueVisitors: number }[];
   recentVisits: {
     _id: string;
     path: string;
@@ -17,6 +19,10 @@ type AnalyticsData = {
     browser?: string;
     os?: string;
     referrer?: string;
+    city?: string;
+    country?: string;
+    region?: string;
+    ip?: string;
     createdAt: string;
   }[];
   dailyChart: { date: string; views: number; uniqueVisitors: number }[];
@@ -310,6 +316,68 @@ export default function VisitorAnalyticsView() {
         </div>
       </div>
 
+      {/* 🌍 Geographic Locations Breakdown (Countries & Cities) */}
+      {(data?.topCountries && data.topCountries.length > 0) || (data?.topCities && data.topCities.length > 0) ? (
+        <div className="mt-8 pt-6 border-t border-neutral-200">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-black text-black flex items-center gap-2">
+              <span>🌍 Visitor Locations & Top Geographies</span>
+            </h4>
+            <span className="text-[11px] font-bold text-neutral-400">
+              Live Geo Tracking
+            </span>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Top Countries */}
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-50/60 p-4">
+              <p className="text-xs font-bold text-neutral-700 uppercase tracking-wider mb-3">
+                Top Countries
+              </p>
+              {data.topCountries && data.topCountries.length > 0 ? (
+                <div className="space-y-2">
+                  {data.topCountries.map((c) => (
+                    <div key={c.country} className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-neutral-800 flex items-center gap-1.5">
+                        <span>🚩</span> {c.country === "IN" ? "🇮🇳 India" : c.country === "US" ? "🇺🇸 United States" : c.country}
+                      </span>
+                      <span className="rounded-md bg-white border border-neutral-200 px-2 py-0.5 font-bold text-neutral-700">
+                        {c.views} views ({c.uniqueVisitors} visitors)
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-neutral-400">Locations recorded as visitors arrive.</p>
+              )}
+            </div>
+
+            {/* Top Cities */}
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-50/60 p-4">
+              <p className="text-xs font-bold text-neutral-700 uppercase tracking-wider mb-3">
+                Top Cities / Regions
+              </p>
+              {data.topCities && data.topCities.length > 0 ? (
+                <div className="space-y-2">
+                  {data.topCities.map((city) => (
+                    <div key={city.city} className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-neutral-800 flex items-center gap-1.5 truncate max-w-[200px]">
+                        <span>📍</span> {city.city} {city.country ? `(${city.country})` : ""}
+                      </span>
+                      <span className="rounded-md bg-white border border-neutral-200 px-2 py-0.5 font-bold text-neutral-700 shrink-0">
+                        {city.views} views
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-neutral-400">City data recorded via cloud edge network.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {/* Live Recent Visitor Stream */}
       <div className="mt-8 pt-6 border-t border-neutral-200">
         <div className="flex items-center justify-between mb-4">
@@ -327,32 +395,43 @@ export default function VisitorAnalyticsView() {
           </div>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {data.recentVisits.map((v) => (
-              <div
-                key={v._id}
-                className="flex items-center justify-between rounded-xl border border-neutral-100 bg-neutral-50/80 p-3 text-xs shadow-2xs hover:border-neutral-300 transition"
-              >
-                <div className="min-w-0 pr-2">
-                  <p className="font-bold text-black truncate text-[11.5px]">
-                    {getPageTitle(v.path)}
-                  </p>
-                  <p className="text-[10px] text-neutral-500 mt-0.5 flex items-center gap-1.5">
-                    <span>{v.device === "Mobile" ? "📱 Mobile" : "💻 Desktop"}</span>
-                    <span>•</span>
-                    <span>{v.browser || "Web"}</span>
-                    {v.referrer && v.referrer !== "Direct" && (
-                      <>
-                        <span>•</span>
-                        <span className="truncate max-w-[80px]">From {v.referrer}</span>
-                      </>
-                    )}
-                  </p>
+            {data.recentVisits.map((v) => {
+              const locationStr =
+                v.city && v.city !== "Unknown"
+                  ? `${v.city}${v.country && v.country !== "Unknown" ? `, ${v.country}` : ""}`
+                  : v.country && v.country !== "Unknown"
+                  ? v.country
+                  : "Online Visitor";
+
+              return (
+                <div
+                  key={v._id}
+                  className="flex items-center justify-between rounded-xl border border-neutral-100 bg-neutral-50/80 p-3 text-xs shadow-2xs hover:border-neutral-300 transition"
+                >
+                  <div className="min-w-0 pr-2">
+                    <p className="font-bold text-black truncate text-[11.5px]">
+                      {getPageTitle(v.path)}
+                    </p>
+                    <p className="text-[10px] text-neutral-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                      <span className="font-semibold text-emerald-700">📍 {locationStr}</span>
+                      <span>•</span>
+                      <span>{v.device === "Mobile" ? "📱 Mobile" : "💻 Desktop"}</span>
+                      <span>•</span>
+                      <span>{v.browser || "Web"}</span>
+                      {v.referrer && v.referrer !== "Direct" && (
+                        <>
+                          <span>•</span>
+                          <span className="truncate max-w-[80px]">From {v.referrer}</span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-md bg-white border border-neutral-200 px-2 py-0.5 text-[10px] font-bold text-neutral-600">
+                    {formatTimeAgo(v.createdAt)}
+                  </span>
                 </div>
-                <span className="shrink-0 rounded-md bg-white border border-neutral-200 px-2 py-0.5 text-[10px] font-bold text-neutral-600">
-                  {formatTimeAgo(v.createdAt)}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
