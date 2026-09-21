@@ -88,8 +88,8 @@ function ContactFormContent() {
       const payload = {
         name: form.name.trim(),
         email: form.email.trim(),
-        subject: form.subject.trim() || form.projectType,
-        message: `[Project Type: ${form.projectType}]\n\n${form.message.trim()}`,
+        subject: form.subject.trim() || `${form.projectType} opportunity`,
+        message: form.message.trim(),
       };
 
       const res = await fetch("/api/contact", {
