@@ -233,11 +233,13 @@ export default function HeroRotatingCards() {
       );
       if (!cards || cards.length === 0 || !sectionRef.current) return;
 
-      // 1. Initial 3D Deck Setup: Layered cards stack with subtle depth
+      const mm = gsap.matchMedia();
+
+      // 1. Initial 3D Deck Setup
       gsap.set(cards, {
         x: 0,
-        y: (i) => (i === 0 ? 0 : i * 10),
-        scale: (i) => (i === 0 ? 1 : 1 - i * 0.04),
+        y: (i) => (i === 0 ? 0 : i * 8),
+        scale: (i) => (i === 0 ? 1 : 1 - i * 0.035),
         rotation: (i) => (i === 0 ? 0 : i % 2 === 1 ? 2 : -2),
         opacity: (i) => (i === 0 ? 1 : Math.max(0.3, 1 - i * 0.2)),
         zIndex: (i) => 20 - i,
@@ -245,98 +247,171 @@ export default function HeroRotatingCards() {
         force3D: true,
       });
 
-      // 2. Master ScrollTrigger Timeline: Controlled 100% by mouse/trackpad vertical scroll
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=3200", // Generous smooth scroll runway for 5 cards
-          pin: true,
-          scrub: 1, // Buttery smooth momentum
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const idx = Math.min(
-              cards.length - 1,
-              Math.floor(self.progress * (cards.length - 0.05))
-            );
-            if (lastActiveIdxRef.current !== idx) {
-              lastActiveIdxRef.current = idx;
-              setActiveCardIndex(idx);
-            }
+      // Desktop & Large Screens (>= 1024px)
+      mm.add("(min-width: 1024px)", () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=3200", // Generous smooth scroll runway for 5 cards on desktop
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const idx = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * (cards.length - 0.05))
+              );
+              if (lastActiveIdxRef.current !== idx) {
+                lastActiveIdxRef.current = idx;
+                setActiveCardIndex(idx);
+              }
+            },
           },
-        },
-      });
+        });
 
-      // 3. Card-by-Card Alternating Left/Right Sweep Animation
-      // Card 0 -> Sweeps Out LEFT (-130%) on scroll down
-      // Card 1 -> Sweeps Out RIGHT (+130%) on scroll down
-      // Card 2 -> Sweeps Out LEFT (-130%) on scroll down
-      // Card 3 -> Sweeps Out RIGHT (+130%) on scroll down
-      // Card 4 -> Rises to center focus as the final card, then unpins to next page section
-      const numSteps = cards.length - 1; // 4 transitions for 5 cards
-      const stepDuration = 1 / numSteps; // 0.25 each (total timeline duration = 1.0)
+        const numSteps = cards.length - 1;
+        const stepDuration = 1 / numSteps;
 
-      for (let i = 0; i < numSteps; i++) {
-        const startTime = i * stepDuration;
-        const currentCard = cards[i];
-        const nextCard = cards[i + 1];
+        for (let i = 0; i < numSteps; i++) {
+          const startTime = i * stepDuration;
+          const currentCard = cards[i];
+          const nextCard = cards[i + 1];
 
-        // Alternating exit direction:
-        // Even indices (0, 2) sweep completely to the LEFT (-130%)
-        // Odd indices (1, 3) sweep completely to the RIGHT (+130%)
-        const exitX = i % 2 === 0 ? "-130%" : "130%";
-        const exitRotation = i % 2 === 0 ? -14 : 14;
+          const exitX = i % 2 === 0 ? "-130%" : "130%";
+          const exitRotation = i % 2 === 0 ? -14 : 14;
 
-        // Current card sweeps completely away to left or right
-        tl.to(
-          currentCard,
-          {
-            x: exitX,
-            y: -20,
-            rotation: exitRotation,
-            scale: 0.88,
-            opacity: 0,
-            ease: "power1.inOut",
-            duration: stepDuration,
-            zIndex: 30,
-          },
-          startTime
-        );
-
-        // Next card smoothly rises and takes center stage
-        tl.to(
-          nextCard,
-          {
-            x: 0,
-            y: 0,
-            rotation: 0,
-            scale: 1,
-            opacity: 1,
-            ease: "power1.inOut",
-            duration: stepDuration,
-            zIndex: 25,
-          },
-          startTime
-        );
-
-        // Behind cards shift forward in the stack
-        for (let k = i + 2; k < cards.length; k++) {
-          const behindCard = cards[k];
-          const depthIdx = k - (i + 1);
           tl.to(
-            behindCard,
+            currentCard,
             {
-              y: depthIdx * 10,
-              scale: 1 - depthIdx * 0.04,
-              opacity: Math.max(0.3, 1 - depthIdx * 0.2),
+              x: exitX,
+              y: -20,
+              rotation: exitRotation,
+              scale: 0.88,
+              opacity: 0,
               ease: "power1.inOut",
               duration: stepDuration,
+              zIndex: 30,
             },
             startTime
           );
+
+          tl.to(
+            nextCard,
+            {
+              x: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 25,
+            },
+            startTime
+          );
+
+          for (let k = i + 2; k < cards.length; k++) {
+            const behindCard = cards[k];
+            const depthIdx = k - (i + 1);
+            tl.to(
+              behindCard,
+              {
+                y: depthIdx * 10,
+                scale: 1 - depthIdx * 0.04,
+                opacity: Math.max(0.3, 1 - depthIdx * 0.2),
+                ease: "power1.inOut",
+                duration: stepDuration,
+              },
+              startTime
+            );
+          }
         }
-      }
+      });
+
+      // Mobile & Tablet (< 1024px)
+      mm.add("(max-width: 1023px)", () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=2200", // Snappy responsive scroll runway for mobile
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const idx = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * (cards.length - 0.05))
+              );
+              if (lastActiveIdxRef.current !== idx) {
+                lastActiveIdxRef.current = idx;
+                setActiveCardIndex(idx);
+              }
+            },
+          },
+        });
+
+        const numSteps = cards.length - 1;
+        const stepDuration = 1 / numSteps;
+
+        for (let i = 0; i < numSteps; i++) {
+          const startTime = i * stepDuration;
+          const currentCard = cards[i];
+          const nextCard = cards[i + 1];
+
+          const exitX = i % 2 === 0 ? "-120%" : "120%";
+          const exitRotation = i % 2 === 0 ? -10 : 10;
+
+          tl.to(
+            currentCard,
+            {
+              x: exitX,
+              y: -15,
+              rotation: exitRotation,
+              scale: 0.9,
+              opacity: 0,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 30,
+            },
+            startTime
+          );
+
+          tl.to(
+            nextCard,
+            {
+              x: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 25,
+            },
+            startTime
+          );
+
+          for (let k = i + 2; k < cards.length; k++) {
+            const behindCard = cards[k];
+            const depthIdx = k - (i + 1);
+            tl.to(
+              behindCard,
+              {
+                y: depthIdx * 8,
+                scale: 1 - depthIdx * 0.035,
+                opacity: Math.max(0.3, 1 - depthIdx * 0.2),
+                ease: "power1.inOut",
+                duration: stepDuration,
+              },
+              startTime
+            );
+          }
+        }
+      });
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -349,7 +424,7 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-200 bg-gradient-to-b from-white via-neutral-50/70 to-neutral-100/50 text-neutral-900 flex flex-col justify-center pt-24 sm:pt-28 lg:pt-28 pb-10 sm:pb-14"
+      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-200 bg-gradient-to-b from-white via-neutral-50/70 to-neutral-100/50 text-neutral-900 flex flex-col justify-center pt-20 sm:pt-24 lg:pt-28 pb-6 sm:pb-10 lg:pb-14"
     >
       {/* Background Ambient Glows and Subtle Dot Mesh */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#0000000a_1px,transparent_1px)] [background-size:24px_24px] opacity-60" />
@@ -360,10 +435,26 @@ export default function HeroRotatingCards() {
       />
       <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-100/40 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
-        <div className="grid items-center gap-8 lg:gap-10 lg:grid-cols-12">
-          {/* ================= LEFT COLUMN: DETAILS & PROFILE ================= */}
-          <div className="lg:col-span-5 xl:col-span-5 space-y-4 sm:space-y-5 text-left">
+      <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-1 sm:py-4">
+        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
+        <div className="lg:hidden text-center space-y-1.5 mb-3 sm:mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/95 px-3 py-1 text-[11px] font-bold text-neutral-800 shadow-2xs backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Senior 3D Designer • Infoeye (6+ Yrs)</span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black">
+            Ashok Meena
+          </h1>
+
+          <p className="text-[11.5px] sm:text-xs font-bold text-neutral-600">
+            CLO 3D Apparel • Hard Surface 3D • GLB • Photo Retouching
+          </p>
+        </div>
+
+        <div className="grid items-center gap-6 lg:gap-10 lg:grid-cols-12">
+          {/* ================= DESKTOP LEFT COLUMN: FULL BIO & DETAILS (>= lg) ================= */}
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-4 sm:space-y-5 text-left">
             {/* Live Top Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-800 shadow-xs backdrop-blur-md">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -511,14 +602,14 @@ export default function HeroRotatingCards() {
             </div>
           </div>
 
-          {/* ================= RIGHT COLUMN: CINEMATIC SCROLL-DRIVEN STAGE ================= */}
-          <div className="lg:col-span-7 xl:col-span-7 relative">
-            {/* Card Deck Stage (Ensures full sweeping visibility across the section) */}
-            <div className="relative h-[550px] sm:h-[530px] w-full max-w-[580px] mx-auto">
+          {/* ================= RIGHT COLUMN / MAIN STAGE: 5 ROTATING CARDS DECK ================= */}
+          <div className="w-full lg:col-span-7 xl:col-span-7 relative">
+            {/* Card Deck Stage - Perfectly sized for mobile viewports & desktop */}
+            <div className="relative h-[430px] xs:h-[450px] sm:h-[490px] lg:h-[530px] xl:h-[550px] w-full max-w-[580px] mx-auto">
               {cardsData.map((card, idx) => (
                 <div
                   key={card.id}
-                  className={`hero-card-item absolute inset-0 flex flex-col justify-between rounded-3xl border ${card.borderColor} ${card.cardBg} p-5 sm:p-7 shadow-2xl overflow-hidden select-none`}
+                  className={`hero-card-item absolute inset-0 flex flex-col justify-between rounded-3xl border ${card.borderColor} ${card.cardBg} p-4 sm:p-7 shadow-2xl overflow-hidden select-none`}
                   style={{
                     willChange: "transform, opacity",
                   }}
@@ -529,58 +620,58 @@ export default function HeroRotatingCards() {
                   />
 
                   {/* Watermark Floating Thematic Icon */}
-                  <div className="pointer-events-none absolute -right-6 -bottom-6 text-9xl opacity-[0.06] select-none font-black">
+                  <div className="pointer-events-none absolute -right-6 -bottom-6 text-8xl sm:text-9xl opacity-[0.06] select-none font-black">
                     {card.watermarkIcon}
                   </div>
 
                   {/* Top Bar inside Card */}
-                  <div className="relative flex items-center justify-between border-b border-neutral-200/60 pb-3 shrink-0">
+                  <div className="relative flex items-center justify-between border-b border-neutral-200/60 pb-2.5 sm:pb-3 shrink-0">
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] shadow-2xs ${card.tagColor}`}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10.5px] sm:text-[11px] shadow-2xs ${card.tagColor}`}
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
-                      {card.tag}
+                      <span className="truncate max-w-[180px] sm:max-w-none">{card.tag}</span>
                     </span>
 
-                    <span className="rounded-full bg-black text-white px-2.5 py-0.5 text-[10px] font-black tracking-wide shadow-2xs">
+                    <span className="rounded-full bg-black text-white px-2.5 py-0.5 text-[9.5px] sm:text-[10px] font-black tracking-wide shadow-2xs shrink-0">
                       {card.badge}
                     </span>
                   </div>
 
                   {/* Main Card Content */}
-                  <div className="relative mt-3 flex-1 flex flex-col justify-between">
+                  <div className="relative mt-2 sm:mt-3 flex-1 flex flex-col justify-between overflow-hidden">
                     {/* Header with Icon, Title, and Role */}
-                    <div className="flex items-start gap-3.5 shrink-0">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/90 border border-neutral-200/90 text-2xl shadow-xs">
+                    <div className="flex items-start gap-3 sm:gap-3.5 shrink-0">
+                      <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/90 border border-neutral-200/90 text-xl sm:text-2xl shadow-xs">
                         {card.icon}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h2 className="text-base sm:text-lg font-black text-black truncate">
+                        <h2 className="text-sm sm:text-lg font-black text-black truncate">
                           {card.title}
                         </h2>
-                        <p className="text-xs font-bold text-emerald-700 truncate">
+                        <p className="text-[11px] sm:text-xs font-bold text-emerald-700 truncate">
                           {card.companyOrRole}
                         </p>
-                        <p className="text-[11px] text-neutral-500 truncate">
+                        <p className="text-[10px] sm:text-[11px] text-neutral-500 truncate">
                           📍 {card.location}
                         </p>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="mt-2 text-xs leading-relaxed text-neutral-700 font-medium line-clamp-2 h-[34px]">
+                    <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs leading-relaxed text-neutral-700 font-medium line-clamp-2">
                       {card.description}
                     </p>
 
                     {/* Key Highlights */}
-                    <div className="mt-2 rounded-2xl border border-neutral-200/80 bg-white/80 p-3 space-y-1 shadow-2xs backdrop-blur-xs">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                    <div className="mt-1.5 sm:mt-2 rounded-2xl border border-neutral-200/80 bg-white/80 p-2.5 sm:p-3 space-y-1 shadow-2xs backdrop-blur-xs">
+                      <p className="text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-neutral-500">
                         Key Highlights & Responsibilities:
                       </p>
-                      <ul className="space-y-1 text-[11.5px] text-neutral-800 font-medium">
+                      <ul className="space-y-1 text-[10.5px] sm:text-[11.5px] text-neutral-800 font-medium">
                         {card.keyPoints.map((point, pIdx) => (
-                          <li key={pIdx} className="flex items-start gap-2">
+                          <li key={pIdx} className="flex items-start gap-1.5 sm:gap-2">
                             <span className="text-emerald-600 font-bold shrink-0">✓</span>
                             <span className="truncate">{point}</span>
                           </li>
@@ -589,14 +680,14 @@ export default function HeroRotatingCards() {
                     </div>
 
                     {/* External Links */}
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5 h-[28px] overflow-hidden">
+                    <div className="mt-1.5 sm:mt-2 flex flex-wrap items-center gap-1.5 overflow-hidden">
                       {card.externalLinks.map((link) => (
                         <a
                           key={link.label}
                           href={link.url}
                           target={link.url.startsWith("http") ? "_blank" : undefined}
                           rel={link.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                          className={`rounded-lg px-2.5 py-0.5 text-[10.5px] font-bold transition truncate ${
+                          className={`rounded-lg px-2 sm:px-2.5 py-0.5 text-[9.5px] sm:text-[10.5px] font-bold transition truncate ${
                             link.highlight
                               ? "bg-amber-100 border border-amber-300 text-amber-900 hover:bg-amber-200 shadow-2xs"
                               : "bg-white border border-neutral-300 text-neutral-800 hover:border-black hover:text-black shadow-2xs"
@@ -608,12 +699,12 @@ export default function HeroRotatingCards() {
                     </div>
 
                     {/* Skills Chips */}
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5 pt-1 border-t border-neutral-200/60">
-                      <span className="text-[10px] font-bold text-neutral-400 mr-1">Tools:</span>
+                    <div className="mt-1.5 sm:mt-2 flex flex-wrap items-center gap-1 sm:gap-1.5 pt-1 border-t border-neutral-200/60">
+                      <span className="text-[9.5px] sm:text-[10px] font-bold text-neutral-400 mr-0.5">Tools:</span>
                       {card.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-md border border-neutral-200 bg-white/90 px-2 py-0.5 text-[10.5px] font-semibold text-neutral-800 shadow-2xs"
+                          className="rounded-md border border-neutral-200 bg-white/90 px-1.5 sm:px-2 py-0.5 text-[9.5px] sm:text-[10.5px] font-semibold text-neutral-800 shadow-2xs"
                         >
                           {skill}
                         </span>
@@ -622,11 +713,11 @@ export default function HeroRotatingCards() {
                   </div>
 
                   {/* Bottom Indicator Pill with Direction Badge */}
-                  <div className="relative mt-2 flex items-center justify-between border-t border-neutral-200/60 pt-2 text-[10.5px] text-neutral-500 shrink-0">
+                  <div className="relative mt-2 flex items-center justify-between border-t border-neutral-200/60 pt-2 text-[9.5px] sm:text-[10.5px] text-neutral-500 shrink-0">
                     <span className="font-mono font-bold text-neutral-700">
                       Card 0{idx + 1} of 0{cardsData.length}
                     </span>
-                    <span className="font-semibold text-neutral-800">
+                    <span className="font-semibold text-neutral-800 truncate max-w-[180px] sm:max-w-none">
                       {idx === cardsData.length - 1
                         ? "✓ Final Card • Unpins Page"
                         : idx % 2 === 0
@@ -638,26 +729,56 @@ export default function HeroRotatingCards() {
               ))}
             </div>
 
-            {/* Bottom Progress Step Indicators */}
-            <div className="mt-3 flex items-center justify-between flex-wrap gap-2 px-1">
+            {/* Bottom Progress Step Indicators & Mobile Scroll Hints */}
+            <div className="mt-2.5 sm:mt-3 flex items-center justify-between flex-wrap gap-2 px-1">
               <div className="flex items-center gap-1.5">
                 {cardsData.map((card, idx) => (
                   <div
                     key={card.id}
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
                       activeCardIndex === idx
-                        ? "w-8 bg-black shadow-xs"
-                        : "w-2 bg-neutral-300"
+                        ? "w-6 sm:w-8 bg-black shadow-xs"
+                        : "w-1.5 sm:w-2 bg-neutral-300"
                     }`}
                   />
                 ))}
               </div>
 
-              <div className="flex items-center gap-2 text-[11px] text-neutral-500">
-                <span>🖱️ Mouse / Trackpad Scroll</span>
-                <span>•</span>
-                <span className="font-semibold text-black">Alternating Left & Right Cards</span>
+              <div className="flex items-center gap-1.5 text-[10.5px] sm:text-[11px] text-neutral-500">
+                <span>🖱️ Scroll down to sweep cards</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="hidden sm:inline font-semibold text-black">Alternating 5 Cards</span>
               </div>
+            </div>
+
+            {/* Mobile-only Quick Action Buttons (< lg) */}
+            <div className="lg:hidden mt-3 flex flex-wrap items-center justify-center gap-2">
+              <Link
+                href="#my-work"
+                className="rounded-full bg-black px-4 py-2 text-[11px] font-bold text-white shadow-xs transition hover:bg-neutral-800"
+              >
+                Explore Work ↓
+              </Link>
+              <Link
+                href="/portfolio"
+                className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-[11px] font-bold text-black shadow-2xs hover:border-black"
+              >
+                3D Models
+              </Link>
+              <a
+                href="/Ashok_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-neutral-300 bg-neutral-50 px-3.5 py-2 text-[11px] font-bold text-neutral-800 shadow-2xs hover:border-black hover:bg-white"
+              >
+                Resume PDF
+              </a>
+              <Link
+                href="/contact"
+                className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-[11px] font-bold text-neutral-800 shadow-2xs hover:border-black hover:text-black"
+              >
+                Contact
+              </Link>
             </div>
           </div>
         </div>
@@ -665,6 +786,3 @@ export default function HeroRotatingCards() {
     </section>
   );
 }
-
-
-
