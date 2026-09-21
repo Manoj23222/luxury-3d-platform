@@ -216,57 +216,7 @@ function ContactFormContent() {
             </div>
           </div>
 
-          {/* B. Creator & Studio Direct Contact Card */}
-          <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-md space-y-4">
-            <div className="flex items-center gap-3.5 border-b border-neutral-100 pb-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-sm font-black text-white shadow-xs">
-                3D
-              </div>
-              <div>
-                <h2 className="text-base font-black text-black">Ashok Meena</h2>
-                <p className="text-xs font-bold text-emerald-700">
-                  Senior 3D & Digital Fashion Designer • Infoeye Software (6+ Yrs)
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-2.5 sm:grid-cols-2 text-xs">
-              {/* Direct Email */}
-              <a
-                href="mailto:ashokm3414@gmail.com"
-                className="flex items-center gap-2.5 rounded-2xl border border-neutral-200 bg-neutral-50/70 p-3 text-neutral-800 hover:border-black hover:bg-white transition"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200 text-sm shadow-2xs">
-                  ✉️
-                </span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-neutral-400 uppercase">Direct Email</p>
-                  <p className="font-bold text-xs truncate">ashokm3414@gmail.com</p>
-                </div>
-              </a>
-
-              {/* Direct Phone / Call */}
-              <a
-                href="tel:+918000093300"
-                className="flex items-center gap-2.5 rounded-2xl border border-neutral-200 bg-neutral-50/70 p-3 text-neutral-800 hover:border-black hover:bg-white transition"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200 text-sm shadow-2xs">
-                  📞
-                </span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-neutral-400 uppercase">Direct Phone</p>
-                  <p className="font-bold text-xs truncate">+91 80000 93300</p>
-                </div>
-              </a>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-neutral-100 pt-3 text-xs text-neutral-600">
-              <div className="flex items-center gap-2">
-                <span>📍</span>
-                <span>Sardarshahar, Rajasthan, India <strong className="text-neutral-900 font-semibold">(IST / UTC+5:30)</strong></span>
-              </div>
-            </div>
-          </div>
+          
 
           {/* C. WhatsApp Instant Direct Chat Banner */}
           <div className="rounded-3xl border border-emerald-300/80 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 p-5 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
