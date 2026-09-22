@@ -424,17 +424,17 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-16 lg:pt-16 pb-2 sm:pb-3"
+      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 pb-2 sm:pb-3"
     >
       {/* Full-Cover Background Video - Stretched Full Cover from Navigation to Stats */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden w-full h-full">
         <video
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
-          className="h-full w-full object-cover object-center opacity-100"
+          className="h-full w-full min-h-full min-w-full object-cover object-center opacity-100"
         >
           <source
             src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
@@ -476,19 +476,10 @@ export default function HeroRotatingCards() {
           <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-4 text-left">
             <div className="space-y-3.5">
               {/* Studio Status Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-4 py-1.5 text-xs font-bold text-white shadow-xs backdrop-blur-xs">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-emerald-300 font-bold uppercase tracking-wider text-[11px]">
-                  ✦ Senior 3D & Digital Fashion Designer
-                </span>
-                <span className="text-neutral-400">•</span>
-                <Link
-                  href="/about"
-                  className="text-white hover:text-emerald-300 font-semibold transition hover:underline"
-                >
-                  Infoeye Software (6+ Yrs) ↗
-                </Link>
-              </div>
+             
+               
+               
+              
 
               {/* Cinematic Name & Title */}
               <div className="space-y-1">
@@ -500,71 +491,10 @@ export default function HeroRotatingCards() {
                 </p>
               </div>
 
-              {/* Punchy Cinematic Tagline */}
-              <p className="text-xs xl:text-sm leading-relaxed text-neutral-200 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] max-w-lg">
-                Crafting hyper-realistic 3D digital garments, luxury CGI product visualizations, and 60 FPS real-time web 3D assets with 6+ years of studio engineering precision.
-              </p>
-
-              {/* Key Highlights Strip */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                <Link
-                  href="/about"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-950/80 px-3.5 py-1.5 font-bold text-amber-200 shadow-xs transition hover:bg-amber-900 backdrop-blur-xs"
-                >
-                  <span>🏆</span>
-                  <span>President Visit & Career Story ↗</span>
-                </Link>
-
-                <Link
-                  href="/about"
-                  className="rounded-full border border-white/20 bg-black/40 px-3.5 py-1.5 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/70 backdrop-blur-xs"
-                >
-                  Full Bio & Background →
-                </Link>
-              </div>
+              
 
               {/* Quick Action CTAs */}
-              <div className="flex flex-wrap items-center gap-2.5 pt-1.5">
-                <Link
-                  href="#my-work"
-                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
-                >
-                  Explore My Work ↓
-                </Link>
-
-                <Link
-                  href="/portfolio"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
-                >
-                  3D Models
-                </Link>
-
-                <Link
-                  href="/photo-editing"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
-                >
-                  Branding
-                </Link>
-
-                <a
-                  href="/Ashok_Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-white/25 backdrop-blur-xs"
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Resume PDF
-                </a>
-
-                <Link
-                  href="/contact"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
-                >
-                  Contact
-                </Link>
-              </div>
+              
 
               {/* Key Metric Stats Row */}
               <div className="grid grid-cols-4 gap-2 pt-2.5 border-t border-white/20">
