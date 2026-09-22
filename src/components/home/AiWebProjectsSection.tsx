@@ -21,6 +21,8 @@ interface WebProject {
   secondaryUrlLabel?: string;
   icon: string;
   accentBorder: string;
+  glowColor: string;
+  taglineColor: string;
 }
 
 const projects: WebProject[] = [
@@ -29,7 +31,7 @@ const projects: WebProject[] = [
     title: "BootKiT — Quick-Commerce & Grocery Delivery Platform",
     tagline: "High-Performance Mobile-First E-Commerce Progressive Web App",
     badge: "🛒 Full-Stack E-Commerce & PWA",
-    badgeColor: "bg-emerald-50 border-emerald-200 text-emerald-800",
+    badgeColor: "bg-emerald-950/80 border-emerald-400/40 text-emerald-300",
     aiBadge: "🤖 AI-Prompt Engineered",
     description:
       "A production-grade, ultra-responsive quick-commerce grocery delivery web platform designed for 10–20 minute delivery workflows. Built with rapid AI prompt engineering combining modern full-stack architectures, instant search indexing, and native-feeling mobile PWA navigation.",
@@ -55,14 +57,17 @@ const projects: WebProject[] = [
     secondaryUrl: "https://bootkit.vercel.app/",
     secondaryUrlLabel: "Vercel Mirror ↗",
     icon: "🛍️",
-    accentBorder: "border-emerald-300/80 shadow-emerald-500/10",
+    accentBorder:
+      "border-emerald-500/35 hover:border-emerald-400/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9),0_0_30px_rgba(16,185,129,0.14)]",
+    glowColor: "from-emerald-500/15 via-teal-500/5 to-transparent",
+    taglineColor: "text-emerald-400",
   },
   {
     id: "lux3d",
     title: "Lux3D — 3D & AI Creative Web Platform",
     tagline: "Interactive 3D WebGL Visualization & Creative Studio Platform",
     badge: "🧊 3D WebGL & Creative Platform",
-    badgeColor: "bg-purple-50 border-purple-200 text-purple-800",
+    badgeColor: "bg-purple-950/80 border-purple-400/40 text-purple-300",
     aiBadge: "🤖 AI-Assisted Architecture",
     description:
       "A luxury digital portfolio and 3D asset visualization platform engineered with Three.js WebGL orbit controls, interactive Before/After photo retouching split sliders, and a custom real-time visitor traffic analytics engine.",
@@ -86,7 +91,10 @@ const projects: WebProject[] = [
     secondaryUrl: "/photo-editing",
     secondaryUrlLabel: "Photo Retouching Studio ↗",
     icon: "💎",
-    accentBorder: "border-purple-300/80 shadow-purple-500/10",
+    accentBorder:
+      "border-purple-500/35 hover:border-purple-400/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.14)]",
+    glowColor: "from-purple-500/15 via-fuchsia-500/5 to-transparent",
+    taglineColor: "text-purple-300",
   },
 ];
 
@@ -228,50 +236,54 @@ export default function AiWebProjectsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-200 bg-white py-8 sm:py-12 text-neutral-900 flex flex-col justify-between select-none"
+      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col justify-between py-8 sm:py-12 select-none"
     >
-      <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
-        {/* TOP BANNER CONTAINER */}
-        <div className="relative overflow-hidden rounded-3xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/60 p-5 sm:p-7 lg:p-8 shadow-xl flex-1 flex flex-col justify-between">
-          {/* Ambient Tech Glows & Matrix Texture */}
-          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-cyan-100/50 blur-3xl" />
+      {/* Background Ambient Radial Tech Lights */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/60 via-neutral-950 to-black z-0" />
+      <div className="pointer-events-none absolute top-1/4 left-1/4 w-[600px] h-[400px] bg-emerald-500/10 rounded-full blur-3xl z-0" />
+      <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[600px] h-[400px] bg-purple-500/10 rounded-full blur-3xl z-0" />
 
-          {/* Subtle Circuit / Dot Matrix Texture */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, #059669 1px, transparent 0)",
-              backgroundSize: "22px 22px",
-            }}
-          />
+      {/* Cyber Grid Texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.035] z-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
+        {/* TOP BANNER CONTAINER - LUXURY DARK GLASS THEME */}
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-neutral-900/80 via-neutral-950/90 to-neutral-900/80 p-5 sm:p-7 lg:p-8 shadow-2xl backdrop-blur-2xl flex-1 flex flex-col justify-between">
+          {/* Subtle Corner Glows */}
+          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
 
           {/* Banner Top Header */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-4 border-b border-emerald-100/80">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100/90 border border-emerald-300/80 px-3.5 py-1 text-xs font-bold text-emerald-900 mb-2 shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-                <span className="tracking-wide uppercase text-[10.5px]">
-                  Full-Stack &amp; Web Engineering Hub
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-4 border-b border-white/10">
+            <div className="max-w-3xl space-y-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-950/80 border border-emerald-500/40 px-3.5 py-1 text-xs font-bold text-emerald-300 shadow-xs backdrop-blur-md">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="tracking-wider uppercase text-[10.5px]">
+                  ✨ Full-Stack &amp; Web Engineering Hub
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
                 Featured Web Applications &amp; Platforms
               </h2>
 
-              <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed">
+              <p className="text-xs sm:text-sm text-neutral-300 font-normal leading-relaxed">
                 Production-grade web applications and high-conversion platforms built rapidly using advanced{" "}
-                <strong>AI Prompt Engineering</strong>, Next.js, React, TypeScript, and modern cloud databases.
+                <strong className="text-white font-bold">AI Prompt Engineering</strong>, Next.js, React, TypeScript, and modern cloud databases.
               </p>
             </div>
 
             <div className="flex items-center gap-3 shrink-0 self-start lg:self-auto">
               <Link
                 href="/contact?subject=Web%20Development%20%26%20AI%20App%20Inquiry"
-                className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
               >
                 <span>Hire for Web Development</span>
                 <span>✉️</span>
@@ -279,11 +291,11 @@ export default function AiWebProjectsSection() {
             </div>
           </div>
 
-          {/* ================= CENTER FIXED-POSITION 3D FLIP STAGE ================= */}
+          {/* ================= CENTER FIXED-POSITION 3D FLIP STAGE (LARGER & LUXURY) ================= */}
           <div
-            className="relative z-10 mx-auto w-full max-w-4xl lg:max-w-5xl h-[520px] xs:h-[540px] sm:h-[490px] lg:h-[470px] my-4"
+            className="relative z-10 mx-auto w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[530px] xs:h-[550px] sm:h-[500px] lg:h-[480px] xl:h-[480px] my-4"
             style={{
-              perspective: "1600px",
+              perspective: "1800px",
               perspectiveOrigin: "center center",
               transformStyle: "preserve-3d",
             }}
@@ -294,47 +306,55 @@ export default function AiWebProjectsSection() {
                 ref={(el) => {
                   cardRefs.current[idx] = el;
                 }}
-                className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl border ${project.accentBorder} bg-white p-5 sm:p-7 lg:p-8 shadow-2xl transition-shadow select-none`}
+                className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[28px] border ${project.accentBorder} bg-gradient-to-br from-neutral-900/95 via-neutral-900/90 to-neutral-950 p-5 sm:p-7 lg:p-8 shadow-2xl transition-all select-none backdrop-blur-xl`}
                 style={{
                   transformStyle: "preserve-3d",
                   backfaceVisibility: "hidden",
                   willChange: "transform, opacity",
                 }}
               >
-                <div>
+                {/* Top Glass Rim Highlight */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                {/* Ambient Top Glow reacting to project */}
+                <div
+                  className={`pointer-events-none absolute -top-20 inset-x-0 h-40 bg-gradient-to-b ${project.glowColor}`}
+                />
+
+                <div className="relative z-10">
                   {/* Badges & Icon Row */}
                   <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-neutral-50 border border-neutral-200 text-xl shadow-2xs">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-xl shadow-xs backdrop-blur-md">
                         {project.icon}
                       </span>
                       <span
-                        className={`rounded-full border px-3 py-0.5 text-[10.5px] font-bold ${project.badgeColor}`}
+                        className={`rounded-full border px-3.5 py-1 text-[11px] font-bold shadow-xs backdrop-blur-md ${project.badgeColor}`}
                       >
                         {project.badge}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-extrabold text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
+                      <span className="font-mono text-xs font-extrabold text-neutral-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
                         Project 0{idx + 1} / 0{projects.length}
                       </span>
-                      <span className="rounded-full bg-neutral-950 text-white px-3 py-0.5 text-[10.5px] font-extrabold tracking-wide">
+                      <span className="rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 text-[10.5px] font-extrabold tracking-wide">
                         {project.aiBadge}
                       </span>
                     </div>
                   </div>
 
                   {/* Title & Tagline */}
-                  <h3 className="mt-3.5 text-lg sm:text-xl lg:text-2xl font-black text-black">
+                  <h3 className="mt-3.5 text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
                     {project.title}
                   </h3>
-                  <p className="mt-0.5 text-xs font-bold text-neutral-500">
+                  <p className={`mt-0.5 text-xs sm:text-sm font-bold ${project.taglineColor} drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]`}>
                     {project.tagline}
                   </p>
 
                   {/* Description */}
-                  <p className="mt-2.5 text-xs sm:text-[13px] leading-relaxed text-neutral-700 font-medium">
+                  <p className="mt-2.5 text-xs sm:text-[13.5px] leading-relaxed text-neutral-300 font-medium">
                     {project.description}
                   </p>
 
@@ -347,7 +367,7 @@ export default function AiWebProjectsSection() {
                       {project.techStack.map((tech) => (
                         <span
                           key={tech}
-                          className="rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-0.5 text-[10px] sm:text-[10.5px] font-bold text-neutral-800 shadow-2xs"
+                          className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-neutral-200 shadow-2xs backdrop-blur-md transition hover:border-emerald-400/50 hover:bg-white/10"
                         >
                           {tech}
                         </span>
@@ -356,14 +376,14 @@ export default function AiWebProjectsSection() {
                   </div>
 
                   {/* Key Deliverables & Features */}
-                  <div className="mt-3.5 rounded-2xl border border-neutral-100 bg-neutral-50/80 p-3 sm:p-3.5">
+                  <div className="mt-3.5 rounded-2xl border border-white/10 bg-black/40 p-3 sm:p-4 backdrop-blur-md">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
                       Key Production Features Built:
                     </p>
-                    <ul className="grid sm:grid-cols-2 gap-1.5 text-[11px] sm:text-xs text-neutral-700">
+                    <ul className="grid sm:grid-cols-2 gap-1.5 text-[11px] sm:text-xs text-neutral-200">
                       {project.features.slice(0, 4).map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-1.5">
-                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                        <li key={fIdx} className="flex items-start gap-2">
+                          <span className="text-emerald-400 font-bold shrink-0">✓</span>
                           <span className="leading-tight">{feat}</span>
                         </li>
                       ))}
@@ -372,13 +392,13 @@ export default function AiWebProjectsSection() {
                 </div>
 
                 {/* Bottom Action Buttons */}
-                <div className="mt-4 pt-3.5 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-3 shrink-0">
-                  <div className="flex flex-wrap items-center gap-2">
+                <div className="relative z-10 mt-4 pt-3.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <a
                       href={project.liveUrl}
                       target={project.liveUrl.startsWith("http") ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-5 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-600"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-emerald-400 hover:scale-105"
                     >
                       <span>{project.liveUrlLabel}</span>
                     </a>
@@ -388,15 +408,15 @@ export default function AiWebProjectsSection() {
                         href={project.secondaryUrl}
                         target={project.secondaryUrl.startsWith("http") ? "_blank" : undefined}
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-bold text-neutral-800 shadow-xs transition hover:border-black"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-white/15"
                       >
                         <span>{project.secondaryUrlLabel}</span>
                       </a>
                     )}
                   </div>
 
-                  <span className="text-[11px] font-bold text-emerald-700 flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span>Live &amp; Production Ready</span>
                   </span>
                 </div>
@@ -405,9 +425,9 @@ export default function AiWebProjectsSection() {
           </div>
 
           {/* ================= STEP INDICATOR & SCROLL HINT ================= */}
-          <div className="relative z-10 pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-100/60 text-xs">
+          <div className="relative z-10 pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 text-xs">
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-neutral-700">
+              <span className="font-mono font-bold text-neutral-300">
                 Project 0{activeCardIndex + 1} of 0{projects.length}
               </span>
               <div className="flex items-center gap-1.5 ml-2">
@@ -416,18 +436,18 @@ export default function AiWebProjectsSection() {
                     key={pIdx}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
                       activeCardIndex === pIdx
-                        ? "w-7 bg-emerald-600 shadow-xs"
-                        : "w-2 bg-neutral-300"
+                        ? "w-8 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]"
+                        : "w-2 bg-white/20"
                     }`}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-neutral-500 text-[11px]">
+            <div className="flex items-center gap-2 text-neutral-400 text-[11px]">
               <span>🖱️ Scroll to flip project card in place</span>
               <span>•</span>
-              <span className="font-semibold text-emerald-800">Vertical 3D Page Flip</span>
+              <span className="font-semibold text-emerald-400">Vertical 3D Page Flip</span>
             </div>
           </div>
         </div>
