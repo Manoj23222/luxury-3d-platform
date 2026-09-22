@@ -424,7 +424,7 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-16 lg:pt-16 pb-3 sm:pb-6"
+      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-16 lg:pt-16 pb-2 sm:pb-3"
     >
       {/* Full-Cover Background Video - Stretched Full Cover from Navigation to Stats */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -454,19 +454,19 @@ export default function HeroRotatingCards() {
       />
       <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl z-0" />
 
-      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-0 pb-1 sm:py-1">
+      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-0 pb-1">
         {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
-        <div className="lg:hidden relative text-center py-2 px-1 mb-3 space-y-1.5">
+        <div className="lg:hidden relative text-center py-1.5 px-1 mb-2 space-y-1">
           <div
             key={`mobile-hero-text-${activeCardIndex}`}
             className="space-y-1 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3 py-0.5 text-[11px] font-bold text-white shadow-xs backdrop-blur-xs">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{currentCard.companyOrRole}</span>
             </div>
 
-            <h1 className="text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
               Ashok Meena
             </h1>
 
@@ -476,16 +476,16 @@ export default function HeroRotatingCards() {
           </div>
         </div>
 
-        <div className="grid items-center gap-6 lg:gap-8 xl:gap-10 lg:grid-cols-12">
+        <div className="grid items-center gap-5 lg:gap-8 xl:gap-10 lg:grid-cols-12">
           {/* ================= DESKTOP LEFT COLUMN: CLEAN FLOATING DETAILS (>= lg) ================= */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-4 text-left">
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-3 text-left">
             {/* Synchronized Animated Content in Sync with Right Card Scrub */}
             <div
               key={`desktop-hero-details-${activeCardIndex}`}
-              className="space-y-3.5 transition-all duration-300 animate-in fade-in slide-in-from-bottom-3"
+              className="space-y-2.5 transition-all duration-300 animate-in fade-in slide-in-from-bottom-3"
             >
               {/* Dynamic Live Top Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs backdrop-blur-xs">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-xs font-bold text-white shadow-xs backdrop-blur-xs">
                 <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-emerald-300 font-bold">{currentCard.tag}</span>
                 <span className="text-neutral-400">•</span>
@@ -502,28 +502,28 @@ export default function HeroRotatingCards() {
               {/* Name & Dynamic Domain Headline */}
               <div>
                 <div className="flex items-center justify-between">
-                  <h1 className="text-4xl xl:text-5xl font-black tracking-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)]">
+                  <h1 className="text-3xl xl:text-4xl font-black tracking-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)]">
                     Ashok Meena
                   </h1>
-                  <span className="rounded-full bg-white/15 border border-white/25 text-white px-3 py-0.5 text-xs font-mono font-bold shadow-xs">
+                  <span className="rounded-full bg-white/15 border border-white/25 text-white px-2.5 py-0.5 text-[11px] font-mono font-bold shadow-xs">
                     0{activeCardIndex + 1} / 0{cardsData.length}
                   </span>
                 </div>
-                <p className="mt-1.5 text-sm xl:text-base font-bold text-emerald-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                <p className="mt-1 text-xs xl:text-sm font-bold text-emerald-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                   {currentCard.title} • {currentCard.companyOrRole}
                 </p>
               </div>
 
               {/* Dynamic Bio & Domain Breakdown */}
-              <div className="space-y-2">
-                <p className="text-xs xl:text-sm leading-relaxed text-neutral-100 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              <div className="space-y-1.5">
+                <p className="text-xs leading-relaxed text-neutral-100 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                   {currentCard.description}
                 </p>
 
                 {/* Key Highlights for Active Domain */}
-                <div className="space-y-1 pt-1">
+                <div className="space-y-1 pt-0.5">
                   {currentCard.keyPoints.map((point, pIdx) => (
-                    <div key={pIdx} className="flex items-center gap-2 text-xs text-neutral-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
+                    <div key={pIdx} className="flex items-center gap-1.5 text-[11px] text-neutral-200 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
                       <span className="text-emerald-400 font-bold">✓</span>
                       <span className="truncate">{point}</span>
                     </div>
@@ -531,11 +531,11 @@ export default function HeroRotatingCards() {
                 </div>
 
                 {/* Active Skill Tags */}
-                <div className="pt-2 flex flex-wrap gap-1.5">
+                <div className="pt-1 flex flex-wrap gap-1">
                   {currentCard.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="rounded-lg border border-white/20 bg-black/40 px-2.5 py-1 text-[10.5px] font-semibold text-white shadow-2xs backdrop-blur-xs"
+                      className="rounded-md border border-white/20 bg-black/40 px-2 py-0.5 text-[10px] font-semibold text-white shadow-2xs backdrop-blur-xs"
                     >
                       {skill}
                     </span>
@@ -544,12 +544,12 @@ export default function HeroRotatingCards() {
               </div>
 
               {/* Company Recognition & Story Links */}
-              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
                 <a
                   href="https://infoeye.com/news/staff/11540/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-950/80 px-3.5 py-1.5 font-bold text-amber-200 shadow-xs transition hover:bg-amber-900 backdrop-blur-xs"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-950/80 px-3 py-1 font-bold text-amber-200 shadow-xs transition hover:bg-amber-900 backdrop-blur-xs"
                 >
                   <span>🏆</span>
                   <span>President Home Visit Story ↗</span>
@@ -559,7 +559,7 @@ export default function HeroRotatingCards() {
                   href="https://infoeye.com/company/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-white/20 bg-black/40 px-3.5 py-1.5 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/20 bg-black/40 px-3 py-1 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/70 backdrop-blur-xs"
                 >
                   Infoeye Company ↗
                 </a>
@@ -568,31 +568,31 @@ export default function HeroRotatingCards() {
                   href="https://infoeye.org/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-white/20 bg-black/40 px-3.5 py-1.5 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/20 bg-black/40 px-3 py-1 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/70 backdrop-blur-xs"
                 >
                   Infoeye.org ↗
                 </a>
               </div>
 
               {/* Quick Action CTAs */}
-              <div className="flex flex-wrap items-center gap-2.5 pt-1.5">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <Link
                   href="#my-work"
-                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
+                  className="rounded-full bg-white px-4.5 py-2 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
                 >
                   Explore My Work ↓
                 </Link>
 
                 <Link
                   href="/portfolio"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/25 bg-black/40 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
                 >
                   3D Models
                 </Link>
 
                 <Link
                   href="/photo-editing"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/25 bg-black/40 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
                 >
                   Branding
                 </Link>
@@ -601,7 +601,7 @@ export default function HeroRotatingCards() {
                   href="/Ashok_Resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-white/25 backdrop-blur-xs"
+                  className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-3.5 py-2 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-white/25 backdrop-blur-xs"
                 >
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -611,14 +611,14 @@ export default function HeroRotatingCards() {
 
                 <Link
                   href="/contact"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/25 bg-black/40 px-3.5 py-2 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
                 >
                   Contact
                 </Link>
               </div>
 
               {/* Key Metric Stats Row */}
-              <div className="grid grid-cols-4 gap-2 pt-3 border-t border-white/20">
+              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-white/20">
                 <div className="rounded-2xl border border-white/15 bg-black/40 p-2 text-center shadow-xs backdrop-blur-xs">
                   <p className="text-base xl:text-lg font-black text-white">6+ Yrs</p>
                   <p className="text-[8.5px] font-bold text-neutral-300 uppercase tracking-wider">
@@ -653,11 +653,11 @@ export default function HeroRotatingCards() {
           {/* ================= RIGHT COLUMN / MAIN STAGE: 5 ROTATING CARDS DECK ================= */}
           <div className="w-full lg:col-span-7 xl:col-span-7 relative">
             {/* Card Deck Stage - Perfectly sized for mobile viewports & desktop */}
-            <div className="relative h-[430px] xs:h-[450px] sm:h-[490px] lg:h-[530px] xl:h-[550px] w-full max-w-[580px] mx-auto">
+            <div className="relative h-[420px] xs:h-[440px] sm:h-[460px] lg:h-[480px] xl:h-[490px] w-full max-w-[580px] mx-auto">
               {cardsData.map((card, idx) => (
                 <div
                   key={card.id}
-                  className={`hero-card-item absolute inset-0 flex flex-col justify-between rounded-3xl border ${card.borderColor} ${card.cardBg} p-4 sm:p-7 shadow-2xl overflow-hidden select-none`}
+                  className={`hero-card-item absolute inset-0 flex flex-col justify-between rounded-3xl border ${card.borderColor} ${card.cardBg} p-4 sm:p-5.5 shadow-2xl overflow-hidden select-none`}
                   style={{
                     willChange: "transform, opacity",
                   }}
