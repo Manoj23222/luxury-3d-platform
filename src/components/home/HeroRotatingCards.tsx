@@ -437,8 +437,9 @@ export default function HeroRotatingCards() {
 
       <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-1 pb-2 sm:py-3">
         {/* ================= MOBILE-ONLY COMPACT INTRO HEADER WITH BACKGROUND VIDEO (< lg) ================= */}
-        <div className="lg:hidden relative overflow-hidden rounded-3xl border border-neutral-200/90 shadow-md p-3.5 sm:p-5 mb-3 sm:mb-4 text-center">
-          {/* Mobile Background Video - Crisp & High Quality without Blur */}
+        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER WITH 100% OPACITY BACKGROUND VIDEO (< lg) ================= */}
+        <div className="lg:hidden relative overflow-hidden rounded-3xl border border-neutral-300 bg-neutral-950 shadow-lg p-4 sm:p-5 mb-3 sm:mb-4 text-center">
+          {/* Mobile Background Video - 100% Crisp Opacity */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
             <video
               autoPlay
@@ -446,37 +447,40 @@ export default function HeroRotatingCards() {
               muted
               playsInline
               preload="auto"
-              className="h-full w-full object-cover object-center"
+              className="h-full w-full object-cover object-center opacity-100"
             >
               <source
                 src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
                 type="video/mp4"
               />
             </video>
-            {/* Subtle soft white gradient scrim to ensure text legibility while keeping video crisp */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/70 to-white/50" />
+            {/* Subtle bottom vignette to ensure text contrast without fading video */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
           </div>
 
-          <div className="relative z-10 space-y-1.5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 text-[11px] font-bold text-neutral-900 shadow-xs backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Senior 3D Designer • Infoeye (6+ Yrs)</span>
+          <div
+            key={`mobile-hero-text-${activeCardIndex}`}
+            className="relative z-10 space-y-1.5 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/70 px-3 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{currentCard.companyOrRole}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black drop-shadow-xs">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-md">
               Ashok Meena
             </h1>
 
-            <p className="text-[11.5px] sm:text-xs font-bold text-neutral-800">
-              CLO 3D Apparel • Hard Surface 3D • GLB • Photo Retouching
+            <p className="text-[11.5px] sm:text-xs font-bold text-neutral-200 drop-shadow-sm">
+              {currentCard.title} • {currentCard.tag}
             </p>
           </div>
         </div>
 
         <div className="grid items-center gap-6 lg:gap-8 xl:gap-10 lg:grid-cols-12">
-          {/* ================= DESKTOP LEFT COLUMN: FULL BIO & DETAILS WITH CRISP BACKGROUND VIDEO (>= lg) ================= */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white/60 shadow-xl p-5 xl:p-6 space-y-4 text-left transition-all duration-300">
-            {/* Desktop Background Video - High Quality Crisp Playback */}
+          {/* ================= DESKTOP LEFT COLUMN: FULL BIO & SYNCHRONIZED ANIMATED DETAILS (>= lg) ================= */}
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 relative overflow-hidden rounded-3xl border border-neutral-300/80 bg-neutral-950 shadow-2xl p-5 xl:p-6 space-y-3.5 text-left transition-all duration-300">
+            {/* Desktop Background Video - 100% Crisp Opacity */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-3xl">
               <video
                 autoPlay
@@ -484,68 +488,88 @@ export default function HeroRotatingCards() {
                 muted
                 playsInline
                 preload="auto"
-                className="h-full w-full object-cover object-center"
+                className="h-full w-full object-cover object-center opacity-100"
               >
                 <source
                   src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
                   type="video/mp4"
                 />
               </video>
-              {/* Soft gradient overlay for text readability without blurring the video animation */}
-              <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/80 to-white/55" />
+              {/* Refined gradient scrim allowing 100% video vibrancy with crystal clear text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
             </div>
 
-            <div className="relative z-10 space-y-3.5">
-              {/* Live Top Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-white/95 px-3.5 py-1.5 text-xs font-bold text-neutral-900 shadow-xs backdrop-blur-md">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Senior 3D & Digital Fashion Designer</span>
-                <span className="text-neutral-300">•</span>
+            {/* Synchronized Animated Content in Sync with Right Card Scrub */}
+            <div
+              key={`desktop-hero-details-${activeCardIndex}`}
+              className="relative z-10 space-y-3 transition-all duration-300 animate-in fade-in slide-in-from-bottom-3"
+            >
+              {/* Dynamic Live Top Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/75 px-3.5 py-1.5 text-xs font-bold text-white shadow-md backdrop-blur-md">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-300 font-bold">{currentCard.tag}</span>
+                <span className="text-neutral-500">•</span>
                 <a
                   href="https://infoeye.com/company/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-emerald-700 font-bold hover:underline"
+                  className="text-white hover:text-emerald-300 font-bold hover:underline transition"
                 >
                   Infoeye Software ↗
                 </a>
               </div>
 
-              {/* Name & Headline with crisp text styling */}
-              <div className="rounded-2xl border border-white/80 bg-white/80 p-3.5 shadow-2xs backdrop-blur-md">
-                <h1 className="text-3xl xl:text-4xl font-black tracking-tight text-black">
-                  Ashok Meena
-                </h1>
-                <p className="mt-1 text-xs xl:text-sm font-bold text-neutral-800">
-                  CLO 3D Apparel • Hard Surface 3D • Real-Time Web GLB • Retouching
+              {/* Name & Dynamic Domain Headline */}
+              <div className="rounded-2xl border border-white/15 bg-black/65 p-3.5 shadow-md backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <h1 className="text-3xl xl:text-4xl font-black tracking-tight text-white drop-shadow-sm">
+                    Ashok Meena
+                  </h1>
+                  <span className="rounded-full bg-white/15 border border-white/20 text-white px-2.5 py-0.5 text-[10px] font-mono font-bold">
+                    0{activeCardIndex + 1} / 0{cardsData.length}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs xl:text-sm font-bold text-emerald-300">
+                  {currentCard.title} • {currentCard.companyOrRole}
                 </p>
               </div>
 
-              {/* Bio with Company details & Links */}
-              <div className="rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xs backdrop-blur-md">
-                <p className="text-xs leading-relaxed text-neutral-700">
-                  Senior 3D & Graphic Designer with{" "}
-                  <strong className="text-black font-bold">6+ years of professional experience</strong> at{" "}
-                  <a
-                    href="https://infoeye.com/company/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-emerald-700 font-bold hover:underline"
-                  >
-                    Infoeye Software
-                  </a>{" "}
-                  (Sardarshahar, Rajasthan). Proven mastery in creating, simulating, and optimizing high-fidelity 3D garments and hard-surface assets with{" "}
-                  <strong className="text-black font-bold">300+ production-ready 3D models</strong> delivered for international platforms.
+              {/* Dynamic Bio & Domain Breakdown */}
+              <div className="rounded-2xl border border-white/15 bg-black/70 p-3.5 shadow-md backdrop-blur-md space-y-2">
+                <p className="text-xs leading-relaxed text-neutral-200 font-medium">
+                  {currentCard.description}
                 </p>
+
+                {/* Key Highlights for Active Domain */}
+                <div className="pt-2 border-t border-white/10 space-y-1">
+                  {currentCard.keyPoints.map((point, pIdx) => (
+                    <div key={pIdx} className="flex items-center gap-1.5 text-[11px] text-neutral-300">
+                      <span className="text-emerald-400 font-bold">✓</span>
+                      <span className="truncate">{point}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Active Skill Tags */}
+                <div className="pt-1.5 flex flex-wrap gap-1">
+                  {currentCard.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-md border border-white/15 bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white shadow-2xs"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              {/* Company Links & President Visit Recognition Banner */}
+              {/* Company Recognition & Story Links */}
               <div className="flex flex-wrap items-center gap-2 text-xs">
                 <a
                   href="https://infoeye.com/news/staff/11540/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50/95 px-3 py-1 font-bold text-amber-900 shadow-xs transition hover:bg-amber-100 backdrop-blur-md"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-950/80 px-3 py-1 font-bold text-amber-200 shadow-xs transition hover:bg-amber-900/90 backdrop-blur-md"
                 >
                   <span>🏆</span>
                   <span>President Home Visit Story ↗</span>
@@ -555,7 +579,7 @@ export default function HeroRotatingCards() {
                   href="https://infoeye.com/company/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 font-semibold text-neutral-800 shadow-xs transition hover:border-black hover:text-black backdrop-blur-md"
+                  className="rounded-full border border-white/20 bg-black/60 px-3 py-1 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/80 backdrop-blur-md"
                 >
                   Infoeye Company ↗
                 </a>
@@ -564,31 +588,31 @@ export default function HeroRotatingCards() {
                   href="https://infoeye.org/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 font-semibold text-neutral-800 shadow-xs transition hover:border-black hover:text-black backdrop-blur-md"
+                  className="rounded-full border border-white/20 bg-black/60 px-3 py-1 font-semibold text-white shadow-xs transition hover:border-white hover:bg-black/80 backdrop-blur-md"
                 >
                   Infoeye.org ↗
                 </a>
               </div>
 
               {/* Quick Action CTAs */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 <Link
                   href="#my-work"
-                  className="rounded-full bg-black px-4.5 py-2.5 text-xs font-bold text-white shadow-md transition duration-200 hover:bg-neutral-800 hover:scale-105"
+                  className="rounded-full bg-white px-4.5 py-2 text-xs font-bold text-black shadow-md transition duration-200 hover:bg-neutral-200 hover:scale-105"
                 >
                   Explore My Work ↓
                 </Link>
 
                 <Link
                   href="/portfolio"
-                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black backdrop-blur-md"
+                  className="rounded-full border border-white/25 bg-black/60 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/80 backdrop-blur-md"
                 >
                   3D Models
                 </Link>
 
                 <Link
                   href="/photo-editing"
-                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black backdrop-blur-md"
+                  className="rounded-full border border-white/25 bg-black/60 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/80 backdrop-blur-md"
                 >
                   Branding
                 </Link>
@@ -597,48 +621,48 @@ export default function HeroRotatingCards() {
                   href="/Ashok_Resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-100/95 px-3.5 py-2.5 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:bg-white backdrop-blur-md"
+                  className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-white/20 backdrop-blur-md"
                 >
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  Resume
+                  Resume PDF
                 </a>
 
                 <Link
                   href="/contact"
-                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:text-black backdrop-blur-md"
+                  className="rounded-full border border-white/25 bg-black/60 px-3.5 py-2 text-xs font-bold text-white transition duration-200 hover:border-white hover:bg-black/80 backdrop-blur-md"
                 >
                   Contact
                 </Link>
               </div>
 
               {/* Key Metric Stats Row */}
-              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-neutral-200/80">
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
-                  <p className="text-base xl:text-lg font-black text-black">6+ Yrs</p>
-                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-white/15">
+                <div className="rounded-2xl border border-white/15 bg-black/65 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-white">6+ Yrs</p>
+                  <p className="text-[8.5px] font-bold text-neutral-400 uppercase tracking-wider">
                     Experience
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
-                  <p className="text-base xl:text-lg font-black text-emerald-700">Infoeye</p>
-                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                <div className="rounded-2xl border border-white/15 bg-black/65 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-emerald-400">Infoeye</p>
+                  <p className="text-[8.5px] font-bold text-neutral-400 uppercase tracking-wider">
                     Company
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
-                  <p className="text-base xl:text-lg font-black text-black">300+</p>
-                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                <div className="rounded-2xl border border-white/15 bg-black/65 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-white">300+</p>
+                  <p className="text-[8.5px] font-bold text-neutral-400 uppercase tracking-wider">
                     Models
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
-                  <p className="text-base xl:text-lg font-black text-black">100%</p>
-                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                <div className="rounded-2xl border border-white/15 bg-black/65 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-emerald-400">100%</p>
+                  <p className="text-[8.5px] font-bold text-neutral-400 uppercase tracking-wider">
                     PBR / QC
                   </p>
                 </div>
