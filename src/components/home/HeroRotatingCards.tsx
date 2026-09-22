@@ -424,45 +424,44 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden border-b border-neutral-200 bg-gradient-to-b from-white via-neutral-50/70 to-neutral-100/50 text-neutral-900 flex flex-col pt-16 sm:pt-18 lg:pt-20 pb-4 sm:pb-8 lg:pb-10"
+      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-18 lg:pt-20 pb-4 sm:pb-8 lg:pb-10"
     >
+      {/* Full-Cover Background Video - Stretched Full Cover across Entire Hero */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="h-full w-full object-cover object-center opacity-100"
+        >
+          <source
+            src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
+            type="video/mp4"
+          />
+        </video>
+        {/* Cinematic subtle contrast scrim preserving 100% video vibrancy & colors */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/60" />
+      </div>
+
       {/* Background Ambient Glows and Subtle Dot Mesh */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#0000000a_1px,transparent_1px)] [background-size:24px_24px] opacity-60" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0f_1px,transparent_1px)] [background-size:24px_24px] opacity-40 z-0" />
 
       {/* Dynamic Ambient Glow reacting to active card theme */}
       <div
-        className={`pointer-events-none absolute -top-40 left-1/4 h-[550px] w-[650px] rounded-full bg-gradient-to-br ${currentCard.themeGlow} blur-3xl transition-all duration-700`}
+        className={`pointer-events-none absolute -top-40 left-1/4 h-[550px] w-[650px] rounded-full bg-gradient-to-br ${currentCard.themeGlow} blur-3xl opacity-60 transition-all duration-700 z-0`}
       />
-      <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-100/40 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl z-0" />
 
-      <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-1 pb-2 sm:py-3">
-        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER WITH BACKGROUND VIDEO (< lg) ================= */}
-        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER WITH 100% OPACITY BACKGROUND VIDEO (< lg) ================= */}
-        <div className="lg:hidden relative overflow-hidden rounded-3xl border border-neutral-300 bg-neutral-950 shadow-lg p-4 sm:p-5 mb-3 sm:mb-4 text-center">
-          {/* Mobile Background Video - 100% Crisp Opacity */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="h-full w-full object-cover object-center opacity-100"
-            >
-              <source
-                src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
-                type="video/mp4"
-              />
-            </video>
-            {/* Subtle bottom vignette to ensure text contrast without fading video */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-          </div>
-
+      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-1 pb-2 sm:py-3">
+        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
+        <div className="lg:hidden relative overflow-hidden rounded-3xl border border-white/20 bg-black/65 shadow-xl p-4 sm:p-5 mb-3 sm:mb-4 text-center backdrop-blur-md">
           <div
             key={`mobile-hero-text-${activeCardIndex}`}
             className="relative z-10 space-y-1.5 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/70 px-3 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/75 px-3 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-md">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{currentCard.companyOrRole}</span>
             </div>
@@ -479,26 +478,7 @@ export default function HeroRotatingCards() {
 
         <div className="grid items-center gap-6 lg:gap-8 xl:gap-10 lg:grid-cols-12">
           {/* ================= DESKTOP LEFT COLUMN: FULL BIO & SYNCHRONIZED ANIMATED DETAILS (>= lg) ================= */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 relative overflow-hidden rounded-3xl border border-neutral-300/80 bg-neutral-950 shadow-2xl p-5 xl:p-6 space-y-3.5 text-left transition-all duration-300">
-            {/* Desktop Background Video - 100% Crisp Opacity */}
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-3xl">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className="h-full w-full object-cover object-center opacity-100"
-              >
-                <source
-                  src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              {/* Refined gradient scrim allowing 100% video vibrancy with crystal clear text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
-            </div>
-
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 relative overflow-hidden rounded-3xl border border-white/20 bg-black/65 shadow-2xl p-5 xl:p-6 space-y-3.5 text-left transition-all duration-300 backdrop-blur-md">
             {/* Synchronized Animated Content in Sync with Right Card Scrub */}
             <div
               key={`desktop-hero-details-${activeCardIndex}`}
