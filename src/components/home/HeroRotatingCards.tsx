@@ -564,7 +564,7 @@ export default function HeroRotatingCards() {
           <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-6 text-left">
             <div className="space-y-4">
               {/* Studio Luxury Pill */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/40 px-3.5 py-1 text-xs font-semibold text-neutral-200 backdrop-blur-md shadow-xs">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-transparent px-3.5 py-1 text-xs font-semibold text-neutral-200 shadow-xs">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="tracking-wide">Portfolio &amp; Creative Engineering</span>
               </div>
@@ -592,7 +592,7 @@ export default function HeroRotatingCards() {
                 </p>
               </div>
 
-              {/* Action Buttons & Links */}
+              {/* Action Buttons & Links - Pure Floating Transparent Style */}
               <div className="flex flex-wrap items-center gap-2.5 pt-2">
                 <Link
                   href="#my-work"
@@ -603,21 +603,21 @@ export default function HeroRotatingCards() {
 
                 <Link
                   href="/portfolio"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/35 bg-transparent px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-white/15"
                 >
                   3D Models
                 </Link>
 
                 <Link
                   href="/photo-editing"
-                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                  className="rounded-full border border-white/35 bg-transparent px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-white/15"
                 >
                   Branding
                 </Link>
 
                 <Link
                   href="/about"
-                  className="rounded-full border border-amber-400/50 bg-amber-950/80 px-4 py-2.5 text-xs font-bold text-amber-200 shadow-xs transition hover:bg-amber-900 backdrop-blur-xs"
+                  className="rounded-full border border-amber-400/50 bg-amber-500/15 px-4 py-2.5 text-xs font-bold text-amber-200 shadow-xs transition duration-200 hover:bg-amber-500/25"
                 >
                   About &amp; Awards ↗
                 </Link>

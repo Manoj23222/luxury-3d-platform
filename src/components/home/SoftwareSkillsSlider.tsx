@@ -954,22 +954,8 @@ export default function SoftwareSkillsSlider() {
             Specialized 3D & Digital Design Domains
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl mx-auto font-medium">
-            Individual software workstations with full breakdown of production capabilities and specialized design skills.
-          </p>
-
           {/* Quick Stats Badges Row */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1">
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
-              <span className="text-indigo-400 font-bold">⚡</span> 11 Dedicated Workstations
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
-              <span className="text-amber-400 font-bold">💎</span> 130+ Specialized Skills
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
-              <span className="text-emerald-400 font-bold">✓</span> Production Pipeline Ready
-            </span>
-          </div>
+          
         </div>
 
         {/* ================= MAIN CINEMATIC CARD STAGE ================= */}
