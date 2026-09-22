@@ -40,226 +40,350 @@ const showcaseImages: ShowcaseImageItem[] = [
 
 export default function MyWorkSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastActiveIdxRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (cards.length === 0 || !sectionRef.current) return;
+      const cards = gsap.utils.toArray<HTMLDivElement>(
+        ".showcase-3d-card",
+        sectionRef.current
+      );
+      if (!cards || cards.length < 4 || !sectionRef.current) return;
+
+      const [card1, card2, card3, card4] = cards;
 
       const mm = gsap.matchMedia();
 
-      // Initial Deck Setup
-      const setupInitialDeck = (depthOffset = 80, scaleOffset = 0.04) => {
-        cards.forEach((card, i) => {
-          if (i === 0) {
-            gsap.set(card, {
-              xPercent: 0,
-              yPercent: 0,
-              z: 0,
-              rotationY: 0,
-              rotationX: 0,
-              scale: 1,
-              opacity: 1,
-              zIndex: 30,
-              transformOrigin: "center center",
-              force3D: true,
-            });
-          } else {
-            gsap.set(card, {
-              xPercent: 0,
-              yPercent: 0,
-              z: -i * depthOffset,
-              rotationY: i % 2 === 1 ? 3 : -3,
-              scale: 1 - i * scaleOffset,
-              opacity: Math.max(0.2, 1 - i * 0.28),
-              zIndex: 30 - i,
-              transformOrigin: "center center",
-              force3D: true,
-            });
-          }
-        });
-      };
-
-      // Desktop Timeline (>= 1024px)
+      // ================= DESKTOP MOTION TIMELINE (>= 1024px) =================
       mm.add("(min-width: 1024px)", () => {
-        setupInitialDeck(90, 0.04);
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "+=3600",
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const idx = Math.min(
-                cards.length - 1,
-                Math.floor(self.progress * (cards.length - 0.02))
-              );
-              setActiveIndex(idx);
-            },
-          },
+        // Initial setup for the 4 distinct entrance positions
+        // Card 1: Starts slightly right, scaled 0.95, subtle 3D tilt
+        gsap.set(card1, {
+          xPercent: 25,
+          yPercent: 0,
+          z: 0,
+          rotationY: 6,
+          scale: 0.95,
+          opacity: 0.85,
+          zIndex: 40,
+          clipPath: "inset(0% 0% 0% 0% round 32px)",
+          transformPerspective: 1800,
+          transformOrigin: "50% 50%",
+          force3D: true,
+          backfaceVisibility: "hidden",
         });
 
-        const numSteps = cards.length - 1;
-        const stepDuration = 1 / numSteps;
+        // Card 2: Waiting below the viewport in depth
+        gsap.set(card2, {
+          xPercent: 0,
+          yPercent: 55,
+          z: -80,
+          rotationY: 0,
+          scale: 0.88,
+          opacity: 0.3,
+          zIndex: 30,
+          clipPath: "inset(0% 0% 0% 0% round 32px)",
+          transformPerspective: 1800,
+          transformOrigin: "50% 50%",
+          force3D: true,
+          backfaceVisibility: "hidden",
+        });
 
-        for (let i = 0; i < numSteps; i++) {
-          const startTime = i * stepDuration;
-          const currentCard = cards[i];
-          const nextCard = cards[i + 1];
+        // Card 3: Waiting to the right in deep background layer
+        gsap.set(card3, {
+          xPercent: 45,
+          yPercent: 0,
+          z: -180,
+          rotationY: -10,
+          scale: 0.82,
+          opacity: 0.2,
+          zIndex: 20,
+          clipPath: "inset(0% 0% 0% 0% round 32px)",
+          transformPerspective: 1800,
+          transformOrigin: "50% 50%",
+          force3D: true,
+          backfaceVisibility: "hidden",
+        });
 
-          // Current card 3D flips / rolls away to left
-          tl.to(
-            currentCard,
-            {
-              xPercent: -80,
-              rotationY: -42,
-              z: -220,
-              scale: 0.88,
-              opacity: 0,
-              ease: "power2.inOut",
-              duration: stepDuration,
-              zIndex: 25,
-            },
-            startTime
-          );
-
-          // Next card rolls into the front active center
-          tl.fromTo(
-            nextCard,
-            {
-              xPercent: 70,
-              rotationY: 38,
-              z: -180,
-              scale: 0.9,
-              opacity: 0.2,
-              zIndex: 35,
-            },
-            {
-              xPercent: 0,
-              rotationY: 0,
-              z: 0,
-              scale: 1,
-              opacity: 1,
-              ease: "power2.inOut",
-              duration: stepDuration,
-              zIndex: 35,
-            },
-            startTime
-          );
-
-          // Cards behind step forward in depth
-          for (let k = i + 2; k < cards.length; k++) {
-            const behindCard = cards[k];
-            const depth = k - (i + 1);
-            tl.to(
-              behindCard,
-              {
-                z: -depth * 90,
-                scale: 1 - depth * 0.04,
-                rotationY: depth % 2 === 1 ? 3 : -3,
-                opacity: Math.max(0.2, 1 - depth * 0.28),
-                ease: "power2.inOut",
-                duration: stepDuration,
-              },
-              startTime
-            );
-          }
-        }
-      });
-
-      // Tablet & Mobile Timeline (< 1024px)
-      mm.add("(max-width: 1023px)", () => {
-        setupInitialDeck(50, 0.03);
+        // Card 4: Waiting to the left with mask reveal ready
+        gsap.set(card4, {
+          xPercent: -45,
+          yPercent: 0,
+          z: -240,
+          rotationY: 4,
+          scale: 0.8,
+          opacity: 0.15,
+          zIndex: 10,
+          clipPath: "inset(0% 45% 0% 0% round 32px)",
+          transformPerspective: 1800,
+          transformOrigin: "50% 50%",
+          force3D: true,
+          backfaceVisibility: "hidden",
+        });
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=2600",
+            end: "+=3800",
             pin: true,
             scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
-              const idx = Math.min(
+              const activeIdx = Math.min(
                 cards.length - 1,
-                Math.floor(self.progress * (cards.length - 0.02))
+                Math.floor(self.progress * (cards.length - 0.05))
               );
-              setActiveIndex(idx);
+              if (lastActiveIdxRef.current !== activeIdx) {
+                lastActiveIdxRef.current = activeIdx;
+                setActiveIndex(activeIdx);
+              }
             },
           },
         });
 
-        const numSteps = cards.length - 1;
-        const stepDuration = 1 / numSteps;
+        // STAGE 0 -> 1: Card 1 glides to center (scale 1.05, rotation 0, zIndex 40)
+        tl.to(
+          card1,
+          {
+            xPercent: 0,
+            rotationY: 0,
+            scale: 1.05,
+            opacity: 1,
+            zIndex: 40,
+            ease: "power2.out",
+            duration: 0.15,
+          },
+          0
+        );
 
-        for (let i = 0; i < numSteps; i++) {
-          const startTime = i * stepDuration;
-          const currentCard = cards[i];
-          const nextCard = cards[i + 1];
+        // STAGE 1 -> 2: Card 1 exits to back/top, Card 2 enters from BOTTOM upward to center
+        // Duration: 0.15 -> 0.45
+        tl.to(
+          card1,
+          {
+            yPercent: -28,
+            scale: 0.9,
+            opacity: 0.35,
+            zIndex: 25,
+            ease: "power2.inOut",
+            duration: 0.3,
+          },
+          0.18
+        );
 
-          tl.to(
-            currentCard,
-            {
-              xPercent: -65,
-              rotationY: -25,
-              z: -120,
-              scale: 0.9,
-              opacity: 0,
-              ease: "power2.inOut",
-              duration: stepDuration,
-              zIndex: 25,
+        tl.to(
+          card2,
+          {
+            yPercent: 0,
+            z: 0,
+            scale: 1.05,
+            opacity: 1,
+            zIndex: 40,
+            ease: "power2.inOut",
+            duration: 0.3,
+          },
+          0.18
+        );
+
+        // Card 3 moves closer in background
+        tl.to(
+          card3,
+          {
+            xPercent: 32,
+            z: -90,
+            rotationY: -6,
+            scale: 0.88,
+            opacity: 0.4,
+            zIndex: 30,
+            ease: "power2.inOut",
+            duration: 0.3,
+          },
+          0.18
+        );
+
+        // STAGE 2 -> 3: Card 2 exits, Card 3 enters from RIGHT + DEPTH forward
+        // Duration: 0.48 -> 0.75
+        tl.to(
+          card2,
+          {
+            yPercent: -35,
+            scale: 0.88,
+            opacity: 0.25,
+            zIndex: 20,
+            ease: "power2.inOut",
+            duration: 0.27,
+          },
+          0.48
+        );
+
+        tl.to(
+          card3,
+          {
+            xPercent: 0,
+            z: 0,
+            rotationY: 0,
+            scale: 1.05,
+            opacity: 1,
+            zIndex: 40,
+            ease: "power2.inOut",
+            duration: 0.27,
+          },
+          0.48
+        );
+
+        // Card 4 advances on left with partial mask opening
+        tl.to(
+          card4,
+          {
+            xPercent: -28,
+            z: -100,
+            scale: 0.88,
+            clipPath: "inset(0% 25% 0% 0% round 32px)",
+            opacity: 0.45,
+            zIndex: 30,
+            ease: "power2.inOut",
+            duration: 0.27,
+          },
+          0.48
+        );
+
+        // STAGE 3 -> 4: Card 3 exits, Card 4 enters from LEFT with REVEAL MASK
+        // Duration: 0.75 -> 1.0
+        tl.to(
+          card3,
+          {
+            xPercent: 22,
+            scale: 0.88,
+            opacity: 0.25,
+            zIndex: 20,
+            ease: "power2.inOut",
+            duration: 0.25,
+          },
+          0.75
+        );
+
+        tl.to(
+          card4,
+          {
+            xPercent: 0,
+            z: 0,
+            rotationY: 0,
+            scale: 1.05,
+            clipPath: "inset(0% 0% 0% 0% round 32px)",
+            opacity: 1,
+            zIndex: 40,
+            ease: "power2.inOut",
+            duration: 0.25,
+          },
+          0.75
+        );
+      });
+
+      // ================= TABLET & MOBILE TIMELINE (< 1024px) =================
+      mm.add("(max-width: 1023px)", () => {
+        // Scaled-down movements to strictly avoid horizontal overflow
+        gsap.set(card1, {
+          xPercent: 15,
+          yPercent: 0,
+          scale: 0.96,
+          opacity: 0.9,
+          zIndex: 40,
+          clipPath: "inset(0% 0% 0% 0% round 22px)",
+          transformPerspective: 1200,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+
+        gsap.set(card2, {
+          xPercent: 0,
+          yPercent: 40,
+          scale: 0.9,
+          opacity: 0.3,
+          zIndex: 30,
+          clipPath: "inset(0% 0% 0% 0% round 22px)",
+          transformPerspective: 1200,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+
+        gsap.set(card3, {
+          xPercent: 25,
+          yPercent: 0,
+          scale: 0.85,
+          opacity: 0.2,
+          zIndex: 20,
+          clipPath: "inset(0% 0% 0% 0% round 22px)",
+          transformPerspective: 1200,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+
+        gsap.set(card4, {
+          xPercent: -25,
+          yPercent: 0,
+          scale: 0.85,
+          opacity: 0.15,
+          zIndex: 10,
+          clipPath: "inset(0% 30% 0% 0% round 22px)",
+          transformPerspective: 1200,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=2800",
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const activeIdx = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * (cards.length - 0.05))
+              );
+              if (lastActiveIdxRef.current !== activeIdx) {
+                lastActiveIdxRef.current = activeIdx;
+                setActiveIndex(activeIdx);
+              }
             },
-            startTime
-          );
+          },
+        });
 
-          tl.fromTo(
-            nextCard,
-            {
-              xPercent: 55,
-              rotationY: 22,
-              z: -100,
-              scale: 0.92,
-              opacity: 0.2,
-              zIndex: 35,
-            },
-            {
-              xPercent: 0,
-              rotationY: 0,
-              z: 0,
-              scale: 1,
-              opacity: 1,
-              ease: "power2.inOut",
-              duration: stepDuration,
-              zIndex: 35,
-            },
-            startTime
-          );
+        // Stage 0 -> 1: Center Card 1
+        tl.to(
+          card1,
+          {
+            xPercent: 0,
+            scale: 1.03,
+            opacity: 1,
+            zIndex: 40,
+            ease: "power2.out",
+            duration: 0.15,
+          },
+          0
+        );
 
-          for (let k = i + 2; k < cards.length; k++) {
-            const behindCard = cards[k];
-            const depth = k - (i + 1);
-            tl.to(
-              behindCard,
-              {
-                z: -depth * 50,
-                scale: 1 - depth * 0.03,
-                opacity: Math.max(0.2, 1 - depth * 0.28),
-                ease: "power2.inOut",
-                duration: stepDuration,
-              },
-              startTime
-            );
-          }
-        }
+        // Stage 1 -> 2: Card 1 up, Card 2 up from bottom
+        tl.to(card1, { yPercent: -20, scale: 0.92, opacity: 0.35, zIndex: 25, duration: 0.3 }, 0.18);
+        tl.to(card2, { yPercent: 0, scale: 1.03, opacity: 1, zIndex: 40, duration: 0.3 }, 0.18);
+        tl.to(card3, { xPercent: 18, scale: 0.9, opacity: 0.4, zIndex: 30, duration: 0.3 }, 0.18);
+
+        // Stage 2 -> 3: Card 2 out, Card 3 in from right
+        tl.to(card2, { yPercent: -25, scale: 0.9, opacity: 0.25, zIndex: 20, duration: 0.27 }, 0.48);
+        tl.to(card3, { xPercent: 0, scale: 1.03, opacity: 1, zIndex: 40, duration: 0.27 }, 0.48);
+        tl.to(card4, { xPercent: -15, scale: 0.9, clipPath: "inset(0% 15% 0% 0% round 22px)", opacity: 0.45, zIndex: 30, duration: 0.27 }, 0.48);
+
+        // Stage 3 -> 4: Card 3 out, Card 4 in with left reveal
+        tl.to(card3, { xPercent: 15, scale: 0.9, opacity: 0.25, zIndex: 20, duration: 0.25 }, 0.75);
+        tl.to(card4, { xPercent: 0, scale: 1.03, clipPath: "inset(0% 0% 0% 0% round 22px)", opacity: 1, zIndex: 40, duration: 0.25 }, 0.75);
       });
 
       ScrollTrigger.refresh();
@@ -272,23 +396,23 @@ export default function MyWorkSection() {
     <section
       id="my-work"
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden bg-neutral-950 text-white flex flex-col items-center justify-center py-6 sm:py-8 select-none border-b border-neutral-800"
+      className="relative min-h-screen h-screen w-full overflow-hidden bg-neutral-950 text-white flex flex-col items-center justify-center py-6 select-none border-b border-neutral-800"
     >
       {/* Subtle Ambient Radial Glows */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/50 via-neutral-950 to-black z-0" />
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl z-0" />
 
       {/* Top Header Tag */}
-      <div className="relative z-10 mb-3 sm:mb-5 text-center px-4">
+      <div className="relative z-10 mb-3 sm:mb-4 text-center px-4">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-1 text-xs font-semibold text-neutral-300 backdrop-blur-md shadow-xs">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span>Featured Showcase • 3D &amp; CGI Portfolio</span>
         </div>
       </div>
 
-      {/* 3D Perspective Stage Container - Centered with Left & Right Breathing Room (8-12vw) */}
+      {/* 3D Perspective Stage Container - Centered in Viewport */}
       <div
-        className="relative z-10 w-[84vw] sm:w-[80vw] lg:w-[74vw] max-w-[1120px] h-[56vh] xs:h-[60vh] sm:h-[66vh] lg:h-[72vh] max-h-[740px] mx-auto flex items-center justify-center"
+        className="relative z-10 w-[92vw] sm:w-[86vw] lg:w-[78vw] max-w-[1120px] aspect-[16/10] sm:aspect-[16/9.5] max-h-[640px] mx-auto flex items-center justify-center overflow-visible"
         style={{
           perspective: "1800px",
           transformStyle: "preserve-3d",
@@ -297,17 +421,13 @@ export default function MyWorkSection() {
         {showcaseImages.map((item, idx) => (
           <div
             key={item.id}
-            ref={(el) => {
-              cardRefs.current[idx] = el;
-            }}
-            className="absolute inset-0 rounded-[22px] sm:rounded-[30px] lg:rounded-[34px] overflow-hidden border border-white/20 bg-neutral-900 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing"
+            className="showcase-3d-card absolute inset-0 rounded-[20px] sm:rounded-[28px] lg:rounded-[32px] overflow-hidden border border-white/20 bg-neutral-900 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95),0_0_35px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing will-change-transform"
             style={{
-              willChange: "transform, opacity",
               transformStyle: "preserve-3d",
               backfaceVisibility: "hidden",
             }}
           >
-            {/* Project Image - Preserved 100% with object-cover and crisp clipping */}
+            {/* Project Image - 100% Crisp Widescreen Presentation */}
             <img
               src={item.src}
               alt={item.title}
@@ -316,11 +436,11 @@ export default function MyWorkSection() {
               loading="eager"
             />
 
-            {/* Subtle Gradient Shadow Scrim on Bottom for Text Readability */}
-            <div className="absolute inset-x-0 bottom-0 h-36 sm:h-44 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+            {/* Subtle Gradient Shadow Scrim on Bottom for Text Readability without Obscuring Artwork */}
+            <div className="absolute inset-x-0 bottom-0 h-24 sm:h-28 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
 
             {/* Top Badge: Card Counter */}
-            <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-10 pointer-events-none">
+            <div className="absolute top-3.5 sm:top-5 left-3.5 sm:left-5 z-10 pointer-events-none">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[10.5px] sm:text-xs font-mono font-bold text-white backdrop-blur-md shadow-xs">
                 <span>0{idx + 1}</span>
                 <span className="text-white/40">/</span>
@@ -329,16 +449,16 @@ export default function MyWorkSection() {
             </div>
 
             {/* Bottom Caption Pill */}
-            <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-6 z-10 flex items-end justify-between pointer-events-none gap-3">
+            <div className="absolute bottom-3.5 sm:bottom-5 inset-x-3.5 sm:inset-x-5 z-10 flex items-end justify-between pointer-events-none gap-3">
               <div>
                 <p className="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase tracking-widest drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
                   {item.category}
                 </p>
-                <h3 className="text-lg sm:text-2xl lg:text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-tight">
+                <h3 className="text-base sm:text-xl lg:text-2xl font-black text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-tight">
                   {item.title}
                 </h3>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold text-white backdrop-blur-md">
+              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[11px] font-semibold text-white backdrop-blur-md">
                 ✦ High-Resolution CGI
               </span>
             </div>
@@ -347,7 +467,7 @@ export default function MyWorkSection() {
       </div>
 
       {/* Bottom Scroll Progress Bar & Step Dots */}
-      <div className="relative z-10 mt-4 sm:mt-6 flex items-center gap-4 px-4">
+      <div className="relative z-10 mt-4 sm:mt-5 flex items-center gap-4 px-4">
         <div className="flex items-center gap-2">
           {showcaseImages.map((_, idx) => (
             <div
@@ -360,8 +480,8 @@ export default function MyWorkSection() {
             />
           ))}
         </div>
-        <span className="text-[11px] sm:text-xs text-neutral-400 font-medium">
-          Scroll to flip 3D cards ({activeIndex + 1}/{showcaseImages.length})
+        <span className="text-[11px] sm:text-xs text-neutral-400 font-medium font-mono">
+          Scroll to explore projects ({activeIndex + 1}/{showcaseImages.length})
         </span>
       </div>
     </section>

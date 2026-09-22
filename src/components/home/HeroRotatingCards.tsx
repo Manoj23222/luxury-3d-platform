@@ -619,7 +619,7 @@ export default function HeroRotatingCards() {
                   href="/about"
                   className="rounded-full border border-amber-400/50 bg-amber-500/15 px-4 py-2.5 text-xs font-bold text-amber-200 shadow-xs transition duration-200 hover:bg-amber-500/25"
                 >
-                  About &amp; Awards ↗
+                  About↗
                 </Link>
               </div>
             </div>

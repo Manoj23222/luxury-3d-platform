@@ -526,7 +526,7 @@ export default async function PhotoEditingPage() {
   const works = await getPhotoWorks();
 
   return (
-    <main className="min-h-screen bg-neutral-50 text-black">
+    <main className="min-h-screen bg-[#070709] text-white selection:bg-neutral-800 selection:text-white">
       <Navbar />
 
       {/* Luxury Hero Banner Section */}

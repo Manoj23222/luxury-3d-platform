@@ -100,40 +100,44 @@ const projects: WebProject[] = [
 
 export default function AiWebProjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastActiveIdxRef = useRef(0);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (cards.length === 0 || !sectionRef.current) return;
+      const cards = gsap.utils.toArray<HTMLDivElement>(
+        ".ai-web-project-card",
+        sectionRef.current
+      );
+      if (!cards || cards.length === 0 || !sectionRef.current) return;
 
-      // 1. Initial State: Card 0 flat in place (0deg), subsequent cards rotated -90deg out of view
-      cards.forEach((card, idx) => {
-        if (idx === 0) {
-          gsap.set(card, {
-            rotateX: 0,
-            opacity: 1,
-            scale: 1,
-            visibility: "visible",
-            zIndex: 20,
-            transformOrigin: "center center",
-            force3D: true,
-          });
-        } else {
-          gsap.set(card, {
-            rotateX: -90,
-            opacity: 0,
-            scale: 0.96,
-            visibility: "hidden",
-            zIndex: 10,
-            transformOrigin: "center center",
-            force3D: true,
-          });
-        }
+      // 1. Initial 3D Setup with explicit transformPerspective & transformOrigin
+      gsap.set(cards, {
+        transformPerspective: 1600,
+        transformOrigin: "50% 50%",
+        force3D: true,
       });
+
+      // Card 0 flat in center (0deg), Card 1 flipped (-90deg)
+      gsap.set(cards[0], {
+        rotationX: 0,
+        scale: 1,
+        opacity: 1,
+        zIndex: 20,
+        pointerEvents: "auto",
+      });
+
+      for (let i = 1; i < cards.length; i++) {
+        gsap.set(cards[i], {
+          rotationX: -90,
+          scale: 0.94,
+          opacity: 0,
+          zIndex: 10,
+          pointerEvents: "none",
+        });
+      }
 
       // 2. Master ScrollTrigger Pin & Vertical 3D Flip Timeline
       const numTransitions = cards.length - 1;
@@ -142,18 +146,20 @@ export default function AiWebProjectsSection() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: `+=${numTransitions * 1800}`, // Controlled scroll length for smooth deliberate flip
+            end: `+=${numTransitions * 2400}`, // Generous scroll runway for distinct 3D flip
             pin: true,
             scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            refreshPriority: -1,
             onUpdate: (self) => {
               const activeIdx = Math.min(
                 cards.length - 1,
-                Math.floor(self.progress * (cards.length - 0.02))
+                Math.floor(self.progress * (cards.length - 0.05))
               );
-              setActiveCardIndex(activeIdx);
+              if (lastActiveIdxRef.current !== activeIdx) {
+                lastActiveIdxRef.current = activeIdx;
+                setActiveCardIndex(activeIdx);
+              }
             },
           },
         });
@@ -166,34 +172,59 @@ export default function AiWebProjectsSection() {
           const currentCard = cards[i];
           const nextCard = cards[i + 1];
 
-          // Phase 1: Current Card flips forward around horizontal center axis (0deg -> 90deg) and hides
+          // Phase 1: Current Card flips forward around horizontal center axis (0deg -> 90deg) & fades out
           tl.to(
             currentCard,
             {
-              rotateX: 90,
-              scale: 0.96,
+              rotationX: 90,
+              scale: 0.92,
               opacity: 0,
               ease: "power1.in",
               duration: halfStep,
               zIndex: 15,
+              onStart: () => {
+                currentCard.style.pointerEvents = "auto";
+              },
+              onComplete: () => {
+                currentCard.style.pointerEvents = "none";
+              },
+              onReverseComplete: () => {
+                currentCard.style.pointerEvents = "auto";
+              },
             },
             startTime
-          ).set(currentCard, { visibility: "hidden" }, startTime + halfStep);
+          );
 
-          // Phase 2: Next Card unhides and rotates into the exact same center position (-90deg -> 0deg)
-          tl.set(nextCard, { visibility: "visible" }, startTime + halfStep)
-            .to(
-              nextCard,
-              {
-                rotateX: 0,
-                scale: 1,
-                opacity: 1,
-                ease: "power1.out",
-                duration: halfStep,
-                zIndex: 25,
+          // Phase 2: Next Card rotates into the exact same center position (-90deg -> 0deg) & reveals
+          tl.fromTo(
+            nextCard,
+            {
+              rotationX: -90,
+              scale: 0.92,
+              opacity: 0,
+              zIndex: 25,
+              pointerEvents: "none",
+            },
+            {
+              rotationX: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power1.out",
+              duration: halfStep,
+              zIndex: 25,
+              immediateRender: false,
+              onStart: () => {
+                nextCard.style.pointerEvents = "none";
               },
-              startTime + halfStep
-            );
+              onComplete: () => {
+                nextCard.style.pointerEvents = "auto";
+              },
+              onReverseComplete: () => {
+                nextCard.style.pointerEvents = "none";
+              },
+            },
+            startTime + halfStep
+          );
         }
       }
 
@@ -253,10 +284,7 @@ export default function AiWebProjectsSection() {
             {projects.map((project, idx) => (
               <div
                 key={project.id}
-                ref={(el) => {
-                  cardRefs.current[idx] = el;
-                }}
-                className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[28px] border ${project.accentBorder} bg-gradient-to-br from-neutral-900/95 via-neutral-900/90 to-neutral-950 p-5 sm:p-7 lg:p-8 shadow-2xl transition-all select-none backdrop-blur-xl`}
+                className={`ai-web-project-card absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[28px] border ${project.accentBorder} bg-gradient-to-br from-neutral-900/95 via-neutral-900/90 to-neutral-950 p-5 sm:p-7 lg:p-8 shadow-2xl select-none backdrop-blur-xl`}
                 style={{
                   transformStyle: "preserve-3d",
                   backfaceVisibility: "hidden",
