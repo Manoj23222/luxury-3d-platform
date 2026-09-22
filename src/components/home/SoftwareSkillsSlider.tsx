@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Official Real Brand Vector / Logos (Compact & Crisp)
+// ================= BRAND LOGO COMPONENTS =================
 function BlenderLogo({ className = "h-7 w-7 sm:h-8 sm:w-8" }: { className?: string }) {
   return (
     <img
@@ -161,35 +164,46 @@ const softwareLogos = [
   { id: "ai", name: "Generative AI", render: () => <AiSparkleLogo /> },
 ];
 
-interface SoftwareCardData {
+// ================= WORKSTATION CARD DATA MODEL =================
+export interface WorkstationCardData {
   id: string;
   name: string;
   title: string;
   subtitle: string;
-  subtitleColor: string;
-  checkColor: string;
-  gradientBg: string;
+  categoryTag: string;
+  tagColor: string;
+  cardBg: string;
   borderColor: string;
   glowColor: string;
+  accentBar: string;
+  watermark: string;
+  pillColor: string;
+  checkColor: string;
   description: string;
   renderLogo: () => React.ReactNode;
   skills: string[];
+  metrics: { label: string; value: string };
+  actionLink: { label: string; url: string };
 }
 
-const softwareCards: SoftwareCardData[] = [
+export const workstationCards: WorkstationCardData[] = [
   {
     id: "photoshop",
     name: "Adobe Photoshop",
     title: "Photo Editing Skills",
     subtitle: "Adobe Photoshop Post-Production",
-    subtitleColor: "text-blue-700",
-    checkColor: "text-blue-600",
-    gradientBg: "bg-gradient-to-br from-blue-50/95 via-sky-50/40 to-white",
-    borderColor: "border-blue-200/90 hover:border-blue-500",
-    glowColor: "from-blue-500/20 via-sky-400/10 to-transparent",
+    categoryTag: "High-End Retouching",
+    tagColor: "bg-sky-950/80 border-sky-400/40 text-sky-300",
+    cardBg: "bg-gradient-to-br from-[#001729] via-[#002744] to-[#00101d]",
+    borderColor: "border-sky-400/40 hover:border-sky-300 shadow-sky-500/20",
+    glowColor: "from-sky-500/30 via-blue-600/15 to-transparent",
+    accentBar: "from-sky-400 via-blue-500 to-indigo-600",
+    watermark: "🎨",
+    pillColor: "bg-sky-900/40 border-sky-400/30 text-sky-100 hover:border-sky-300 hover:bg-sky-800/50",
+    checkColor: "text-sky-400",
     description:
       "High-end frequency separation, non-destructive retouching, e-commerce catalog, and product enhancement.",
-    renderLogo: () => <PhotoshopLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <PhotoshopLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Image Resizing",
       "Photo Retouching",
@@ -207,20 +221,26 @@ const softwareCards: SoftwareCardData[] = [
       "Skin Retouching",
       "Product Photo Editing",
     ],
+    metrics: { label: "Experience", value: "6+ Yrs" },
+    actionLink: { label: "View Photo Work ↗", url: "/photo-editing" },
   },
   {
     id: "illustrator",
     name: "Adobe Illustrator",
     title: "Vector & Branding Skills",
     subtitle: "Adobe Illustrator Precision Design",
-    subtitleColor: "text-amber-800",
-    checkColor: "text-amber-600",
-    gradientBg: "bg-gradient-to-br from-amber-50/95 via-orange-50/40 to-white",
-    borderColor: "border-amber-200/90 hover:border-amber-500",
-    glowColor: "from-amber-500/20 via-orange-400/10 to-transparent",
+    categoryTag: "Vector & Tech-Packs",
+    tagColor: "bg-amber-950/80 border-amber-400/40 text-amber-300",
+    cardBg: "bg-gradient-to-br from-[#291300] via-[#3d1c00] to-[#1a0c00]",
+    borderColor: "border-amber-400/40 hover:border-amber-300 shadow-amber-500/20",
+    glowColor: "from-amber-500/30 via-orange-600/15 to-transparent",
+    accentBar: "from-amber-400 via-orange-500 to-red-600",
+    watermark: "📐",
+    pillColor: "bg-amber-900/40 border-amber-400/30 text-amber-100 hover:border-amber-300 hover:bg-amber-800/50",
+    checkColor: "text-amber-400",
     description:
       "Vector tracing, brand identities, apparel trims, technical tech-packs, and commercial packaging design.",
-    renderLogo: () => <IllustratorLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <IllustratorLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Vector Tracing",
       "Logo Designing",
@@ -235,20 +255,26 @@ const softwareCards: SoftwareCardData[] = [
       "Banner Designing",
       "Business Card Design",
     ],
+    metrics: { label: "Assets Built", value: "500+" },
+    actionLink: { label: "Explore Branding ↗", url: "/photo-editing" },
   },
   {
     id: "blender",
     name: "Blender 3D",
     title: "3D Modeling & Rendering",
     subtitle: "Blender 3D Production Pipeline",
-    subtitleColor: "text-orange-800",
-    checkColor: "text-orange-600",
-    gradientBg: "bg-gradient-to-br from-orange-50/95 via-amber-50/40 to-white",
-    borderColor: "border-orange-200/90 hover:border-orange-500",
-    glowColor: "from-orange-500/20 via-amber-400/10 to-transparent",
+    categoryTag: "CGI & Hard Surface",
+    tagColor: "bg-orange-950/80 border-orange-400/40 text-orange-300",
+    cardBg: "bg-gradient-to-br from-[#24140a] via-[#331c0e] to-[#170c06]",
+    borderColor: "border-orange-500/40 hover:border-orange-400 shadow-orange-500/20",
+    glowColor: "from-orange-500/35 via-amber-600/15 to-transparent",
+    accentBar: "from-orange-400 via-amber-500 to-yellow-500",
+    watermark: "💎",
+    pillColor: "bg-orange-900/40 border-orange-400/30 text-orange-100 hover:border-orange-300 hover:bg-orange-800/50",
+    checkColor: "text-orange-400",
     description:
       "Precision hard-surface modeling, procedural PBR texturing, studio lighting, low-poly optimization, and CGI renders.",
-    renderLogo: () => <BlenderLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <BlenderLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "3D Modeling",
       "Hard Surface Modeling",
@@ -265,20 +291,26 @@ const softwareCards: SoftwareCardData[] = [
       "Product Visualization",
       "GLB/glTF Optimization",
     ],
+    metrics: { label: "Production 3D", value: "300+ Models" },
+    actionLink: { label: "Inspect 3D Models ↗", url: "/portfolio" },
   },
   {
     id: "clo3d",
     name: "CLO 3D",
     title: "3D Garment & Digital Fashion",
     subtitle: "CLO 3D Virtual Fashion Specialist",
-    subtitleColor: "text-purple-800",
-    checkColor: "text-purple-600",
-    gradientBg: "bg-gradient-to-br from-purple-50/95 via-fuchsia-50/40 to-white",
-    borderColor: "border-purple-200/90 hover:border-purple-500",
-    glowColor: "from-purple-500/20 via-fuchsia-400/10 to-transparent",
+    categoryTag: "Digital Fashion & Drape",
+    tagColor: "bg-purple-950/80 border-purple-400/40 text-purple-300",
+    cardBg: "bg-gradient-to-br from-[#230b36] via-[#33104e] to-[#160622]",
+    borderColor: "border-fuchsia-400/40 hover:border-fuchsia-300 shadow-fuchsia-500/20",
+    glowColor: "from-fuchsia-500/35 via-purple-600/15 to-transparent",
+    accentBar: "from-fuchsia-400 via-purple-500 to-indigo-600",
+    watermark: "👗",
+    pillColor: "bg-purple-900/40 border-purple-400/30 text-purple-100 hover:border-purple-300 hover:bg-purple-800/50",
+    checkColor: "text-fuchsia-400",
     description:
       "3D apparel patterning, realistic fabric physics, avatar drape simulation, and real-time fashion configurator assets.",
-    renderLogo: () => <Clo3dLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <Clo3dLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "3D Garment Design",
       "Virtual Fashion",
@@ -293,20 +325,26 @@ const softwareCards: SoftwareCardData[] = [
       "High-Res Fabric Render",
       "Trim & Detail Tech-Packs",
     ],
+    metrics: { label: "Fashion SKUs", value: "100+ Styles" },
+    actionLink: { label: "View Garments ↗", url: "/portfolio" },
   },
   {
     id: "lightroom",
     name: "Adobe Lightroom",
     title: "Photo Enhancement & RAW",
     subtitle: "Adobe Lightroom Digital Darkroom",
-    subtitleColor: "text-sky-800",
-    checkColor: "text-sky-600",
-    gradientBg: "bg-gradient-to-br from-sky-50/95 via-blue-50/40 to-white",
-    borderColor: "border-sky-200/90 hover:border-sky-500",
-    glowColor: "from-sky-500/20 via-cyan-400/10 to-transparent",
+    categoryTag: "16-Bit RAW Darkroom",
+    tagColor: "bg-cyan-950/80 border-cyan-400/40 text-cyan-300",
+    cardBg: "bg-gradient-to-br from-[#021c2e] via-[#052b47] to-[#011320]",
+    borderColor: "border-cyan-400/40 hover:border-cyan-300 shadow-cyan-500/20",
+    glowColor: "from-cyan-500/30 via-sky-600/15 to-transparent",
+    accentBar: "from-cyan-400 via-sky-500 to-blue-600",
+    watermark: "📸",
+    pillColor: "bg-cyan-900/40 border-cyan-400/30 text-cyan-100 hover:border-cyan-300 hover:bg-cyan-800/50",
+    checkColor: "text-cyan-400",
     description:
       "Non-destructive 16-bit RAW image post-processing, batch cataloging, tonal curve balancing, and color harmony.",
-    renderLogo: () => <LightroomLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <LightroomLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Photo Enhancement",
       "Color Correction",
@@ -321,20 +359,26 @@ const softwareCards: SoftwareCardData[] = [
       "Batch Cataloging",
       "Highlight & Shadow Recovery",
     ],
+    metrics: { label: "Precision", value: "16-Bit RAW" },
+    actionLink: { label: "Color Grading ↗", url: "/photo-editing" },
   },
   {
     id: "canva",
     name: "Canva",
     title: "Graphic & Presentation Design",
     subtitle: "Canva Visual Communication",
-    subtitleColor: "text-teal-800",
-    checkColor: "text-teal-600",
-    gradientBg: "bg-gradient-to-br from-teal-50/95 via-cyan-50/40 to-white",
-    borderColor: "border-teal-200/90 hover:border-teal-500",
-    glowColor: "from-teal-500/20 via-cyan-400/10 to-transparent",
+    categoryTag: "Marketing & Pitch Decks",
+    tagColor: "bg-teal-950/80 border-teal-400/40 text-teal-300",
+    cardBg: "bg-gradient-to-br from-[#120b24] via-[#1e113a] to-[#0b0616]",
+    borderColor: "border-teal-400/40 hover:border-teal-300 shadow-teal-500/20",
+    glowColor: "from-teal-500/30 via-cyan-600/15 to-transparent",
+    accentBar: "from-teal-400 via-cyan-500 to-purple-600",
+    watermark: "✨",
+    pillColor: "bg-teal-900/40 border-teal-400/30 text-teal-100 hover:border-teal-300 hover:bg-teal-800/50",
+    checkColor: "text-teal-400",
     description:
       "Rapid marketing collateral, social media assets, commercial pitch decks, brand kits, and presentation layouts.",
-    renderLogo: () => <CanvaLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <CanvaLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Graphic Design",
       "Social Media Design",
@@ -349,20 +393,26 @@ const softwareCards: SoftwareCardData[] = [
       "Fast Prototyping",
       "Digital Layouts",
     ],
+    metrics: { label: "Turnaround", value: "Rapid" },
+    actionLink: { label: "Design Decks ↗", url: "/photo-editing" },
   },
   {
     id: "excel",
     name: "Microsoft Excel",
     title: "Data & Spreadsheet Ops",
     subtitle: "Microsoft Excel Production Data",
-    subtitleColor: "text-emerald-800",
-    checkColor: "text-emerald-600",
-    gradientBg: "bg-gradient-to-br from-emerald-50/95 via-teal-50/40 to-white",
-    borderColor: "border-emerald-200/90 hover:border-emerald-500",
-    glowColor: "from-emerald-500/20 via-teal-400/10 to-transparent",
+    categoryTag: "SKU Taxonomy & BOM",
+    tagColor: "bg-emerald-950/80 border-emerald-400/40 text-emerald-300",
+    cardBg: "bg-gradient-to-br from-[#041f15] via-[#093021] to-[#02140d]",
+    borderColor: "border-emerald-400/40 hover:border-emerald-300 shadow-emerald-500/20",
+    glowColor: "from-emerald-500/30 via-teal-600/15 to-transparent",
+    accentBar: "from-emerald-400 via-teal-500 to-green-600",
+    watermark: "📊",
+    pillColor: "bg-emerald-900/40 border-emerald-400/30 text-emerald-100 hover:border-emerald-300 hover:bg-emerald-800/50",
+    checkColor: "text-emerald-400",
     description:
       "Structured product catalog data entry, SKU taxonomy, BOM tech-pack sheets, and spreadsheet inventory formatting.",
-    renderLogo: () => <ExcelLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <ExcelLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Data Entry",
       "Formatting & Cleanup",
@@ -376,20 +426,26 @@ const softwareCards: SoftwareCardData[] = [
       "Asset Organization",
       "Production Reporting",
     ],
+    metrics: { label: "Data Accuracy", value: "100% Strict" },
+    actionLink: { label: "Workflow Specs ↗", url: "#my-work" },
   },
   {
     id: "ai",
     name: "Generative AI",
     title: "AI Generation & Creative Tools",
     subtitle: "Generative AI & Image Synthesis",
-    subtitleColor: "text-pink-800",
-    checkColor: "text-pink-600",
-    gradientBg: "bg-gradient-to-br from-pink-50/95 via-rose-50/40 to-white",
-    borderColor: "border-pink-200/90 hover:border-pink-500",
-    glowColor: "from-pink-500/20 via-rose-400/10 to-transparent",
+    categoryTag: "Synthetic Vision & Diffusion",
+    tagColor: "bg-pink-950/80 border-pink-400/40 text-pink-300",
+    cardBg: "bg-gradient-to-br from-[#260515] via-[#380b21] to-[#16020c]",
+    borderColor: "border-pink-400/40 hover:border-pink-300 shadow-pink-500/20",
+    glowColor: "from-pink-500/35 via-rose-600/15 to-transparent",
+    accentBar: "from-pink-400 via-rose-500 to-amber-500",
+    watermark: "🌌",
+    pillColor: "bg-pink-900/40 border-pink-400/30 text-pink-100 hover:border-pink-300 hover:bg-pink-800/50",
+    checkColor: "text-pink-400",
     description:
       "Cutting-edge AI image synthesis, prompt design, AI texture generation, concept ideation, and image enhancement.",
-    renderLogo: () => <AiSparkleLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <AiSparkleLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "AI Image Generation",
       "AI Image Editing",
@@ -404,20 +460,26 @@ const softwareCards: SoftwareCardData[] = [
       "Upscaling & Enhancement",
       "Rapid Concept Iteration",
     ],
+    metrics: { label: "AI Acceleration", value: "10x Ideation" },
+    actionLink: { label: "AI Workflows ↗", url: "#my-work" },
   },
   {
     id: "chatgpt-gemini",
     name: "ChatGPT & Google Gemini",
     title: "AI Prompt Engineering",
     subtitle: "ChatGPT & Gemini LLM Systems",
-    subtitleColor: "text-emerald-800",
-    checkColor: "text-emerald-600",
-    gradientBg: "bg-gradient-to-br from-emerald-50/95 via-teal-50/40 to-white",
-    borderColor: "border-emerald-200/90 hover:border-emerald-500",
-    glowColor: "from-emerald-500/20 via-teal-400/10 to-transparent",
+    categoryTag: "Context & Reasoning",
+    tagColor: "bg-teal-950/80 border-teal-400/40 text-teal-300",
+    cardBg: "bg-gradient-to-br from-[#031d1e] via-[#062d2e] to-[#011213]",
+    borderColor: "border-teal-400/40 hover:border-teal-300 shadow-teal-500/20",
+    glowColor: "from-teal-500/30 via-emerald-600/15 to-transparent",
+    accentBar: "from-teal-400 via-emerald-500 to-cyan-500",
+    watermark: "⚡",
+    pillColor: "bg-teal-900/40 border-teal-400/30 text-teal-100 hover:border-teal-300 hover:bg-teal-800/50",
+    checkColor: "text-teal-400",
     description:
       "Advanced prompt design, reasoning chain optimization, contextual logic synthesis, structured outputs, and automated workflows.",
-    renderLogo: () => <ChatGptLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <ChatGptLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Advanced Prompt Engineering",
       "Zero-Shot & Few-Shot Prompting",
@@ -430,20 +492,26 @@ const softwareCards: SoftwareCardData[] = [
       "Multimodal Vision Prompting",
       "System Prompt Design",
     ],
+    metrics: { label: "Reasoning Depth", value: "Complex" },
+    actionLink: { label: "AI Logic ↗", url: "#my-work" },
   },
   {
     id: "claude-codex",
     name: "Claude & Codex",
     title: "AI Code Generation",
     subtitle: "Claude AI & Codex Software Dev",
-    subtitleColor: "text-amber-800",
-    checkColor: "text-amber-600",
-    gradientBg: "bg-gradient-to-br from-amber-50/95 via-orange-50/40 to-white",
-    borderColor: "border-amber-200/90 hover:border-amber-500",
-    glowColor: "from-amber-500/20 via-orange-400/10 to-transparent",
+    categoryTag: "Full-Stack Code Synthesis",
+    tagColor: "bg-orange-950/80 border-orange-400/40 text-orange-300",
+    cardBg: "bg-gradient-to-br from-[#241108] via-[#361a0d] to-[#140803]",
+    borderColor: "border-orange-400/40 hover:border-orange-300 shadow-orange-500/20",
+    glowColor: "from-orange-500/30 via-amber-600/15 to-transparent",
+    accentBar: "from-orange-400 via-amber-500 to-red-500",
+    watermark: "💻",
+    pillColor: "bg-orange-900/40 border-orange-400/30 text-orange-100 hover:border-orange-300 hover:bg-orange-800/50",
+    checkColor: "text-orange-400",
     description:
       "Generating production-ready React/Next.js code, TypeScript architecture, database schemas, full-stack debugging, and API routing.",
-    renderLogo: () => <ClaudeLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <ClaudeLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Full-Stack Code Generation",
       "React & Next.js Architecture",
@@ -456,20 +524,26 @@ const softwareCards: SoftwareCardData[] = [
       "Performance Code Optimization",
       "Automated Test Writing",
     ],
+    metrics: { label: "Full-Stack Web", value: "Production" },
+    actionLink: { label: "Web Engineering ↗", url: "#my-work" },
   },
   {
     id: "antigravity",
     name: "Google Antigravity",
     title: "Agentic AI & Rapid Dev",
     subtitle: "Google Antigravity Agent Platform",
-    subtitleColor: "text-indigo-800",
-    checkColor: "text-indigo-600",
-    gradientBg: "bg-gradient-to-br from-indigo-50/95 via-violet-50/40 to-white",
-    borderColor: "border-indigo-200/90 hover:border-indigo-500",
-    glowColor: "from-indigo-500/20 via-violet-400/10 to-transparent",
+    categoryTag: "Autonomous AI Multi-Agents",
+    tagColor: "bg-indigo-950/80 border-indigo-400/40 text-indigo-300",
+    cardBg: "bg-gradient-to-br from-[#120d2c] via-[#1c1444] to-[#0a071a]",
+    borderColor: "border-indigo-400/40 hover:border-indigo-300 shadow-indigo-500/20",
+    glowColor: "from-indigo-500/35 via-violet-600/15 to-transparent",
+    accentBar: "from-indigo-400 via-violet-500 to-purple-600",
+    watermark: "🤖",
+    pillColor: "bg-indigo-900/40 border-indigo-400/30 text-indigo-100 hover:border-indigo-300 hover:bg-indigo-800/50",
+    checkColor: "text-indigo-400",
     description:
       "Autonomous coding workflows, multi-agent tool orchestration, full-stack builds, terminal automation, and rapid live deployment.",
-    renderLogo: () => <AntigravityLogo className="h-8 w-8 sm:h-9 sm:w-9 shrink-0" />,
+    renderLogo: () => <AntigravityLogo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />,
     skills: [
       "Agentic AI Development",
       "Multi-Agent Orchestration",
@@ -482,40 +556,199 @@ const softwareCards: SoftwareCardData[] = [
       "Tool Group Configuration",
       "Continuous CI/CD Delivery",
     ],
+    metrics: { label: "Automation", value: "Autonomous" },
+    actionLink: { label: "Live System ↗", url: "#my-work" },
   },
 ];
 
 export default function SoftwareSkillsSlider() {
   const [isHovered, setIsHovered] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
 
-  // Cards Horizontal Carousel Scroll State
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const lastActiveIdxRef = useRef(0);
 
-  const checkScroll = () => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setCanScrollLeft(scrollLeft > 10);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-  };
-
+  // ================= CINEMATIC SCROLL-LINKED GSAP TIMELINE =================
   useEffect(() => {
-    checkScroll();
-    window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLDivElement>(
+        ".workstation-card-item",
+        triggerRef.current
+      );
+      if (!cards || cards.length === 0 || !triggerRef.current) return;
+
+      const mm = gsap.matchMedia();
+
+      // Initial Deck Setup
+      gsap.set(cards, {
+        xPercent: (i) => (i === 0 ? 0 : 130),
+        y: 0,
+        scale: (i) => (i === 0 ? 1 : 0.88),
+        rotation: (i) => (i === 0 ? 0 : 6),
+        opacity: (i) => (i === 0 ? 1 : 0),
+        zIndex: (i) => 30 - i,
+        transformOrigin: "center center",
+        force3D: true,
+      });
+
+      // Desktop & Large Screens (>= 1024px)
+      mm.add("(min-width: 1024px)", () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: "top top",
+            end: `+=${cards.length * 360}`, // Smooth cinematic scroll runway for 11 cards
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const idx = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * (cards.length - 0.05))
+              );
+              if (lastActiveIdxRef.current !== idx) {
+                lastActiveIdxRef.current = idx;
+                setActiveCardIndex(idx);
+              }
+            },
+          },
+        });
+
+        const numSteps = cards.length - 1;
+        const stepDuration = 1 / numSteps;
+
+        for (let i = 0; i < numSteps; i++) {
+          const startTime = i * stepDuration;
+          const currentCard = cards[i];
+          const nextCard = cards[i + 1];
+
+          // Current card exits to the LEFT smoothly
+          tl.to(
+            currentCard,
+            {
+              xPercent: -130,
+              y: -10,
+              rotation: -6,
+              scale: 0.88,
+              opacity: 0,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 10,
+            },
+            startTime
+          );
+
+          // Next card enters smoothly from the RIGHT to CENTER
+          tl.fromTo(
+            nextCard,
+            {
+              xPercent: 130,
+              y: 10,
+              rotation: 6,
+              scale: 0.88,
+              opacity: 0,
+            },
+            {
+              xPercent: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 35,
+            },
+            startTime
+          );
+        }
+      });
+
+      // Mobile & Tablet (< 1024px)
+      mm.add("(max-width: 1023px)", () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: "top top",
+            end: `+=${cards.length * 260}`, // Responsive scroll runway for mobile
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const idx = Math.min(
+                cards.length - 1,
+                Math.floor(self.progress * (cards.length - 0.05))
+              );
+              if (lastActiveIdxRef.current !== idx) {
+                lastActiveIdxRef.current = idx;
+                setActiveCardIndex(idx);
+              }
+            },
+          },
+        });
+
+        const numSteps = cards.length - 1;
+        const stepDuration = 1 / numSteps;
+
+        for (let i = 0; i < numSteps; i++) {
+          const startTime = i * stepDuration;
+          const currentCard = cards[i];
+          const nextCard = cards[i + 1];
+
+          // Exit to left
+          tl.to(
+            currentCard,
+            {
+              xPercent: -120,
+              y: -6,
+              rotation: -4,
+              scale: 0.9,
+              opacity: 0,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 10,
+            },
+            startTime
+          );
+
+          // Enter from right to center
+          tl.fromTo(
+            nextCard,
+            {
+              xPercent: 120,
+              y: 6,
+              rotation: 4,
+              scale: 0.9,
+              opacity: 0,
+            },
+            {
+              xPercent: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              ease: "power1.inOut",
+              duration: stepDuration,
+              zIndex: 35,
+            },
+            startTime
+          );
+        }
+      });
+
+      ScrollTrigger.refresh();
+    }, triggerRef);
+
+    return () => ctx.revert();
   }, []);
 
-  const handleScroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const scrollAmount = 320;
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  };
+  const currentActiveCard = workstationCards[activeCardIndex] || workstationCards[0];
 
-  // Repeated list for seamless continuous infinite logo marquee
+  // Repeated list for continuous logo marquee
   const repeatedLogos = [
     ...softwareLogos,
     ...softwareLogos,
@@ -524,187 +757,249 @@ export default function SoftwareSkillsSlider() {
   ];
 
   return (
-    <section className="relative overflow-hidden border-b border-neutral-200 bg-white py-10 sm:py-12">
-      {/* 1. TOP HEADER: Specialized Software & Creative Tools */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-5 text-center">
-        <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-lg shadow-indigo-500/20 border border-indigo-400/30">
-          <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-          <span>✨ Specialized Software & Creative Tools</span>
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden border-b border-neutral-200 bg-neutral-950 text-white"
+    >
+      {/* 1. TOP HEADER & MARQUEE: Specialized Software & Creative Tools */}
+      <div className="relative pt-10 pb-6 border-b border-neutral-800/80 bg-neutral-900/60">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-5 text-center">
+          <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-lg shadow-indigo-500/25 border border-indigo-400/30">
+            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+            <span>✨ Specialized Software & Creative Tools</span>
+          </div>
         </div>
-      </div>
 
-      {/* Auto Horizontal Scrolling Infinite Marquee Track with Left & Right container padding */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-9">
-        <div
-          className="relative w-full overflow-hidden rounded-2xl border border-neutral-200/90 bg-neutral-50/80 py-2.5 shadow-2xs"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {/* Continuous Auto-Scrolling Container */}
+        {/* Auto Horizontal Scrolling Infinite Marquee Track */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
-            className={`flex w-max items-center gap-3 sm:gap-4 px-3 ${
-              isHovered ? "[animation-play-state:paused]" : ""
-            }`}
-            style={{
-              animation: "logoMarqueeScroll 22s linear infinite",
-            }}
+            className="relative w-full overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 py-2.5 shadow-2xs"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            {repeatedLogos.map((item, index) => (
-              <div
-                key={`${item.id}-${index}`}
-                className="group flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white p-2.5 shadow-2xs transition-all duration-300 hover:border-black hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
-              >
-                {item.render()}
-              </div>
-            ))}
+            <div
+              className={`flex w-max items-center gap-3 sm:gap-4 px-3 ${
+                isHovered ? "[animation-play-state:paused]" : ""
+              }`}
+              style={{
+                animation: "logoMarqueeScroll 22s linear infinite",
+              }}
+            >
+              {repeatedLogos.map((item, index) => (
+                <div
+                  key={`${item.id}-${index}`}
+                  className="group flex h-13 w-13 sm:h-15 sm:w-15 shrink-0 items-center justify-center rounded-2xl border border-neutral-700/80 bg-neutral-800/90 p-2 shadow-xs transition-all duration-300 hover:border-indigo-400 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                >
+                  {item.render()}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 2. LUXURY PROMOTIONAL SHOWCASE BANNER CONTAINER (LIGHT LUXURY THEME) */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-200/80 bg-gradient-to-br from-violet-50/70 via-white to-indigo-50/60 p-6 sm:p-8 lg:p-10 shadow-xl">
-          {/* Ambient Lighting Orbs & Grid */}
-          <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-cyan-200/40 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-violet-100/50 blur-3xl" />
+      {/* 2. CINEMATIC PINNED SCROLL SHOWCASE STAGE */}
+      <div
+        ref={triggerRef}
+        className="relative min-h-screen w-full flex flex-col justify-between py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        {/* Ambient Thematic Dynamic Radial Glow reacting to active card */}
+        <div
+          className={`pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[550px] w-[650px] rounded-full bg-gradient-to-br ${currentActiveCard.glowColor} blur-3xl opacity-70 transition-all duration-700`}
+        />
+        <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
 
-          {/* Subtle Cyber / Studio Grid Overlay */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage: "radial-gradient(circle at 1px 1px, #6366f1 1px, transparent 0)",
-              backgroundSize: "24px 24px",
-            }}
-          />
+        {/* Subtle Cyber Grid Matrix Background */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: "radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)",
+            backgroundSize: "28px 28px",
+          }}
+        />
 
-          {/* Banner Header Section */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 sm:pb-8 border-b border-indigo-100">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100/90 border border-indigo-300/80 px-3.5 py-1 text-xs font-bold text-indigo-900 mb-3 shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
-                <span className="tracking-wide uppercase text-[11px]">Creative Workstation Ecosystem</span>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
-                Specialized 3D & Digital Design Domains
-              </h3>
-
-              <p className="mt-2 text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed">
-                Individual software workstations with full breakdown of production capabilities and specialized design skills.
-              </p>
-
-              {/* Quick Highlight Badges */}
-              <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
-                  <span className="text-indigo-600 font-bold">⚡</span> 11 Dedicated Workstations
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
-                  <span className="text-amber-600 font-bold">💎</span> 130+ Specialized Skills
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-neutral-200/90 px-3 py-1 text-[11px] font-semibold text-neutral-800 shadow-2xs">
-                  <span className="text-emerald-600 font-bold">✓</span> Production Pipeline Ready
-                </span>
-              </div>
-            </div>
-
-            {/* Navigation Controls */}
-            <div className="flex items-center gap-3 self-start lg:self-auto">
-              <span className="text-xs text-neutral-500 font-medium hidden sm:inline">
-                Scroll Workstations →
-              </span>
-              <button
-                onClick={() => handleScroll("left")}
-                disabled={!canScrollLeft}
-                aria-label="Scroll left"
-                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-xs ${
-                  canScrollLeft
-                    ? "border-neutral-300 bg-white text-neutral-900 hover:border-black hover:bg-neutral-50 cursor-pointer"
-                    : "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
-                }`}
-              >
-                ←
-              </button>
-              <button
-                onClick={() => handleScroll("right")}
-                disabled={!canScrollRight}
-                aria-label="Scroll right"
-                className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition shadow-xs ${
-                  canScrollRight
-                    ? "border-neutral-300 bg-white text-neutral-900 hover:border-black hover:bg-neutral-50 cursor-pointer"
-                    : "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
-                }`}
-              >
-                →
-              </button>
-            </div>
+        {/* Header Block inside pinned section */}
+        <div className="relative z-10 mx-auto max-w-5xl w-full text-center space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/15 border border-indigo-400/30 px-3.5 py-1 text-xs font-bold text-indigo-300 shadow-xs">
+            <span className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
+            <span className="tracking-wider uppercase text-[10.5px] sm:text-[11px]">
+              Creative Workstation Ecosystem
+            </span>
           </div>
 
-          {/* Cards Carousel Tray */}
-          <div className="relative z-10 pt-6 sm:pt-7">
-            <div
-              ref={scrollRef}
-              onScroll={checkScroll}
-              className="flex gap-4 sm:gap-5 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth"
-              style={{ scrollSnapType: "x mandatory" }}
-            >
-              {softwareCards.map((card) => (
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-md">
+            Specialized 3D & Digital Design Domains
+          </h2>
+
+          <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl mx-auto font-medium">
+            Individual software workstations with full breakdown of production capabilities and specialized design skills.
+          </p>
+
+          {/* Quick Stats Badges Row */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
+              <span className="text-indigo-400 font-bold">⚡</span> 11 Dedicated Workstations
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
+              <span className="text-amber-400 font-bold">💎</span> 130+ Specialized Skills
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 px-3 py-1 text-[11px] font-semibold text-neutral-300 shadow-2xs backdrop-blur-md">
+              <span className="text-emerald-400 font-bold">✓</span> Production Pipeline Ready
+            </span>
+          </div>
+        </div>
+
+        {/* ================= MAIN CINEMATIC CARD STAGE ================= */}
+        <div className="relative z-20 mx-auto w-full max-w-[560px] my-3 sm:my-4 flex items-center justify-center">
+          {/* Card Deck Stage */}
+          <div className="relative w-full h-[470px] xs:h-[490px] sm:h-[510px] md:h-[530px] flex items-center justify-center">
+            {workstationCards.map((card, idx) => {
+              const isActive = activeCardIndex === idx;
+              return (
                 <div
                   key={card.id}
-                  style={{ scrollSnapAlign: "start" }}
-                  className={`group relative flex w-[270px] sm:w-[300px] shrink-0 flex-col justify-between rounded-3xl border ${card.borderColor} ${card.gradientBg} p-5 sm:p-5.5 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden select-none`}
+                  className={`workstation-card-item absolute inset-0 rounded-3xl border ${card.borderColor} ${card.cardBg} p-4 sm:p-6 shadow-2xl flex flex-col justify-between overflow-hidden select-none transition-shadow duration-500`}
+                  style={{
+                    willChange: "transform, opacity",
+                    boxShadow: isActive
+                      ? "0 25px 60px -15px rgba(0,0,0,0.9), 0 0 40px -10px rgba(255,255,255,0.15)"
+                      : "0 10px 30px -10px rgba(0,0,0,0.6)",
+                  }}
                 >
-                  {/* Ambient Card Glow */}
+                  {/* Top Ambient Glow Bar */}
                   <div
-                    className={`pointer-events-none absolute -top-16 -right-16 h-36 w-36 rounded-full bg-gradient-to-br ${card.glowColor} blur-2xl group-hover:scale-125 transition-transform duration-500`}
+                    className={`pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${card.accentBar}`}
                   />
 
-                  <div className="relative">
-                    {/* Header: Logo, Title, Subtitle */}
-                    <div className="flex items-start gap-3 border-b border-black/5 pb-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white border border-black/10 shadow-xs group-hover:scale-105 transition duration-200">
+                  {/* Watermark Floating Thematic Icon */}
+                  <div className="pointer-events-none absolute -right-4 -bottom-4 text-7xl sm:text-8xl opacity-[0.07] select-none font-black">
+                    {card.watermark}
+                  </div>
+
+                  {/* Top Header inside Card */}
+                  <div className="relative flex items-center justify-between border-b border-white/10 pb-2.5 shrink-0">
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10.5px] sm:text-[11px] font-bold shadow-2xs ${card.tagColor} backdrop-blur-md`}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+                      <span className="truncate max-w-[170px] sm:max-w-none">{card.categoryTag}</span>
+                    </span>
+
+                    <span className="rounded-full bg-white/10 border border-white/20 text-white px-2.5 py-0.5 text-[9.5px] sm:text-[10px] font-black tracking-wider shadow-2xs shrink-0">
+                      {card.metrics.label}: {card.metrics.value}
+                    </span>
+                  </div>
+
+                  {/* Main Card Content */}
+                  <div className="relative mt-2.5 flex-1 flex flex-col justify-between overflow-hidden">
+                    {/* Header with Logo, Title, and Subtitle */}
+                    <div className="flex items-start gap-3 shrink-0">
+                      <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 border border-white/20 shadow-xs backdrop-blur-md">
                         {card.renderLogo()}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm font-black text-black truncate group-hover:text-black">
+                        <h3 className="text-base sm:text-lg font-black text-white truncate tracking-tight">
                           {card.title}
-                        </h4>
-                        <p className={`mt-0.5 text-[11px] font-bold ${card.subtitleColor} truncate`}>
+                        </h3>
+                        <p className="text-[11px] sm:text-xs font-bold text-neutral-300 truncate">
                           {card.subtitle}
                         </p>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="mt-2.5 text-xs leading-relaxed text-neutral-600 font-medium">
+                    <p className="mt-1.5 text-[11px] sm:text-xs leading-relaxed text-neutral-300 font-medium line-clamp-2">
                       {card.description}
                     </p>
 
-                    {/* Skills Pills with checkmarks */}
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {card.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="inline-flex items-center rounded-lg border border-black/5 bg-white/90 backdrop-blur-xs px-2.5 py-1 text-[10.5px] font-semibold text-neutral-800 shadow-2xs transition hover:border-black/30 hover:bg-white cursor-default"
-                        >
-                          <span className={`mr-1 font-bold ${card.checkColor}`}>✓</span>
-                          {skill}
+                    {/* Skills Chips Matrix */}
+                    <div className="mt-2 rounded-2xl border border-white/10 bg-black/40 p-2.5 sm:p-3 space-y-1.5 shadow-2xs backdrop-blur-md">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                          Specialized Skills & Capabilities ({card.skills.length}):
                         </span>
-                      ))}
+                        <span className="text-[9.5px] font-mono text-neutral-400">
+                          Ready ✓
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1 max-h-[140px] xs:max-h-[155px] sm:max-h-[165px] overflow-y-auto no-scrollbar pr-0.5">
+                        {card.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[9.5px] sm:text-[10px] font-semibold shadow-2xs transition-colors duration-150 ${card.pillColor}`}
+                          >
+                            <span className={`mr-1 font-bold ${card.checkColor}`}>✓</span>
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Link & Software Name */}
+                    <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs shrink-0">
+                      <span className="font-black text-white text-[11.5px] sm:text-xs">
+                        {card.name}
+                      </span>
+
+                      <Link
+                        href={card.actionLink.url}
+                        className="inline-flex items-center gap-1 rounded-full bg-white text-black px-3 py-1 text-[10.5px] font-bold shadow-xs hover:bg-neutral-200 transition"
+                      >
+                        {card.actionLink.label}
+                      </Link>
                     </div>
                   </div>
 
-                  {/* Bottom Card Footer */}
-                  <div className="relative mt-4 pt-3 border-t border-black/5 flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-neutral-700">{card.name}</span>
-                    <span className="rounded-full bg-black/80 text-white px-2.5 py-0.5 text-[10px] font-black tracking-wide shadow-2xs">
-                      {card.skills.length} Skills
+                  {/* Bottom Indicator Step Pill */}
+                  <div className="relative mt-2 flex items-center justify-between border-t border-white/10 pt-2 text-[9.5px] sm:text-[10.5px] text-neutral-400 shrink-0">
+                    <span className="font-mono font-bold text-white">
+                      Workstation {idx + 1 < 10 ? `0${idx + 1}` : idx + 1} / {workstationCards.length}
+                    </span>
+                    <span className="font-semibold text-neutral-300 truncate max-w-[200px]">
+                      {idx === workstationCards.length - 1
+                        ? "✓ Complete Workstation Suite"
+                        : "↓ Scroll to scrub next domain"}
                     </span>
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Navigation & Progress Indicator Bar */}
+        <div className="relative z-10 mx-auto max-w-4xl w-full flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-2 border-t border-neutral-800/80">
+          {/* Step Progress Dots */}
+          <div className="flex items-center gap-1.5 flex-wrap justify-center">
+            {workstationCards.map((c, i) => (
+              <div
+                key={c.id}
+                className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                  activeCardIndex === i
+                    ? "w-6 sm:w-8 bg-indigo-400 shadow-xs shadow-indigo-400/50"
+                    : "w-1.5 sm:w-2 bg-neutral-700"
+                }`}
+                title={c.name}
+              />
+            ))}
+          </div>
+
+          {/* Active Domain Label & Hint */}
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs text-neutral-400">
+            <span className="font-bold text-white truncate max-w-[200px] sm:max-w-none">
+              {currentActiveCard.name}
+            </span>
+            <span>•</span>
+            <span className="text-indigo-400 font-semibold">
+              {activeCardIndex + 1} of {workstationCards.length} Domains
+            </span>
+            <span className="hidden md:inline">•</span>
+            <span className="hidden md:inline text-neutral-500">
+              Scroll up/down to slide
+            </span>
           </div>
         </div>
       </div>
