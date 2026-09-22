@@ -247,6 +247,26 @@ export default function HeroRotatingCards() {
         force3D: true,
       });
 
+      // Initial Setup for Floating Luxury Typography
+      gsap.set(".hero-luxury-title-1", {
+        y: 28,
+        opacity: 0.15,
+        letterSpacing: "0.02em",
+        force3D: true,
+      });
+
+      gsap.set(".hero-luxury-shimmer", {
+        x: "-120%",
+        opacity: 0,
+        force3D: true,
+      });
+
+      gsap.set(".hero-luxury-title-2", {
+        y: 22,
+        opacity: 0.1,
+        force3D: true,
+      });
+
       // Desktop & Large Screens (>= 1024px)
       mm.add("(min-width: 1024px)", () => {
         const tl = gsap.timeline({
@@ -270,6 +290,39 @@ export default function HeroRotatingCards() {
             },
           },
         });
+
+        // 1. Title 1 smooth luxury reveal and settle
+        tl.to(
+          ".hero-luxury-title-1",
+          {
+            y: 0,
+            opacity: 1,
+            letterSpacing: "normal",
+            duration: 0.22,
+            ease: "power2.out",
+          },
+          0
+        );
+
+        // 2. Subtle light / shimmer passing across Title 1
+        tl.fromTo(
+          ".hero-luxury-shimmer",
+          { x: "-120%", opacity: 0 },
+          { x: "200%", opacity: 0.7, duration: 0.35, ease: "power1.inOut" },
+          0.06
+        );
+
+        // 3. Title 2 reveals slightly later creating layered storytelling
+        tl.to(
+          ".hero-luxury-title-2",
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.24,
+            ease: "power2.out",
+          },
+          0.12
+        );
 
         const numSteps = cards.length - 1;
         const stepDuration = 1 / numSteps;
@@ -353,6 +406,36 @@ export default function HeroRotatingCards() {
             },
           },
         });
+
+        // Mobile typography reveal
+        tl.to(
+          ".hero-luxury-title-1",
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.22,
+            ease: "power2.out",
+          },
+          0
+        );
+
+        tl.fromTo(
+          ".hero-luxury-shimmer",
+          { x: "-120%", opacity: 0 },
+          { x: "200%", opacity: 0.7, duration: 0.35, ease: "power1.inOut" },
+          0.06
+        );
+
+        tl.to(
+          ".hero-luxury-title-2",
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.24,
+            ease: "power2.out",
+          },
+          0.12
+        );
 
         const numSteps = cards.length - 1;
         const stepDuration = 1 / numSteps;
@@ -456,75 +539,88 @@ export default function HeroRotatingCards() {
 
       <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-0 pb-1">
         {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
-        <div className="lg:hidden relative text-center py-2 px-1 mb-2 space-y-1.5">
+        <div className="lg:hidden relative text-center py-2 px-1 mb-3 space-y-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3.5 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Senior 3D & Digital Fashion Designer</span>
+            <span>Creative Portfolio</span>
           </div>
 
-          <h1 className="text-4xl xs:text-5xl font-black tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] uppercase">
-            Ashok Meena
-          </h1>
+          <div className="hero-luxury-title-1 relative overflow-hidden">
+            <h1 className="text-3xl xs:text-4xl font-black tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] leading-tight">
+              Senior 3D Designer &amp; Photo Editor
+            </h1>
+            <div className="hero-luxury-shimmer pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12" />
+          </div>
 
-          <p className="text-xs font-bold text-emerald-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
-            CLO 3D Apparel • Hard Surface 3D • Real-Time GLB • Retouching
-          </p>
+          <div className="hero-luxury-title-2">
+            <h2 className="text-sm xs:text-base font-bold text-emerald-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
+              Featured Web Platforms &amp; AI Applications
+            </h2>
+          </div>
         </div>
 
         <div className="grid items-center gap-6 lg:gap-8 xl:gap-10 lg:grid-cols-12">
-          {/* ================= DESKTOP LEFT COLUMN: ULTRA-CINEMATIC ASHOK MEENA TYPOGRAPHY (>= lg) ================= */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-4 text-left">
-            <div className="space-y-3.5">
-              {/* Studio Status Badge */}
-             
-               
-               
-              
+          {/* ================= DESKTOP LEFT COLUMN: LUXURY EDITORIAL TYPOGRAPHY (>= lg) ================= */}
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-6 text-left">
+            <div className="space-y-4">
+              {/* Studio Luxury Pill */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/40 px-3.5 py-1 text-xs font-semibold text-neutral-200 backdrop-blur-md shadow-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="tracking-wide">Portfolio &amp; Creative Engineering</span>
+              </div>
 
-              {/* Cinematic Name & Title */}
-              <div className="space-y-1">
-                <h1 className="text-4xl xl:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] uppercase">
-                  Ashok Meena
+              {/* TITLE 1: Main Luxury Heading */}
+              <div className="hero-luxury-title-1 relative overflow-hidden pb-1">
+                <h1 className="text-4xl xl:text-5xl 2xl:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] leading-[1.08]">
+                  Senior 3D Designer <br />
+                  <span className="bg-gradient-to-r from-white via-neutral-100 to-neutral-300 bg-clip-text text-transparent">
+                    &amp; Photo Editor
+                  </span>
                 </h1>
-                <p className="text-sm xl:text-base font-bold text-emerald-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-                  CLO 3D Apparel • Hard-Surface 3D • WebGL / GLB • Photo Retouching
+                {/* Subtle Cinematic Shimmer Sweep Layer */}
+                <div className="hero-luxury-shimmer pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12" />
+              </div>
+
+              {/* TITLE 2: Secondary Luxury Heading */}
+              <div className="hero-luxury-title-2 space-y-2 pt-1">
+                <h2 className="text-xl xl:text-2xl font-bold tracking-tight text-emerald-300 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] flex items-center gap-2">
+                  <span>✦</span>
+                  <span>Featured Web Platforms &amp; AI Applications</span>
+                </h2>
+                <p className="text-xs xl:text-sm leading-relaxed text-neutral-200 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] max-w-lg">
+                  6+ years crafting high-fidelity 3D garment simulations, luxury CGI packaging, and interactive 60 FPS WebGL digital experiences.
                 </p>
               </div>
 
-              
+              {/* Action Buttons & Links */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-2">
+                <Link
+                  href="#my-work"
+                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
+                >
+                  Explore My Work ↓
+                </Link>
 
-              {/* Quick Action CTAs */}
-              
+                <Link
+                  href="/portfolio"
+                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                >
+                  3D Models
+                </Link>
 
-              {/* Key Metric Stats Row */}
-              <div className="grid grid-cols-4 gap-2 pt-2.5 border-t border-white/20">
-                <div className="rounded-2xl border border-white/15 bg-black/40 p-2 text-center shadow-xs backdrop-blur-xs">
-                  <p className="text-base xl:text-lg font-black text-white">6+ Yrs</p>
-                  <p className="text-[8.5px] font-bold text-neutral-300 uppercase tracking-wider">
-                    Experience
-                  </p>
-                </div>
+                <Link
+                  href="/photo-editing"
+                  className="rounded-full border border-white/25 bg-black/40 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-black/70 backdrop-blur-xs"
+                >
+                  Branding
+                </Link>
 
-                <div className="rounded-2xl border border-white/15 bg-black/40 p-2 text-center shadow-xs backdrop-blur-xs">
-                  <p className="text-base xl:text-lg font-black text-emerald-400">Infoeye</p>
-                  <p className="text-[8.5px] font-bold text-neutral-300 uppercase tracking-wider">
-                    Studio
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/15 bg-black/40 p-2 text-center shadow-xs backdrop-blur-xs">
-                  <p className="text-base xl:text-lg font-black text-white">300+</p>
-                  <p className="text-[8.5px] font-bold text-neutral-300 uppercase tracking-wider">
-                    3D Assets
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-white/15 bg-black/40 p-2 text-center shadow-xs backdrop-blur-xs">
-                  <p className="text-base xl:text-lg font-black text-emerald-400">100%</p>
-                  <p className="text-[8.5px] font-bold text-neutral-300 uppercase tracking-wider">
-                    PBR / QC
-                  </p>
-                </div>
+                <Link
+                  href="/about"
+                  className="rounded-full border border-amber-400/50 bg-amber-950/80 px-4 py-2.5 text-xs font-bold text-amber-200 shadow-xs transition hover:bg-amber-900 backdrop-blur-xs"
+                >
+                  About &amp; Awards ↗
+                </Link>
               </div>
             </div>
           </div>
