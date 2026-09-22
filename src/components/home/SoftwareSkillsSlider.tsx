@@ -164,6 +164,155 @@ const softwareLogos = [
   { id: "ai", name: "Generative AI", render: () => <AiSparkleLogo /> },
 ];
 
+// ================= LUXURY 3D SOFTWARE CAROUSEL COMPONENT =================
+function Luxury3DSoftwareCarousel({ logos }: { logos: typeof softwareLogos }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const isHoveredRef = useRef(false);
+  const posRef = useRef(0);
+  const cardElementsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // 4 repeated sets to allow infinite seamless wrapping
+  const repeated = [...logos, ...logos, ...logos, ...logos];
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let lastTime = performance.now();
+
+    const updateCarousel = (currentTime: number) => {
+      const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
+      lastTime = currentTime;
+
+      const container = containerRef.current;
+      const track = trackRef.current;
+
+      if (container && track) {
+        const containerRect = container.getBoundingClientRect();
+        const containerCenter = containerRect.width / 2;
+        const speed = isHoveredRef.current ? 12 : 36; // px per second
+
+        posRef.current += speed * deltaTime;
+
+        // Calculate card width from DOM or fallback
+        const firstCard = cardElementsRef.current[0];
+        const cardWidth = firstCard ? firstCard.offsetWidth + 18 : 180;
+        const singleSetWidth = logos.length * cardWidth;
+
+        if (posRef.current >= singleSetWidth) {
+          posRef.current -= singleSetWidth;
+        }
+
+        track.style.transform = `translate3d(${-posRef.current}px, 0, 0)`;
+
+        // Calculate 3D center proximity for each item
+        cardElementsRef.current.forEach((el) => {
+          if (!el) return;
+          const elRect = el.getBoundingClientRect();
+          const elCenter = elRect.left - containerRect.left + elRect.width / 2;
+          const distance = Math.abs(elCenter - containerCenter);
+          const maxDist = containerRect.width * 0.52;
+          const normDist = Math.min(1, distance / maxDist);
+
+          // Proximity factor (1 at center, 0 at outer edges)
+          const proximity = Math.max(0, 1 - normDist);
+          const easeProximity = Math.pow(proximity, 1.8);
+
+          // 3D Transforms
+          const scale = 0.90 + 0.25 * easeProximity; // 0.90 -> 1.15
+          const translateZ = -15 * (1 - easeProximity) + 35 * easeProximity; // -15px to +35px
+          const rotateY = (elCenter - containerCenter) * -0.012; // subtle inward tilt
+          const opacity = 0.65 + 0.35 * easeProximity; // 0.65 -> 1.0
+          const brightness = 0.85 + 0.25 * easeProximity; // 0.85 -> 1.1
+
+          el.style.transform = `translate3d(0, 0, ${translateZ.toFixed(1)}px) scale(${scale.toFixed(3)}) rotateY(${rotateY.toFixed(2)}deg)`;
+          el.style.opacity = opacity.toFixed(3);
+          el.style.filter = `brightness(${brightness.toFixed(3)})`;
+          el.style.zIndex = Math.round(easeProximity * 30 + 1).toString();
+
+          if (easeProximity > 0.55) {
+            el.style.boxShadow = `0 12px 28px -4px rgba(99, 102, 241, ${((easeProximity - 0.55) * 0.8).toFixed(2)}), 0 0 16px rgba(255, 255, 255, ${(easeProximity * 0.12).toFixed(2)})`;
+            el.style.borderColor = `rgba(165, 180, 252, ${(0.25 + easeProximity * 0.5).toFixed(2)})`;
+          } else {
+            el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+            el.style.borderColor = "rgba(255, 255, 255, 0.10)";
+          }
+        });
+      }
+
+      animationFrameId = requestAnimationFrame(updateCarousel);
+    };
+
+    animationFrameId = requestAnimationFrame(updateCarousel);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [logos.length]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full overflow-hidden py-7 select-none"
+      style={{
+        perspective: "1200px",
+        perspectiveOrigin: "center center",
+        maskImage:
+          "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+      }}
+      onMouseEnter={() => {
+        isHoveredRef.current = true;
+      }}
+      onMouseLeave={() => {
+        isHoveredRef.current = false;
+      }}
+    >
+      {/* Subtle Center Spotlight Radial Glow */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-32 bg-indigo-500/15 rounded-full blur-2xl z-0" />
+
+      {/* Moving 3D Track */}
+      <div
+        ref={trackRef}
+        className="flex items-center gap-4 sm:gap-5 w-max px-8"
+        style={{
+          transformStyle: "preserve-3d",
+          willChange: "transform",
+        }}
+      >
+        {repeated.map((item, index) => (
+          <div
+            key={`${item.id}-${index}`}
+            ref={(el) => {
+              cardElementsRef.current[index] = el;
+            }}
+            className="group relative flex shrink-0 items-center gap-3 rounded-2xl border border-white/10 bg-gradient-to-b from-neutral-800/90 via-neutral-900/95 to-neutral-950 px-4 py-2.5 shadow-xl backdrop-blur-md transition-colors cursor-pointer"
+            style={{
+              transformStyle: "preserve-3d",
+              willChange: "transform, opacity, filter",
+            }}
+          >
+            {/* Soft glass highlight rim top */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
+            {/* Logo Icon */}
+            <div className="shrink-0 flex items-center justify-center">
+              {item.render()}
+            </div>
+
+            {/* Software / Tool Name */}
+            <div className="flex flex-col text-left">
+              <span className="text-xs sm:text-sm font-bold text-white tracking-tight whitespace-nowrap">
+                {item.name}
+              </span>
+              <span className="text-[9.5px] sm:text-[10px] font-medium text-neutral-400 uppercase tracking-wider">
+                Production Tool
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ================= WORKSTATION CARD DATA MODEL =================
 export interface WorkstationCardData {
   id: string;
@@ -748,53 +897,26 @@ export default function SoftwareSkillsSlider() {
 
   const currentActiveCard = workstationCards[activeCardIndex] || workstationCards[0];
 
-  // Repeated list for continuous logo marquee
-  const repeatedLogos = [
-    ...softwareLogos,
-    ...softwareLogos,
-    ...softwareLogos,
-    ...softwareLogos,
-  ];
-
   return (
     <section
       ref={sectionRef}
       className="relative overflow-hidden border-b border-neutral-200 bg-neutral-950 text-white"
     >
-      {/* 1. TOP HEADER & MARQUEE: Specialized Software & Creative Tools */}
-      <div className="relative pt-10 pb-6 border-b border-neutral-800/80 bg-neutral-900/60">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-5 text-center">
-          <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-lg shadow-indigo-500/25 border border-indigo-400/30">
-            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-            <span>✨ Specialized Software & Creative Tools</span>
+      {/* 1. TOP HEADER & 3D LUXURY CAROUSEL: Specialized Software & Creative Tools */}
+      <div className="relative pt-10 pb-6 border-b border-neutral-800/80 bg-neutral-900/60 overflow-hidden">
+        {/* Subtle Ambient Background Light */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-40 bg-indigo-600/10 rounded-full blur-3xl z-0" />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-3 text-center">
+          <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600/90 via-indigo-600/90 to-purple-600/90 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-[0_4px_20px_rgba(99,102,241,0.35)] border border-indigo-400/40 backdrop-blur-md transition-all duration-300 hover:shadow-[0_4px_25px_rgba(99,102,241,0.5)] animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]">
+            <span className="h-2 w-2 rounded-full bg-white animate-ping" />
+            <span>✨ Specialized Software &amp; Creative Tools</span>
           </div>
         </div>
 
-        {/* Auto Horizontal Scrolling Infinite Marquee Track */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div
-            className="relative w-full overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 py-2.5 shadow-2xs"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <div
-              className={`flex w-max items-center gap-3 sm:gap-4 px-3 ${
-                isHovered ? "[animation-play-state:paused]" : ""
-              }`}
-              style={{
-                animation: "logoMarqueeScroll 22s linear infinite",
-              }}
-            >
-              {repeatedLogos.map((item, index) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  className="group flex h-13 w-13 sm:h-15 sm:w-15 shrink-0 items-center justify-center rounded-2xl border border-neutral-700/80 bg-neutral-800/90 p-2 shadow-xs transition-all duration-300 hover:border-indigo-400 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
-                >
-                  {item.render()}
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* 3D Luxury Floating Software Carousel */}
+        <div className="relative z-10 mx-auto max-w-7xl px-2 sm:px-4">
+          <Luxury3DSoftwareCarousel logos={softwareLogos} />
         </div>
       </div>
 
