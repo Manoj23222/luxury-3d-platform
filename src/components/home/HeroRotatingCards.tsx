@@ -424,9 +424,9 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-18 lg:pt-20 pb-4 sm:pb-8 lg:pb-10"
+      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 sm:pt-16 lg:pt-16 pb-3 sm:pb-6"
     >
-      {/* Full-Cover Background Video - Stretched Full Cover across Entire Hero */}
+      {/* Full-Cover Background Video - Stretched Full Cover from Navigation to Stats */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <video
           autoPlay
@@ -454,7 +454,7 @@ export default function HeroRotatingCards() {
       />
       <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl z-0" />
 
-      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-1 pb-2 sm:py-3">
+      <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-0 pb-1 sm:py-1">
         {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
         <div className="lg:hidden relative text-center py-2 px-1 mb-3 space-y-1.5">
           <div
