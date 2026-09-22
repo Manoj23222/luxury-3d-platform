@@ -424,7 +424,7 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-200 bg-gradient-to-b from-white via-neutral-50/70 to-neutral-100/50 text-neutral-900 flex flex-col justify-center pt-20 sm:pt-24 lg:pt-28 pb-6 sm:pb-10 lg:pb-14"
+      className="relative w-full overflow-hidden border-b border-neutral-200 bg-gradient-to-b from-white via-neutral-50/70 to-neutral-100/50 text-neutral-900 flex flex-col pt-16 sm:pt-18 lg:pt-20 pb-4 sm:pb-8 lg:pb-10"
     >
       {/* Background Ambient Glows and Subtle Dot Mesh */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#0000000a_1px,transparent_1px)] [background-size:24px_24px] opacity-60" />
@@ -435,169 +435,213 @@ export default function HeroRotatingCards() {
       />
       <div className="pointer-events-none absolute bottom-0 right-10 h-72 w-72 rounded-full bg-emerald-100/40 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-1 sm:py-4">
-        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER (< lg) ================= */}
-        <div className="lg:hidden text-center space-y-1.5 mb-3 sm:mb-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/95 px-3 py-1 text-[11px] font-bold text-neutral-800 shadow-2xs backdrop-blur-md">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Senior 3D Designer • Infoeye (6+ Yrs)</span>
+      <div className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-1 pb-2 sm:py-3">
+        {/* ================= MOBILE-ONLY COMPACT INTRO HEADER WITH BACKGROUND VIDEO (< lg) ================= */}
+        <div className="lg:hidden relative overflow-hidden rounded-3xl border border-neutral-200/90 shadow-md p-3.5 sm:p-5 mb-3 sm:mb-4 text-center">
+          {/* Mobile Background Video - Crisp & High Quality without Blur */}
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className="h-full w-full object-cover object-center"
+            >
+              <source
+                src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
+                type="video/mp4"
+              />
+            </video>
+            {/* Subtle soft white gradient scrim to ensure text legibility while keeping video crisp */}
+            <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/70 to-white/50" />
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black">
-            Ashok Meena
-          </h1>
+          <div className="relative z-10 space-y-1.5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 text-[11px] font-bold text-neutral-900 shadow-xs backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Senior 3D Designer • Infoeye (6+ Yrs)</span>
+            </div>
 
-          <p className="text-[11.5px] sm:text-xs font-bold text-neutral-600">
-            CLO 3D Apparel • Hard Surface 3D • GLB • Photo Retouching
-          </p>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-black drop-shadow-xs">
+              Ashok Meena
+            </h1>
+
+            <p className="text-[11.5px] sm:text-xs font-bold text-neutral-800">
+              CLO 3D Apparel • Hard Surface 3D • GLB • Photo Retouching
+            </p>
+          </div>
         </div>
 
-        <div className="grid items-center gap-6 lg:gap-10 lg:grid-cols-12">
-          {/* ================= DESKTOP LEFT COLUMN: FULL BIO & DETAILS (>= lg) ================= */}
-          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 space-y-4 sm:space-y-5 text-left">
-            {/* Live Top Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-800 shadow-xs backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Senior 3D & Digital Fashion Designer</span>
-              <span className="text-neutral-300">•</span>
-              <a
-                href="https://infoeye.com/company/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-700 font-bold hover:underline"
+        <div className="grid items-center gap-6 lg:gap-8 xl:gap-10 lg:grid-cols-12">
+          {/* ================= DESKTOP LEFT COLUMN: FULL BIO & DETAILS WITH CRISP BACKGROUND VIDEO (>= lg) ================= */}
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-5 relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white/60 shadow-xl p-5 xl:p-6 space-y-4 text-left transition-all duration-300">
+            {/* Desktop Background Video - High Quality Crisp Playback */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-3xl">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="h-full w-full object-cover object-center"
               >
-                Infoeye Software ↗
-              </a>
+                <source
+                  src="/Video/SaveClip.App_AQPoYYHhrpF19NPIeGUXTclDfQumUYkYTHRsFSdx1YY1LS6Urb-iwDTEPEQ_s8hKAJSuEtHNYQlNzWlzqTbNize-F673uEsHqLv2GKM.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              {/* Soft gradient overlay for text readability without blurring the video animation */}
+              <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/80 to-white/55" />
             </div>
 
-            {/* Name & Headline */}
-            <div>
-              <h1 className="text-4xl font-black tracking-tight text-black sm:text-5xl lg:text-6xl">
-                Ashok Meena
-              </h1>
-              <p className="mt-2 text-sm sm:text-base font-bold text-neutral-700">
-                CLO 3D Apparel • Hard Surface 3D • Real-Time Web GLB • Retouching
-              </p>
-            </div>
+            <div className="relative z-10 space-y-3.5">
+              {/* Live Top Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/90 bg-white/95 px-3.5 py-1.5 text-xs font-bold text-neutral-900 shadow-xs backdrop-blur-md">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Senior 3D & Digital Fashion Designer</span>
+                <span className="text-neutral-300">•</span>
+                <a
+                  href="https://infoeye.com/company/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-700 font-bold hover:underline"
+                >
+                  Infoeye Software ↗
+                </a>
+              </div>
 
-            {/* Bio with Company details & Links */}
-            <p className="text-xs sm:text-sm leading-relaxed text-neutral-600 max-w-xl">
-              Senior 3D & Graphic Designer with{" "}
-              <strong className="text-black font-bold">6+ years of professional experience</strong> at{" "}
-              <a
-                href="https://infoeye.com/company/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-700 font-bold hover:underline"
-              >
-                Infoeye Software
-              </a>{" "}
-              (Sardarshahar, Rajasthan). Proven mastery in creating, simulating, and optimizing high-fidelity 3D garments and hard-surface assets with{" "}
-              <strong className="text-black font-bold">300+ production-ready 3D models</strong> delivered for international platforms.
-            </p>
-
-            {/* Company Links & President Visit Recognition Banner */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-              <a
-                href="https://infoeye.com/news/staff/11540/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1.5 font-bold text-amber-900 shadow-xs transition hover:bg-amber-100"
-              >
-                <span>🏆</span>
-                <span>President Home Visit Story ↗</span>
-              </a>
-
-              <a
-                href="https://infoeye.com/company/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 font-semibold text-neutral-700 shadow-xs transition hover:border-black hover:text-black"
-              >
-                Infoeye Company ↗
-              </a>
-
-              <a
-                href="https://infoeye.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 font-semibold text-neutral-700 shadow-xs transition hover:border-black hover:text-black"
-              >
-                Infoeye.org ↗
-              </a>
-            </div>
-
-            {/* Quick Action CTAs */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2">
-              <Link
-                href="#my-work"
-                className="rounded-full bg-black px-6 py-3 text-xs font-bold text-white shadow-md transition duration-200 hover:bg-neutral-800 hover:scale-105"
-              >
-                Explore My Work ↓
-              </Link>
-
-              <Link
-                href="/portfolio"
-                className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black"
-              >
-                3D Models
-              </Link>
-
-              <Link
-                href="/photo-editing"
-                className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black"
-              >
-                Branding & Creative
-              </Link>
-
-              <a
-                href="/Ashok_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-100 px-5 py-3 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:bg-white"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Resume PDF
-              </a>
-
-              <Link
-                href="/contact"
-                className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:text-black"
-              >
-                Contact
-              </Link>
-            </div>
-
-            {/* Key Metric Stats Row */}
-            <div className="grid grid-cols-4 gap-2 pt-3 border-t border-neutral-200 max-w-lg">
-              <div className="rounded-2xl border border-neutral-200 bg-white p-2.5 text-center shadow-xs">
-                <p className="text-lg font-black text-black sm:text-xl">6+ Yrs</p>
-                <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-wider">
-                  Experience
+              {/* Name & Headline with crisp text styling */}
+              <div className="rounded-2xl border border-white/80 bg-white/80 p-3.5 shadow-2xs backdrop-blur-md">
+                <h1 className="text-3xl xl:text-4xl font-black tracking-tight text-black">
+                  Ashok Meena
+                </h1>
+                <p className="mt-1 text-xs xl:text-sm font-bold text-neutral-800">
+                  CLO 3D Apparel • Hard Surface 3D • Real-Time Web GLB • Retouching
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-neutral-200 bg-white p-2.5 text-center shadow-xs">
-                <p className="text-lg font-black text-emerald-700 sm:text-xl">Infoeye</p>
-                <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-wider">
-                  Company
+              {/* Bio with Company details & Links */}
+              <div className="rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xs backdrop-blur-md">
+                <p className="text-xs leading-relaxed text-neutral-700">
+                  Senior 3D & Graphic Designer with{" "}
+                  <strong className="text-black font-bold">6+ years of professional experience</strong> at{" "}
+                  <a
+                    href="https://infoeye.com/company/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-700 font-bold hover:underline"
+                  >
+                    Infoeye Software
+                  </a>{" "}
+                  (Sardarshahar, Rajasthan). Proven mastery in creating, simulating, and optimizing high-fidelity 3D garments and hard-surface assets with{" "}
+                  <strong className="text-black font-bold">300+ production-ready 3D models</strong> delivered for international platforms.
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-neutral-200 bg-white p-2.5 text-center shadow-xs">
-                <p className="text-lg font-black text-black sm:text-xl">300+</p>
-                <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-wider">
-                  Models
-                </p>
+              {/* Company Links & President Visit Recognition Banner */}
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <a
+                  href="https://infoeye.com/news/staff/11540/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50/95 px-3 py-1 font-bold text-amber-900 shadow-xs transition hover:bg-amber-100 backdrop-blur-md"
+                >
+                  <span>🏆</span>
+                  <span>President Home Visit Story ↗</span>
+                </a>
+
+                <a
+                  href="https://infoeye.com/company/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 font-semibold text-neutral-800 shadow-xs transition hover:border-black hover:text-black backdrop-blur-md"
+                >
+                  Infoeye Company ↗
+                </a>
+
+                <a
+                  href="https://infoeye.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-neutral-200/90 bg-white/95 px-3 py-1 font-semibold text-neutral-800 shadow-xs transition hover:border-black hover:text-black backdrop-blur-md"
+                >
+                  Infoeye.org ↗
+                </a>
               </div>
 
-              <div className="rounded-2xl border border-neutral-200 bg-white p-2.5 text-center shadow-xs">
-                <p className="text-lg font-black text-black sm:text-xl">100%</p>
-                <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-wider">
-                  PBR / QC
-                </p>
+              {/* Quick Action CTAs */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <Link
+                  href="#my-work"
+                  className="rounded-full bg-black px-4.5 py-2.5 text-xs font-bold text-white shadow-md transition duration-200 hover:bg-neutral-800 hover:scale-105"
+                >
+                  Explore My Work ↓
+                </Link>
+
+                <Link
+                  href="/portfolio"
+                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black backdrop-blur-md"
+                >
+                  3D Models
+                </Link>
+
+                <Link
+                  href="/photo-editing"
+                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-black shadow-xs transition duration-200 hover:border-black backdrop-blur-md"
+                >
+                  Branding
+                </Link>
+
+                <a
+                  href="/Ashok_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-100/95 px-3.5 py-2.5 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:bg-white backdrop-blur-md"
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Resume
+                </a>
+
+                <Link
+                  href="/contact"
+                  className="rounded-full border border-neutral-300 bg-white/95 px-3.5 py-2.5 text-xs font-bold text-neutral-800 transition duration-200 hover:border-black hover:text-black backdrop-blur-md"
+                >
+                  Contact
+                </Link>
+              </div>
+
+              {/* Key Metric Stats Row */}
+              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-neutral-200/80">
+                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-black">6+ Yrs</p>
+                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                    Experience
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-emerald-700">Infoeye</p>
+                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                    Company
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-black">300+</p>
+                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                    Models
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/80 bg-white/90 p-2 text-center shadow-2xs backdrop-blur-md">
+                  <p className="text-base xl:text-lg font-black text-black">100%</p>
+                  <p className="text-[8.5px] font-bold text-neutral-500 uppercase tracking-wider">
+                    PBR / QC
+                  </p>
+                </div>
               </div>
             </div>
           </div>
