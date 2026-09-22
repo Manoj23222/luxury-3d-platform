@@ -110,10 +110,6 @@ export default function AiWebProjectsSection() {
       const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
       if (cards.length === 0 || !sectionRef.current) return;
 
-      const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-
       // 1. Initial State: Card 0 flat in place (0deg), subsequent cards rotated -90deg out of view
       cards.forEach((card, idx) => {
         if (idx === 0) {
@@ -121,15 +117,17 @@ export default function AiWebProjectsSection() {
             rotateX: 0,
             opacity: 1,
             scale: 1,
+            visibility: "visible",
             zIndex: 20,
             transformOrigin: "center center",
             force3D: true,
           });
         } else {
           gsap.set(card, {
-            rotateX: prefersReducedMotion ? 0 : -90,
+            rotateX: -90,
             opacity: 0,
-            scale: prefersReducedMotion ? 1 : 0.96,
+            scale: 0.96,
+            visibility: "hidden",
             zIndex: 10,
             transformOrigin: "center center",
             force3D: true,
@@ -144,11 +142,12 @@ export default function AiWebProjectsSection() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: `+=${numTransitions * 1600}`, // Controlled scroll length for smooth deliberate flip
+            end: `+=${numTransitions * 1800}`, // Controlled scroll length for smooth deliberate flip
             pin: true,
-            scrub: 1,
+            scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            refreshPriority: -1,
             onUpdate: (self) => {
               const activeIdx = Math.min(
                 cards.length - 1,
@@ -167,67 +166,42 @@ export default function AiWebProjectsSection() {
           const currentCard = cards[i];
           const nextCard = cards[i + 1];
 
-          if (prefersReducedMotion) {
-            // Accessible Crossfade for reduced motion users
-            tl.to(
-              currentCard,
-              {
-                opacity: 0,
-                duration: halfStep,
-                ease: "power1.inOut",
-                zIndex: 10,
-              },
-              startTime
-            );
-            tl.to(
-              nextCard,
-              {
-                opacity: 1,
-                duration: halfStep,
-                ease: "power1.inOut",
-                zIndex: 20,
-              },
-              startTime + halfStep
-            );
-          } else {
-            // Phase 1: Current Card flips forward around horizontal center axis (0deg -> 90deg)
-            tl.to(
-              currentCard,
-              {
-                rotateX: 90,
-                scale: 0.96,
-                opacity: 0,
-                ease: "power2.in",
-                duration: halfStep,
-                zIndex: 15,
-              },
-              startTime
-            );
+          // Phase 1: Current Card flips forward around horizontal center axis (0deg -> 90deg) and hides
+          tl.to(
+            currentCard,
+            {
+              rotateX: 90,
+              scale: 0.96,
+              opacity: 0,
+              ease: "power1.in",
+              duration: halfStep,
+              zIndex: 15,
+            },
+            startTime
+          ).set(currentCard, { visibility: "hidden" }, startTime + halfStep);
 
-            // Phase 2: Next Card rotates into the exact same center position (-90deg -> 0deg)
-            tl.fromTo(
+          // Phase 2: Next Card unhides and rotates into the exact same center position (-90deg -> 0deg)
+          tl.set(nextCard, { visibility: "visible" }, startTime + halfStep)
+            .to(
               nextCard,
-              {
-                rotateX: -90,
-                scale: 0.96,
-                opacity: 0,
-                zIndex: 25,
-              },
               {
                 rotateX: 0,
                 scale: 1,
                 opacity: 1,
-                ease: "power2.out",
+                ease: "power1.out",
                 duration: halfStep,
                 zIndex: 25,
               },
               startTime + halfStep
             );
-          }
         }
       }
 
-      ScrollTrigger.refresh();
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 150);
+
+      return () => clearTimeout(timer);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -236,7 +210,7 @@ export default function AiWebProjectsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col justify-between py-8 sm:py-12 select-none"
+      className="relative min-h-screen w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col justify-between py-6 sm:py-10 select-none"
     >
       {/* Background Ambient Radial Tech Lights */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/60 via-neutral-950 to-black z-0" />
@@ -260,35 +234,11 @@ export default function AiWebProjectsSection() {
           <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
 
-          {/* Banner Top Header */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-4 border-b border-white/10">
-            <div className="max-w-3xl space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-950/80 border border-emerald-500/40 px-3.5 py-1 text-xs font-bold text-emerald-300 shadow-xs backdrop-blur-md">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="tracking-wider uppercase text-[10.5px]">
-                  ✨ Full-Stack &amp; Web Engineering Hub
-                </span>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                Featured Web Applications &amp; Platforms
-              </h2>
-
-              <p className="text-xs sm:text-sm text-neutral-300 font-normal leading-relaxed">
-                Production-grade web applications and high-conversion platforms built rapidly using advanced{" "}
-                <strong className="text-white font-bold">AI Prompt Engineering</strong>, Next.js, React, TypeScript, and modern cloud databases.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 shrink-0 self-start lg:self-auto">
-              <Link
-                href="/contact?subject=Web%20Development%20%26%20AI%20App%20Inquiry"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black shadow-lg transition duration-200 hover:bg-neutral-200 hover:scale-105"
-              >
-                <span>Hire for Web Development</span>
-                <span>✉️</span>
-              </Link>
-            </div>
+          {/* Banner Top Header - Clean balanced gap */}
+          <div className="relative z-10 pb-2 mb-2 border-b border-white/10">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+              Featured Web Applications &amp; Platforms
+            </h2>
           </div>
 
           {/* ================= CENTER FIXED-POSITION 3D FLIP STAGE (LARGER & LUXURY) ================= */}
