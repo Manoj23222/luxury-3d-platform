@@ -424,7 +424,7 @@ export default function HeroRotatingCards() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 pb-2 sm:pb-3"
+      className="relative w-full overflow-hidden border-b border-neutral-800 bg-neutral-950 text-white flex flex-col pt-16 pb-6 sm:pb-8"
     >
       {/* Full-Cover Background Video - Stretched Full Cover from Navigation to Stats */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden w-full h-full">
