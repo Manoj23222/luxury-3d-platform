@@ -8,7 +8,7 @@ export type PhotoWorkItem = {
   _id: string;
   title: string;
   slug?: string;
-  workType?: "before_after" | "banner";
+  workType?: "before_after" | "banner" | "single";
   category: string;
   shortDescription?: string;
   description: string;
@@ -64,7 +64,7 @@ export default function PhotoWorkModal({ work, onClose }: PhotoWorkModalProps) {
               {work.category}
             </span>
             <span className="rounded-full bg-emerald-950 border border-emerald-500/40 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300 shrink-0">
-              {isBeforeAfter ? "⚡ Before / After" : "🎨 Creative Banner"}
+              {isBeforeAfter ? "⚡ Before / After" : work.workType === "banner" ? "🎨 Creative Banner" : "📷 Single Image"}
             </span>
             <h2 className="text-sm sm:text-base font-black text-white truncate max-w-md hidden sm:inline">
               {work.title}

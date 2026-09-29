@@ -526,7 +526,7 @@ export default async function PhotoEditingPage() {
   const works = await getPhotoWorks();
 
   return (
-    <main className="min-h-screen bg-[#070709] text-white selection:bg-neutral-800 selection:text-white">
+    <main className="min-h-screen bg-[#12100e] text-stone-100 selection:bg-amber-900/60 selection:text-white">
       <Navbar />
 
       {/* Luxury Hero Banner Section */}
@@ -591,7 +591,7 @@ export default async function PhotoEditingPage() {
         </div>
       </section>
 
-      {/* Main Dual-Mode Showcase Grid (4-Column Pure Image Grid) */}
+      {/* Premium Single-Image Physical Book Page-Turn Portfolio Gallery */}
       <PhotoEditingGrid initialWorks={works} />
     </main>
   );

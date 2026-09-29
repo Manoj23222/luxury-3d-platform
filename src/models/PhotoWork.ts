@@ -6,7 +6,7 @@ const PhotoWorkSchema = new Schema(
     slug: { type: String, default: "", trim: true },
     workType: {
       type: String,
-      enum: ["before_after", "banner"],
+      enum: ["before_after", "banner", "single"],
       default: "before_after",
     },
     category: {

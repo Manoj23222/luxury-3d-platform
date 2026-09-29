@@ -608,12 +608,12 @@ export async function POST(req: Request) {
       status,
     } = body;
 
-    // Validation: Title and After Image (or Banner image) are mandatory
+    // Validation: Title and Main/Single Image are mandatory
     if (!title || !afterImage) {
       return NextResponse.json(
         {
           success: false,
-          message: "Title and Main Image/Banner are required",
+          message: "Title and Image are required",
         },
         { status: 400 }
       );
@@ -639,7 +639,7 @@ export async function POST(req: Request) {
     const newWork = await PhotoWork.create({
       title,
       slug: `${slug}-${Date.now().toString().slice(-4)}`,
-      workType: workType || (beforeImage && beforeImage !== afterImage ? "before_after" : "banner"),
+      workType: workType || (beforeImage && beforeImage !== afterImage ? "before_after" : "single"),
       category: category || "Product Retouching",
       description: description || "",
       shortDescription: shortDescription || description?.slice(0, 120) || "",

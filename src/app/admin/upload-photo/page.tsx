@@ -25,11 +25,11 @@ const DEFAULT_CATEGORIES = [
 export default function AdminUploadPhotoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [workType, setWorkType] = useState<"before_after" | "banner">("before_after");
+  const [workType, setWorkType] = useState<"before_after" | "single">("before_after");
 
   const [uploadingBefore, setUploadingBefore] = useState(false);
   const [uploadingAfter, setUploadingAfter] = useState(false);
-  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [uploadingSingle, setUploadingSingle] = useState(false);
 
   const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
   const [isCustomCategory, setIsCustomCategory] = useState(false);
@@ -37,7 +37,7 @@ export default function AdminUploadPhotoPage() {
 
   const [beforeUrl, setBeforeUrl] = useState("");
   const [afterUrl, setAfterUrl] = useState("");
-  const [bannerUrl, setBannerUrl] = useState("");
+  const [singleUrl, setSingleUrl] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -87,10 +87,10 @@ export default function AdminUploadPhotoPage() {
     setIsCustomCategory(false);
   };
 
-  const uploadImage = async (file: File, type: "before" | "after" | "banner") => {
+  const uploadImage = async (file: File, type: "before" | "after" | "single") => {
     if (type === "before") setUploadingBefore(true);
     else if (type === "after") setUploadingAfter(true);
-    else setUploadingBanner(true);
+    else setUploadingSingle(true);
 
     const data = new FormData();
     data.append("file", file);
@@ -114,7 +114,7 @@ export default function AdminUploadPhotoPage() {
       if (type === "before") setBeforeUrl(url);
       else if (type === "after") setAfterUrl(url);
       else {
-        setBannerUrl(url);
+        setSingleUrl(url);
         setAfterUrl(url);
       }
     } catch {
@@ -122,12 +122,12 @@ export default function AdminUploadPhotoPage() {
     } finally {
       if (type === "before") setUploadingBefore(false);
       else if (type === "after") setUploadingAfter(false);
-      else setUploadingBanner(false);
+      else setUploadingSingle(false);
     }
   };
 
   const submit = async (statusOverride = "") => {
-    if (uploadingBefore || uploadingAfter || uploadingBanner) {
+    if (uploadingBefore || uploadingAfter || uploadingSingle) {
       alert("Please wait for images to finish uploading.");
       return;
     }
@@ -149,8 +149,8 @@ export default function AdminUploadPhotoPage() {
         return;
       }
     } else {
-      if (!bannerUrl && !afterUrl) {
-        alert("Banner / Creative artwork image is required.");
+      if (!singleUrl && !afterUrl) {
+        alert("Single image is required.");
         return;
       }
     }
@@ -158,7 +158,7 @@ export default function AdminUploadPhotoPage() {
     setLoading(true);
 
     try {
-      const finalAfterImage = workType === "before_after" ? afterUrl : (bannerUrl || afterUrl);
+      const finalAfterImage = workType === "before_after" ? afterUrl : (singleUrl || afterUrl);
       const finalBeforeImage = workType === "before_after" ? beforeUrl : "";
 
       const res = await fetch("/api/photo-works", {
@@ -190,7 +190,7 @@ export default function AdminUploadPhotoPage() {
         alert(
           workType === "before_after"
             ? "✅ Before & After retouching project uploaded successfully!"
-            : "✅ Creative Banner / Graphic Design artwork uploaded successfully!"
+            : "✅ Single image project uploaded successfully!"
         );
         router.push("/admin");
       } else {
@@ -214,7 +214,7 @@ export default function AdminUploadPhotoPage() {
             Upload Creative Work / Photo Retouching
           </h1>
           <p className="mt-1 text-xs text-neutral-500">
-            Upload interactive Before & After retouching pairs or single graphic design banners and social media ads.
+            Upload interactive Before & After retouching pairs or single photos, creative banners, and artworks.
           </p>
         </div>
 
@@ -227,7 +227,7 @@ export default function AdminUploadPhotoPage() {
       </div>
 
       {/* ========================================================= */}
-      {/* WORK TYPE SELECTOR BAR (BEFORE/AFTER vs CREATIVE BANNER)  */}
+      {/* WORK TYPE SELECTOR BAR (BEFORE/AFTER vs SINGLE IMAGE)     */}
       {/* ========================================================= */}
       <div className="mb-6 rounded-3xl border border-neutral-200 bg-white p-5 shadow-xs">
         <label className="block text-xs font-bold text-neutral-700 mb-2">
@@ -262,30 +262,30 @@ export default function AdminUploadPhotoPage() {
             </div>
           </button>
 
-          {/* Option 2: Single Creative Banner */}
+          {/* Option 2: Single Image Upload */}
           <button
             type="button"
-            onClick={() => setWorkType("banner")}
+            onClick={() => setWorkType("single")}
             className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition cursor-pointer ${
-              workType === "banner"
+              workType === "single"
                 ? "border-black bg-neutral-900 text-white shadow-md"
                 : "border-neutral-200 bg-neutral-50/60 text-neutral-800 hover:border-neutral-400 hover:bg-white"
             }`}
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-xl">
-              🎨
+              📷
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-black">Creative Banner / Single Artwork</span>
-                {workType === "banner" && (
+                <span className="text-sm font-black">Single Image Upload</span>
+                {workType === "single" && (
                   <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
                     Active
                   </span>
                 )}
               </div>
-              <p className={`mt-0.5 text-xs ${workType === "banner" ? "text-neutral-300" : "text-neutral-500"}`}>
-                Upload 1 high-resolution banner, social media poster, product ad, or artwork.
+              <p className={`mt-0.5 text-xs ${workType === "single" ? "text-neutral-300" : "text-neutral-500"}`}>
+                Upload 1 high-resolution single photo, retouching result, creative banner, or artwork.
               </p>
             </div>
           </button>
@@ -311,7 +311,7 @@ export default function AdminUploadPhotoPage() {
                   placeholder={
                     workType === "before_after"
                       ? "e.g. High-Fashion Editorial Beauty & Skin Retouching"
-                      : "e.g. Super Delicious Burger Menu Social Media Creative Banner"
+                      : "e.g. Luxury Product Shot / Fashion Portrait / Creative Artwork"
                   }
                   className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs font-semibold text-black outline-none focus:border-black focus:bg-white"
                 />
@@ -437,12 +437,12 @@ export default function AdminUploadPhotoPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-black">
-                  {workType === "before_after" ? "Before & After Images" : "Banner / Artwork Image"}
+                  {workType === "before_after" ? "Before & After Images" : "Single Image Upload"}
                 </h2>
                 <p className="mt-0.5 text-xs text-neutral-500">
                   {workType === "before_after"
                     ? "Upload high-resolution images to generate the interactive before/after split slider."
-                    : "Upload single high-resolution graphic design poster or promotional banner."}
+                    : "Upload 1 high-resolution photo, retouching result, creative banner, or artwork."}
                 </p>
               </div>
 
@@ -511,11 +511,11 @@ export default function AdminUploadPhotoPage() {
                 </div>
               </div>
             ) : (
-              /* SINGLE BANNER UPLOADER */
+              /* SINGLE IMAGE UPLOADER */
               <div className="mt-5">
                 <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 p-5">
                   <span className="block text-xs font-bold text-neutral-800">
-                    Upload Banner / Graphic Artwork Image *
+                    Upload Single Image *
                   </span>
                   <p className="mt-0.5 text-[11px] text-neutral-500">
                     PNG, JPG, WebP (Square 1:1, 4:5 Portrait, or 16:9 Landscape)
@@ -525,20 +525,20 @@ export default function AdminUploadPhotoPage() {
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) uploadImage(file, "banner");
+                      if (file) uploadImage(file, "single");
                     }}
                     className="mt-3 w-full text-xs text-neutral-600 file:mr-3 file:rounded-full file:border-0 file:bg-black file:px-4 file:py-2 file:text-xs file:font-bold file:text-white cursor-pointer"
                   />
 
-                  {uploadingBanner && (
+                  {uploadingSingle && (
                     <div className="mt-3 text-xs font-semibold text-blue-600 animate-pulse">
-                      Uploading banner artwork...
+                      Uploading single image...
                     </div>
                   )}
 
-                  {bannerUrl && !uploadingBanner && (
+                  {(singleUrl || afterUrl) && !uploadingSingle && (
                     <div className="mt-4 overflow-hidden rounded-xl border border-neutral-200 aspect-[4/3] max-w-md mx-auto bg-neutral-950">
-                      <img src={bannerUrl} alt="Banner Preview" className="h-full w-full object-contain" />
+                      <img src={singleUrl || afterUrl} alt="Single Preview" className="h-full w-full object-contain" />
                     </div>
                   )}
                 </div>
@@ -611,10 +611,10 @@ export default function AdminUploadPhotoPage() {
         <div className="space-y-6">
           <div className="sticky top-28 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
             <h3 className="text-base font-bold text-black">
-              {workType === "before_after" ? "Live Slider Preview" : "Live Banner Preview"}
+              {workType === "before_after" ? "Live Slider Preview" : "Live Image Preview"}
             </h3>
             <p className="mt-1 text-xs text-neutral-500">
-              {workType === "before_after" ? "Interactive comparison slider preview." : "Banner artwork presentation."}
+              {workType === "before_after" ? "Interactive comparison slider preview." : "Single image presentation preview."}
             </p>
 
             <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-950">
@@ -635,18 +635,18 @@ export default function AdminUploadPhotoPage() {
                   </div>
                 )
               ) : (
-                bannerUrl || afterUrl ? (
+                singleUrl || afterUrl ? (
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-950 flex items-center justify-center p-2">
                     <img
-                      src={bannerUrl || afterUrl}
-                      alt="Banner Preview"
+                      src={singleUrl || afterUrl}
+                      alt="Single Image Preview"
                       className="max-h-full max-w-full object-contain rounded-lg"
                     />
                   </div>
                 ) : (
                   <div className="flex aspect-[4/3] flex-col items-center justify-center p-6 text-center text-xs text-neutral-400">
-                    <span className="text-3xl mb-2">🎨</span>
-                    <span>Upload banner image to see live preview</span>
+                    <span className="text-3xl mb-2">📷</span>
+                    <span>Upload a single image to see live preview</span>
                   </div>
                 )
               )}
@@ -657,7 +657,7 @@ export default function AdminUploadPhotoPage() {
               <div className="flex justify-between">
                 <span className="text-neutral-500">Format:</span>
                 <span className="font-bold text-black">
-                  {workType === "before_after" ? "⚡ Before & After" : "🎨 Creative Banner"}
+                  {workType === "before_after" ? "⚡ Before & After" : "📷 Single Image"}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -681,7 +681,7 @@ export default function AdminUploadPhotoPage() {
               <button
                 type="button"
                 onClick={() => submit("Published")}
-                disabled={loading || uploadingBefore || uploadingAfter || uploadingBanner}
+                disabled={loading || uploadingBefore || uploadingAfter || uploadingSingle}
                 className="w-full rounded-2xl bg-black py-3.5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 disabled:opacity-50 cursor-pointer"
               >
                 {loading ? "Publishing Work..." : "Publish to Creative Showcase 🚀"}
@@ -690,7 +690,7 @@ export default function AdminUploadPhotoPage() {
               <button
                 type="button"
                 onClick={() => submit("Draft")}
-                disabled={loading || uploadingBefore || uploadingAfter || uploadingBanner}
+                disabled={loading || uploadingBefore || uploadingAfter || uploadingSingle}
                 className="w-full rounded-2xl border border-neutral-300 bg-white py-3 text-xs font-bold text-neutral-700 transition hover:border-black hover:text-black disabled:opacity-50 cursor-pointer"
               >
                 Save as Draft

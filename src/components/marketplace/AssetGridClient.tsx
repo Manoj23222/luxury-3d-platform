@@ -474,8 +474,8 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
         </div>
       </section>
 
-      {/* ================= 2. CATEGORY FILTERS PILLS WITH FLIP ANIMATION ================= */}
-      <section className="sticky top-16 z-20 border-b border-white/10 bg-[#070709]/90 backdrop-blur-xl transition-colors">
+      {/* ================= 2. CATEGORY FILTERS PILLS ================= */}
+      <section className="relative border-b border-white/10 bg-[#070709] transition-colors">
         <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-4 py-3.5 sm:px-6 lg:px-8 scrollbar-none">
           {categories.map((x) => {
             const isSelected = filter === x;

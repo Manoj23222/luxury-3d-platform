@@ -174,7 +174,7 @@ export default function AdminPhotosPage() {
                             onClick={() => setPreviewWork(item)}
                             className="mt-1 text-[11px] font-semibold text-neutral-500 hover:text-black underline"
                           >
-                            Inspect Slider ↗
+                            {item.beforeImage && item.beforeImage !== item.afterImage ? "Inspect Slider ↗" : "Inspect Image ↗"}
                           </button>
                         </div>
                       </div>
@@ -257,13 +257,21 @@ export default function AdminPhotosPage() {
             <h3 className="text-base font-bold text-black">{previewWork.title}</h3>
             <p className="mt-0.5 text-xs text-neutral-500">{previewWork.category}</p>
 
-            <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 aspect-video">
-              <BeforeAfterSlider
-                beforeImage={previewWork.beforeImage}
-                afterImage={previewWork.afterImage}
-                className="h-full w-full"
-                aspectRatio="aspect-video"
-              />
+            <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 aspect-video bg-neutral-950 flex items-center justify-center">
+              {previewWork.beforeImage && previewWork.beforeImage !== previewWork.afterImage ? (
+                <BeforeAfterSlider
+                  beforeImage={previewWork.beforeImage}
+                  afterImage={previewWork.afterImage}
+                  className="h-full w-full"
+                  aspectRatio="aspect-video"
+                />
+              ) : (
+                <img
+                  src={previewWork.afterImage || previewWork.thumbnail}
+                  alt={previewWork.title}
+                  className="max-h-full max-w-full object-contain"
+                />
+              )}
             </div>
           </div>
         </div>
