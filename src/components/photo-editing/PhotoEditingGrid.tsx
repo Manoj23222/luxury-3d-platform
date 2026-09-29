@@ -783,29 +783,45 @@ function PhysicalBook({
 export default function PhotoEditingGrid({
   initialWorks,
 }: PhotoEditingGridProps) {
-  const [works] = useState<PhotoWorkItem[]>(initialWorks);
+  const [works, setWorks] = useState<PhotoWorkItem[]>(initialWorks);
 
-  // Book 1 Works: Single Artworks / Banners / Editorial Images
+  // Sync state if server initialWorks changes
+  useEffect(() => {
+    if (initialWorks && initialWorks.length > 0) {
+      setWorks(initialWorks);
+    }
+  }, [initialWorks]);
+
+  // Real-time client-side sync to guarantee newly uploaded images appear immediately
+  useEffect(() => {
+    fetch("/api/photo-works", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.works) && data.works.length > 0) {
+          setWorks(data.works);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Book 1 Works: Single Artworks / Banners / Monograph Images
   const singleWorks = useMemo(() => {
-    const filtered = works.filter(
-      (w) =>
-        w.workType === "single" ||
-        w.workType === "banner" ||
-        !w.beforeImage ||
-        w.beforeImage === w.afterImage
-    );
-    return filtered.length > 0 ? filtered : works;
+    return works.filter((w) => {
+      if (w.workType === "single" || w.workType === "banner") return true;
+      if (!w.beforeImage || !w.beforeImage.trim()) return true;
+      return w.beforeImage === w.afterImage;
+    });
   }, [works]);
 
   // Book 2 Works: Before & After Retouching Projects
   const beforeAfterWorks = useMemo(() => {
-    const filtered = works.filter(
-      (w) =>
-        w.beforeImage &&
-        w.afterImage &&
-        w.beforeImage !== w.afterImage
-    );
-    return filtered.length > 0 ? filtered : works;
+    return works.filter((w) => {
+      if (w.workType === "before_after") return true;
+      if (w.workType === "single" || w.workType === "banner") return false;
+      const hasBefore = typeof w.beforeImage === "string" && w.beforeImage.trim().length > 0;
+      const hasAfter = typeof w.afterImage === "string" && w.afterImage.trim().length > 0;
+      return hasBefore && hasAfter && w.beforeImage !== w.afterImage;
+    });
   }, [works]);
 
   return (

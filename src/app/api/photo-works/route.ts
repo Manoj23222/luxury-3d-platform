@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // Complete high-end showcase items including Before/After comparisons and Single Creative Banners across all industries
 const FALLBACK_PHOTO_WORKS = [
@@ -546,8 +550,19 @@ export async function GET(req: Request) {
       dbItems = [];
     }
 
-    // Combine DB items with fallback catalog
-    let allWorks = dbItems.length > 0 ? dbItems : FALLBACK_PHOTO_WORKS;
+    // Combine DB items with fallback catalog (DB items first)
+    let allWorks: any[] = [];
+    if (dbItems.length > 0) {
+      const dbTitles = new Set(
+        dbItems.map((x: any) => String(x.title || "").toLowerCase().trim())
+      );
+      const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
+        (f) => !dbTitles.has(String(f.title || "").toLowerCase().trim())
+      );
+      allWorks = [...dbItems, ...nonDuplicateFallbacks];
+    } else {
+      allWorks = FALLBACK_PHOTO_WORKS;
+    }
 
     if (category && category !== "All") {
       allWorks = allWorks.filter((item) => item.category === category);
@@ -636,14 +651,25 @@ export async function POST(req: Request) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)+/g, "");
 
+    const assignedWorkType =
+      workType === "single"
+        ? "single"
+        : workType === "banner"
+        ? "banner"
+        : workType === "before_after"
+        ? "before_after"
+        : beforeImage && beforeImage !== afterImage
+        ? "before_after"
+        : "single";
+
     const newWork = await PhotoWork.create({
       title,
       slug: `${slug}-${Date.now().toString().slice(-4)}`,
-      workType: workType || (beforeImage && beforeImage !== afterImage ? "before_after" : "single"),
-      category: category || "Product Retouching",
+      workType: assignedWorkType,
+      category: category || (assignedWorkType === "before_after" ? "Product Retouching" : "Creative Design"),
       description: description || "",
       shortDescription: shortDescription || description?.slice(0, 120) || "",
-      beforeImage: beforeImage || "",
+      beforeImage: assignedWorkType === "before_after" ? (beforeImage || "") : "",
       afterImage,
       thumbnail: thumbnail || afterImage,
       softwareUsed: Array.isArray(softwareUsed)
@@ -664,6 +690,13 @@ export async function POST(req: Request) {
       featured: Boolean(featured),
       status: status || "Published",
     });
+
+    try {
+      revalidatePath("/photo-editing");
+      revalidatePath("/admin/photos");
+    } catch {
+      // Ignore in non-ISR contexts
+    }
 
     return NextResponse.json({
       success: true,

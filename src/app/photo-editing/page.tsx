@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     "Explore luxury photo retouching, Before & After split comparisons, commercial social media advertising banners, product posters, and high-end color grading.",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const FALLBACK_PHOTO_WORKS = [
   // Retouching Pairs
   {
@@ -507,14 +510,24 @@ async function getPhotoWorks() {
   try {
     await connectDB();
     const items = await PhotoWork.find({ status: "Published" })
-      .sort({ featured: -1, createdAt: -1 })
+      .sort({ createdAt: -1 })
       .lean();
 
-    if (items.length > 0) {
-      return items.map((x: any) => ({
-        ...x,
-        _id: x._id.toString(),
-      }));
+    if (items && items.length > 0) {
+      const dbTitles = new Set(
+        items.map((x: any) => String(x.title || "").toLowerCase().trim())
+      );
+      const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
+        (f) => !dbTitles.has(String(f.title || "").toLowerCase().trim())
+      );
+
+      return [
+        ...items.map((x: any) => ({
+          ...x,
+          _id: x._id.toString(),
+        })),
+        ...nonDuplicateFallbacks,
+      ];
     }
     return FALLBACK_PHOTO_WORKS;
   } catch {
