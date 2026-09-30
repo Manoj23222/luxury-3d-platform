@@ -38,27 +38,27 @@ export default function ProjectDetailExperience({
   ) as string[];
 
   return (
-    <div className="relative min-h-screen bg-[#07070a] text-white">
+    <div className="relative min-h-screen bg-[#fafafc] text-neutral-900">
       {/* LUXURY BACKGROUND LIGHTING ACCENTS */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         {/* Top Radial Glow from Category Accent */}
         <div
-          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[950px] rounded-full blur-[160px] opacity-15"
+          className="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[950px] rounded-full blur-[160px] opacity-10"
           style={{ backgroundColor: theme.accent }}
         />
-        {/* Subtle Ambient Vignette */}
-        <div className="absolute inset-0 bg-radial-[at_50%_20%] from-transparent via-[#07070a]/60 to-[#040406]" />
+        {/* Subtle Ambient Light Vignette */}
+        <div className="absolute inset-0 bg-radial-[at_50%_20%] from-transparent via-[#fafafc]/50 to-[#f4f4f8]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1600px] px-4 pb-20 pt-24 sm:px-6 lg:px-8">
         {/* TOP SLIM LUXURY HEADER & ACTION BAR */}
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 pb-4">
           {/* Back Link */}
           <Link
             href="/portfolio"
-            className="group inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-neutral-400 transition-colors hover:text-white"
+            className="group inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-neutral-500 transition-colors hover:text-neutral-950"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-transform duration-300 group-hover:-translate-x-1">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-neutral-300 bg-white shadow-xs transition-transform duration-300 group-hover:-translate-x-1">
               ←
             </span>
             <span>RETURN TO 3D PORTFOLIO</span>
@@ -67,7 +67,7 @@ export default function ProjectDetailExperience({
           {/* Center / Right: Asset Title & Inquiry CTA */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <h1 className="text-sm font-bold tracking-wide text-white uppercase sm:text-base">
+              <h1 className="text-sm font-bold tracking-wide text-neutral-950 uppercase sm:text-base">
                 {project.name || "3D Asset"}
               </h1>
               <span
@@ -81,7 +81,7 @@ export default function ProjectDetailExperience({
               href={`/contact?subject=${encodeURIComponent(
                 `Inquiry regarding 3D Project: ${project.name || "Custom 3D Work"}`
               )}`}
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-black shadow-lg shadow-white/10 transition-all duration-300 hover:scale-105 hover:bg-neutral-200"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-neutral-950 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-neutral-800"
             >
               <span>Inquire For Custom 3D Work</span>
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -104,9 +104,9 @@ export default function ProjectDetailExperience({
 
         {/* 2D RENDERS / GALLERY THUMBNAIL STRIP (IF MULTIPLE IMAGES EXIST) */}
         {gallery.length > 1 && (
-          <div className="mt-8 rounded-3xl border border-white/10 bg-neutral-950/70 p-5 backdrop-blur-xl shadow-xl">
+          <div className="mt-8 rounded-3xl border border-neutral-200 bg-white/95 p-5 backdrop-blur-xl shadow-md">
             <div className="mb-3.5 flex items-center justify-between px-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-neutral-300">
+              <span className="text-xs font-bold uppercase tracking-wider text-neutral-800">
                 High-Res CGI Renders ({gallery.length})
               </span>
               <span className="text-[11px] text-neutral-500">
@@ -120,7 +120,7 @@ export default function ProjectDetailExperience({
                   key={`${img}-${idx}`}
                   type="button"
                   onClick={() => setLightboxIndex(idx)}
-                  className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-white/40 hover:shadow-lg"
+                  className="group relative aspect-square overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-neutral-400 hover:shadow-md"
                 >
                   <img
                     src={img}

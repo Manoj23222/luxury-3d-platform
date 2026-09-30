@@ -148,15 +148,15 @@ export default function AboutCinematicExperience() {
   }, []);
 
   return (
-    <div className="relative bg-[#040711] text-white min-h-screen selection:bg-emerald-500 selection:text-black">
+    <div className="relative bg-[#fafbfc] text-neutral-900 min-h-screen selection:bg-emerald-500/20 selection:text-emerald-950">
       {/* ================= GLOBAL FLOATING AMBIENT GLOW & GRID ================= */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 h-[600px] w-[600px] rounded-full bg-emerald-500/[0.04] blur-[160px]" />
-        <div className="absolute bottom-1/3 right-1/4 h-[600px] w-[600px] rounded-full bg-cyan-500/[0.04] blur-[160px]" />
+        <div className="absolute top-1/4 left-1/4 h-[600px] w-[600px] rounded-full bg-emerald-500/[0.03] blur-[160px]" />
+        <div className="absolute bottom-1/3 right-1/4 h-[600px] w-[600px] rounded-full bg-cyan-500/[0.03] blur-[160px]" />
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.02]"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #000000 1px, transparent 0)",
             backgroundSize: "28px 28px",
           }}
         />
@@ -193,9 +193,9 @@ export default function AboutCinematicExperience() {
       {/* ======================================================== */}
       {/* 1. HERO — CINEMATIC PROFILE REVEAL                       */}
       {/* ======================================================== */}
-      <section id="hero" className="relative overflow-hidden border-b border-white/10 pt-28 pb-16 sm:pb-20">
+      <section id="hero" className="relative overflow-hidden border-b border-neutral-200/80 pt-28 pb-16 sm:pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c1422]/90 via-[#070c16]/95 to-[#040810]/90 p-6 sm:p-12 lg:p-14 shadow-[0_25px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl">
+          <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-12 lg:p-14 shadow-[0_20px_60px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <div className="grid gap-10 lg:grid-cols-[280px_1fr] items-center">
               {/* Profile Photo 3D Showcase Frame */}
               <motion.div
@@ -226,7 +226,7 @@ export default function AboutCinematicExperience() {
               >
                 {/* 3D Holographic Scanner Portrait Container */}
                 <div
-                  className="relative h-72 w-56 sm:h-80 sm:w-60 overflow-hidden rounded-[28px] border-2 border-white/20 bg-neutral-900 shadow-2xl transition-transform duration-200 ease-out"
+                  className="relative h-72 w-56 sm:h-80 sm:w-60 overflow-hidden rounded-[28px] border-2 border-neutral-200 bg-neutral-100 shadow-xl transition-transform duration-200 ease-out"
                   style={{
                     transform:
                       !isReducedMotion
@@ -296,11 +296,11 @@ export default function AboutCinematicExperience() {
                   transition={{ duration: 0.6, delay: 0.4 }}
                   className="mt-4 space-y-1.5 text-center"
                 >
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 px-3.5 py-1 text-xs font-bold text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-500/30 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-xs">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     Available for Work
                   </span>
-                  <p className="text-xs text-neutral-400 font-medium">📍 Sardarshahar, Rajasthan, India</p>
+                  <p className="text-xs text-neutral-500 font-medium">📍 Sardarshahar, Rajasthan, India</p>
                 </motion.div>
               </motion.div>
 
@@ -311,7 +311,7 @@ export default function AboutCinematicExperience() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-xs font-bold text-neutral-300 backdrop-blur-md shadow-xs"
+                  className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-100 px-3.5 py-1 text-xs font-bold text-neutral-700 backdrop-blur-md shadow-xs"
                 >
                   <span>✦ Professional Profile</span>
                 </motion.div>
@@ -326,7 +326,7 @@ export default function AboutCinematicExperience() {
                     }
                     animate={{ y: "0%", clipPath: "inset(0 0 0% 0)" }}
                     transition={{ duration: 0.85, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-none"
+                    className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-neutral-950 leading-none"
                   >
                     Ashok Meena
                   </motion.h1>
@@ -343,22 +343,22 @@ export default function AboutCinematicExperience() {
                     initial={{ width: 0 }}
                     animate={{ width: 48 }}
                     transition={{ duration: 0.8, delay: 1.1, ease: "easeOut" }}
-                    className="h-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"
+                    className="h-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                   />
-                  <p className="text-base sm:text-lg lg:text-xl font-bold text-emerald-400">
+                  <p className="text-base sm:text-lg lg:text-xl font-bold text-emerald-700">
                     Senior 3D Designer & Photo Editor
                   </p>
                 </motion.div>
 
                 {/* 1.2s: Bio Text Staggered Multi-Line Reveal */}
-                <div className="space-y-2 pt-1 text-xs sm:text-sm leading-relaxed text-neutral-300 font-normal">
+                <div className="space-y-2 pt-1 text-xs sm:text-sm leading-relaxed text-neutral-600 font-normal">
                   <div className="overflow-hidden">
                     <motion.p
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.6, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      Senior 3D & Graphic Designer with <strong className="text-white font-bold">6+ years of professional experience</strong> creating, optimizing, and delivering high-fidelity 3D assets for digital fashion, e-commerce, and real-time 3D web simulators.
+                      Senior 3D & Graphic Designer with <strong className="text-neutral-950 font-bold">6+ years of professional experience</strong> creating, optimizing, and delivering high-fidelity 3D assets for digital fashion, e-commerce, and real-time 3D web simulators.
                     </motion.p>
                   </div>
                   <div className="overflow-hidden">
@@ -367,7 +367,7 @@ export default function AboutCinematicExperience() {
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.6, delay: 1.3, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      Proven expertise in <strong className="text-white font-bold">Blender, CLO 3D, and Adobe Creative Suite</strong> with end-to-end knowledge of 3D modeling, UV unwrapping, PBR texturing, lighting, typography, and asset optimization.
+                      Proven expertise in <strong className="text-neutral-950 font-bold">Blender, CLO 3D, and Adobe Creative Suite</strong> with end-to-end knowledge of 3D modeling, UV unwrapping, PBR texturing, lighting, typography, and asset optimization.
                     </motion.p>
                   </div>
                   <div className="overflow-hidden">
@@ -376,7 +376,7 @@ export default function AboutCinematicExperience() {
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.6, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      Successfully delivered <strong className="text-emerald-400 font-bold">300+ production-ready 3D models</strong> and digital assets with strict quality control for global platforms.
+                      Successfully delivered <strong className="text-emerald-700 font-bold">300+ production-ready 3D models</strong> and digital assets with strict quality control for global platforms.
                     </motion.p>
                   </div>
                 </div>
@@ -386,13 +386,13 @@ export default function AboutCinematicExperience() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 1.5 }}
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-y border-white/10 py-4 mt-4"
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-y border-neutral-200/80 py-4 mt-4"
                 >
                   {[
-                    { val: 6, suffix: "+ Yrs", label: "Experience", color: "text-white" },
-                    { text: "Infoeye", label: "Studio Position", color: "text-emerald-400" },
-                    { val: 300, suffix: "+", label: "3D Assets Delivered", color: "text-white" },
-                    { val: 100, suffix: "%", label: "PBR & QC Quality", color: "text-white" },
+                    { val: 6, suffix: "+ Yrs", label: "Experience", color: "text-neutral-950" },
+                    { text: "Infoeye", label: "Studio Position", color: "text-emerald-700" },
+                    { val: 300, suffix: "+", label: "3D Assets Delivered", color: "text-neutral-950" },
+                    { val: 100, suffix: "%", label: "PBR & QC Quality", color: "text-neutral-950" },
                   ].map((metric, i) => (
                     <motion.div
                       key={i}
@@ -402,7 +402,7 @@ export default function AboutCinematicExperience() {
                         rotateX: 2,
                         transition: { duration: 0.2 },
                       }}
-                      className="group rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 text-center shadow-xs hover:border-emerald-500/50 hover:bg-emerald-950/20 transition-colors"
+                      className="group rounded-2xl border border-neutral-200/90 bg-neutral-50 p-3.5 text-center shadow-xs hover:border-emerald-500/50 hover:bg-emerald-50/40 transition-colors"
                     >
                       <p className={`text-2xl font-black ${metric.color}`}>
                         {metric.val !== undefined ? (
@@ -411,7 +411,7 @@ export default function AboutCinematicExperience() {
                           metric.text
                         )}
                       </p>
-                      <p className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider mt-0.5">
+                      <p className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-wider mt-0.5">
                         {metric.label}
                       </p>
                     </motion.div>
@@ -427,14 +427,14 @@ export default function AboutCinematicExperience() {
                 >
                   <MagneticButton
                     href="mailto:ashokm3414@gmail.com"
-                    className="rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 px-6 py-2.5 text-xs font-black text-neutral-950 shadow-[0_0_20px_rgba(52,211,153,0.3)] hover:brightness-110"
+                    className="rounded-full bg-neutral-950 px-6 py-2.5 text-xs font-black text-white shadow-md hover:bg-neutral-800 transition"
                   >
                     ✉️ ashokm3414@gmail.com
                   </MagneticButton>
 
                   <MagneticButton
                     href="tel:+918000093300"
-                    className="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-xs font-bold text-white hover:border-white/40 hover:bg-white/10 backdrop-blur-md"
+                    className="rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 shadow-xs"
                   >
                     📞 +91 80000 93300
                   </MagneticButton>
@@ -443,7 +443,7 @@ export default function AboutCinematicExperience() {
                     href="/Ashok_Resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-xs font-bold text-neutral-200 hover:border-emerald-400 hover:text-emerald-300 transition-colors backdrop-blur-md"
+                    className="rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold text-neutral-800 hover:border-emerald-500 hover:text-emerald-700 transition-colors shadow-xs"
                   >
                     Download Resume (PDF) ↓
                   </MagneticButton>
@@ -457,7 +457,7 @@ export default function AboutCinematicExperience() {
       {/* ======================================================== */}
       {/* 2. EXPERIENCE & EDUCATION — TWO-PANEL 3D OPPOSITE OPENING */}
       {/* ======================================================== */}
-      <section id="experience" className="py-20 border-b border-white/10 bg-[#040711]">
+      <section id="experience" className="py-20 border-b border-neutral-200/80 bg-[#fafbfc]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-2" style={{ perspective: "1400px" }}>
             {/* Left Card: Work Experience (Rotates in from Left) */}
@@ -470,31 +470,31 @@ export default function AboutCinematicExperience() {
               whileInView={{ rotateY: 0, x: 0, scale: 1, opacity: 1 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c1422]/90 via-[#070c16]/95 to-[#040810]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl flex flex-col justify-between"
+              className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3.5 py-1 text-xs font-mono font-bold text-emerald-300">
+                <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
+                  <span className="rounded-full bg-emerald-50 border border-emerald-500/30 px-3.5 py-1 text-xs font-mono font-bold text-emerald-800">
                     2020 – Present (6+ Years)
                   </span>
                   <a
                     href="https://infoeye.com/company/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-bold text-emerald-400 hover:underline"
+                    className="text-xs font-bold text-emerald-700 hover:underline"
                   >
                     Infoeye Software ↗
                   </a>
                 </div>
 
-                <h2 className="mt-4 text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h2 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
                   Senior 3D Designer & Photo Editor
                 </h2>
-                <p className="text-xs text-neutral-400 font-semibold mt-0.5">
+                <p className="text-xs text-neutral-500 font-semibold mt-0.5">
                   Infoeye Software • Sardarshahar, Rajasthan, India
                 </p>
 
-                <ul className="mt-5 space-y-3 text-xs sm:text-sm text-neutral-300">
+                <ul className="mt-5 space-y-3 text-xs sm:text-sm text-neutral-600">
                   {[
                     "Model, simulate, and optimize 3D apparel and hard-surface assets using Blender and CLO 3D.",
                     "Successfully delivered 300+ production-ready 3D models with strict quality control for international client platforms.",
@@ -514,7 +514,7 @@ export default function AboutCinematicExperience() {
                         whileInView={{ scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: idx * 0.08 + 0.1 }}
-                        className="text-emerald-400 font-bold shrink-0 mt-0.5"
+                        className="text-emerald-600 font-bold shrink-0 mt-0.5"
                       >
                         ✓
                       </motion.span>
@@ -525,12 +525,12 @@ export default function AboutCinematicExperience() {
               </div>
 
               {/* President Dinner Recognition Badge */}
-              <div className="mt-6 pt-4 border-t border-white/10">
+              <div className="mt-6 pt-4 border-t border-neutral-200/80">
                 <a
                   href="https://infoeye.com/news/staff/11540/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-2xl border border-amber-500/40 bg-amber-950/30 p-3.5 text-xs font-bold text-amber-300 shadow-xs transition hover:bg-amber-900/40 hover:border-amber-400"
+                  className="block rounded-2xl border border-amber-300 bg-amber-50/80 p-3.5 text-xs font-bold text-amber-900 shadow-xs transition hover:bg-amber-100/80"
                 >
                   🏆 Official Executive Recognition: Infoeye President personally visited Ashok&apos;s home for dinner ↗
                 </a>
@@ -547,14 +547,14 @@ export default function AboutCinematicExperience() {
               whileInView={{ rotateY: 0, x: 0, scale: 1, opacity: 1 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c1422]/90 via-[#070c16]/95 to-[#040810]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl flex flex-col justify-between"
+              className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <span className="rounded-full bg-white/10 border border-white/15 px-3.5 py-1 text-xs font-mono font-bold text-neutral-200">
+                <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
+                  <span className="rounded-full bg-neutral-100 border border-neutral-200 px-3.5 py-1 text-xs font-mono font-bold text-neutral-700">
                     Academic Background
                   </span>
-                  <span className="text-[11px] font-mono text-emerald-400">TIMELINE DRAWING</span>
+                  <span className="text-[11px] font-mono text-emerald-700">TIMELINE DRAWING</span>
                 </div>
 
                 {/* Animated Vertical Timeline Line and Degree Nodes */}
@@ -565,7 +565,7 @@ export default function AboutCinematicExperience() {
                     whileInView={{ scaleY: 1 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute left-2.5 top-3 bottom-3 w-0.5 bg-gradient-to-b from-emerald-400 via-teal-400 to-cyan-500 origin-top shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                    className="absolute left-2.5 top-3 bottom-3 w-0.5 bg-gradient-to-b from-emerald-500 via-teal-500 to-cyan-500 origin-top shadow-[0_0_10px_rgba(16,185,129,0.4)]"
                   />
 
                   {/* Degree 1: M.Sc. */}
@@ -575,17 +575,17 @@ export default function AboutCinematicExperience() {
                       whileInView={{ scale: 1, opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: 0.3 }}
-                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-emerald-400 bg-neutral-950 flex items-center justify-center shadow-[0_0_12px_rgba(52,211,153,0.8)]"
+                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-emerald-500 bg-white flex items-center justify-center shadow-xs"
                     >
-                      <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     </motion.div>
 
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:border-emerald-500/40 transition">
-                      <h3 className="text-sm font-black text-white">
+                    <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 hover:border-emerald-500/40 transition">
+                      <h3 className="text-sm font-black text-neutral-950">
                         Master of Science (M.Sc.) in Computer Science
                       </h3>
-                      <p className="text-xs font-bold text-emerald-400 mt-0.5">2025 – 2026 (Ongoing)</p>
-                      <p className="mt-1 text-xs text-neutral-400">
+                      <p className="text-xs font-bold text-emerald-700 mt-0.5">2025 – 2026 (Ongoing)</p>
+                      <p className="mt-1 text-xs text-neutral-500">
                         Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
                       </p>
                     </div>
@@ -598,17 +598,17 @@ export default function AboutCinematicExperience() {
                       whileInView={{ scale: 1, opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: 0.6 }}
-                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-cyan-400 bg-neutral-950 flex items-center justify-center shadow-[0_0_12px_rgba(6,182,212,0.8)]"
+                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-cyan-500 bg-white flex items-center justify-center shadow-xs"
                     >
-                      <div className="h-2 w-2 rounded-full bg-cyan-400" />
+                      <div className="h-2 w-2 rounded-full bg-cyan-500" />
                     </motion.div>
 
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:border-cyan-500/40 transition">
-                      <h3 className="text-sm font-black text-white">
+                    <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 hover:border-cyan-500/40 transition">
+                      <h3 className="text-sm font-black text-neutral-950">
                         Bachelor of Arts (B.A.)
                       </h3>
-                      <p className="text-xs font-bold text-cyan-400 mt-0.5">Graduated 2024</p>
-                      <p className="mt-1 text-xs text-neutral-400">
+                      <p className="text-xs font-bold text-cyan-700 mt-0.5">Graduated 2024</p>
+                      <p className="mt-1 text-xs text-neutral-500">
                         Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
                       </p>
                     </div>
@@ -616,9 +616,9 @@ export default function AboutCinematicExperience() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
-                <span className="font-bold text-neutral-300">Languages:</span>
-                <span className="font-medium text-emerald-300">Hindi (Native) • English (Proficient)</span>
+              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between text-xs">
+                <span className="font-bold text-neutral-600">Languages:</span>
+                <span className="font-medium text-emerald-700">Hindi (Native) • English (Proficient)</span>
               </div>
             </motion.div>
           </div>
@@ -633,25 +633,25 @@ export default function AboutCinematicExperience() {
       {/* ======================================================== */}
       {/* 4. FEATURED AI WEB ENGINEERING & FULL-STACK MODULES      */}
       {/* ======================================================== */}
-      <section id="projects" className="py-20 border-b border-white/10 bg-[#040711]">
+      <section id="projects" className="py-20 border-b border-neutral-200/80 bg-[#fafbfc]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200/80">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3.5 py-1 text-xs font-bold text-emerald-300 shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Full-Stack & AI Software Engineering</span>
               </div>
-              <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+              <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-neutral-950 tracking-tight">
                 Featured Web Platforms & AI Applications
               </h2>
-              <p className="mt-1.5 text-xs sm:text-sm text-neutral-300 max-w-2xl">
-                Combining <strong className="text-white">M.Sc. Computer Science</strong> technical engineering with advanced <strong className="text-emerald-400">AI Prompt Engineering</strong> to build and deploy production web applications at scale.
+              <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 max-w-2xl">
+                Combining <strong className="text-neutral-950">M.Sc. Computer Science</strong> technical engineering with advanced <strong className="text-emerald-700">AI Prompt Engineering</strong> to build and deploy production web applications at scale.
               </p>
             </div>
 
             <Link
               href="/contact?subject=Full-Stack%20Web%20Development%20Inquiry"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 px-6 py-2.5 text-xs font-black text-neutral-950 shadow-md transition hover:scale-105 shrink-0"
+              className="inline-flex items-center gap-2 rounded-full bg-neutral-950 px-6 py-2.5 text-xs font-black text-white shadow-md transition hover:scale-105 shrink-0 hover:bg-neutral-800"
             >
               <span>Hire for Web Development</span>
               <span>✉️</span>
@@ -675,7 +675,7 @@ export default function AboutCinematicExperience() {
                 setBootkitPos({ x: e.clientX - rect.left, y: e.clientY - rect.top, isHovered: true });
               }}
               onMouseLeave={() => setBootkitPos((prev) => ({ ...prev, isHovered: false }))}
-              className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c1422]/90 via-[#070c16]/95 to-[#040810]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl flex flex-col justify-between group"
+              className="relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between group"
             >
               {/* Internal Cursor Highlight */}
               {bootkitPos.isHovered && !isReducedMotion && (
@@ -687,40 +687,40 @@ export default function AboutCinematicExperience() {
 
               <div>
                 <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="rounded-full bg-emerald-500/15 border border-emerald-500/40 px-3 py-0.5 text-[11px] font-bold text-emerald-300">
+                  <span className="rounded-full bg-emerald-50 border border-emerald-500/30 px-3 py-0.5 text-[11px] font-bold text-emerald-800">
                     🛒 Full-Stack E-Commerce & PWA
                   </span>
-                  <span className="rounded-full bg-white/10 border border-white/15 text-white px-3 py-0.5 text-[10.5px] font-mono font-bold">
+                  <span className="rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-0.5 text-[10.5px] font-mono font-bold">
                     🤖 AI Prompt Engineered
                   </span>
                 </div>
 
-                <h3 className="mt-4 text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h3 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
                   BootKiT — Quick-Commerce & Grocery Delivery Platform
                 </h3>
-                <p className="mt-1 text-xs font-mono font-semibold text-emerald-400">
+                <p className="mt-1 text-xs font-mono font-semibold text-emerald-700">
                   Next.js • React • TypeScript • Supabase • Tailwind CSS • Vercel • PWA
                 </p>
 
-                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-300">
+                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-600">
                   Built a full-fledged quick-commerce progressive web app using AI-assisted rapid engineering. Features instant category indexing, live voice/text search, localized delivery addresses, dynamic cart & checkout management, and mobile PWA native navigation.
                 </p>
 
-                <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-2 text-xs text-neutral-300">
-                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-emerald-400">Highlights:</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-400 font-bold">✓</span> 10–20 minute delivery workflow & multi-category product catalog</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-400 font-bold">✓</span> Progressive Web App (PWA) installable on mobile devices</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-400 font-bold">✓</span> Production deployed on custom domain (bootkit.in)</p>
+                <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 space-y-2 text-xs text-neutral-600">
+                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-emerald-700">Highlights:</p>
+                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> 10–20 minute delivery workflow & multi-category product catalog</p>
+                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> Progressive Web App (PWA) installable on mobile devices</p>
+                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> Production deployed on custom domain (bootkit.in)</p>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                   <a
                     href="https://www.bootkit.in/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-black text-neutral-950 hover:bg-neutral-200 transition shadow-sm"
+                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-4 py-2 text-xs font-black text-white hover:bg-neutral-800 transition shadow-xs"
                   >
                     <span>Visit bootkit.in</span>
                     <span className="transition-transform duration-200 group-hover/btn:translate-x-1">↗</span>
@@ -729,12 +729,12 @@ export default function AboutCinematicExperience() {
                     href="https://bootkit.vercel.app/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-bold text-neutral-200 hover:border-white/40 hover:bg-white/10 transition"
+                    className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 transition shadow-xs"
                   >
                     Vercel Mirror ↗
                   </a>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-emerald-400">● Live Production</span>
+                <span className="text-[11px] font-mono font-bold text-emerald-700">● Live Production</span>
               </div>
             </motion.div>
 
@@ -753,7 +753,7 @@ export default function AboutCinematicExperience() {
                 setLux3dPos({ x: e.clientX - rect.left, y: e.clientY - rect.top, isHovered: true });
               }}
               onMouseLeave={() => setLux3dPos((prev) => ({ ...prev, isHovered: false }))}
-              className="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c1422]/90 via-[#070c16]/95 to-[#040810]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl flex flex-col justify-between group"
+              className="relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between group"
             >
               {/* Internal Cursor Highlight */}
               {lux3dPos.isHovered && !isReducedMotion && (
@@ -765,50 +765,50 @@ export default function AboutCinematicExperience() {
 
               <div>
                 <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="rounded-full bg-cyan-500/15 border border-cyan-500/40 px-3 py-0.5 text-[11px] font-bold text-cyan-300">
+                  <span className="rounded-full bg-cyan-50 border border-cyan-500/30 px-3 py-0.5 text-[11px] font-bold text-cyan-800">
                     🧊 3D WebGL & Creative Platform
                   </span>
-                  <span className="rounded-full bg-white/10 border border-white/15 text-white px-3 py-0.5 text-[10.5px] font-mono font-bold">
+                  <span className="rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-0.5 text-[10.5px] font-mono font-bold">
                     🤖 AI-Assisted Architecture
                   </span>
                 </div>
 
-                <h3 className="mt-4 text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h3 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
                   Lux3D — 3D & AI Creative Web Platform
                 </h3>
-                <p className="mt-1 text-xs font-mono font-semibold text-cyan-400">
+                <p className="mt-1 text-xs font-mono font-semibold text-cyan-700">
                   Next.js 16 • TypeScript • Three.js / WebGL • MongoDB • Tailwind CSS 4
                 </p>
 
-                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-300">
+                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-600">
                   Architected an interactive 3D WebGL asset viewer and creative photo retouching showcase platform. Integrated 60 FPS Three.js orbit controls, Before/After image split sliders, and custom real-time traffic tracking analytics.
                 </p>
 
-                <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-2 text-xs text-neutral-300">
-                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-cyan-400">Highlights:</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-400 font-bold">✓</span> 60 FPS real-time Three.js WebGL orbit viewer for Blender GLB assets</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-400 font-bold">✓</span> Interactive Before/After split sliders & high-res image modals</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-400 font-bold">✓</span> Real-time live visitor tracking engine & admin traffic dashboard</p>
+                <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 space-y-2 text-xs text-neutral-600">
+                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-cyan-700">Highlights:</p>
+                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> 60 FPS real-time Three.js WebGL orbit viewer for Blender GLB assets</p>
+                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> Interactive Before/After split sliders & high-res image modals</p>
+                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> Real-time live visitor tracking engine & admin traffic dashboard</p>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                   <Link
                     href="/portfolio"
-                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-black text-neutral-950 hover:bg-neutral-200 transition shadow-sm"
+                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-4 py-2 text-xs font-black text-white hover:bg-neutral-800 transition shadow-xs"
                   >
                     <span>Explore 3D Platform</span>
                     <span className="transition-transform duration-200 group-hover/btn:translate-x-1">↗</span>
                   </Link>
                   <Link
                     href="/photo-editing"
-                    className="rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-bold text-neutral-200 hover:border-white/40 hover:bg-white/10 transition"
+                    className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 transition shadow-xs"
                   >
                     Photo Retouching ↗
                   </Link>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-cyan-400">● Live Production</span>
+                <span className="text-[11px] font-mono font-bold text-cyan-700">● Live Production</span>
               </div>
             </motion.div>
           </div>
@@ -818,14 +818,14 @@ export default function AboutCinematicExperience() {
       {/* ======================================================== */}
       {/* 5. COMPANY TEAM & STUDIO LIFE GALLERY                   */}
       {/* ======================================================== */}
-      <section id="studio" className="py-20 border-b border-white/10 bg-[#040711]">
+      <section id="studio" className="py-20 border-b border-neutral-200/80 bg-[#fafbfc]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200/80">
             <div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-neutral-950 tracking-tight">
                 Company Team & Studio Life
               </h2>
-              <p className="mt-2 text-xs sm:text-sm text-neutral-300 max-w-2xl">
+              <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-2xl">
                 Collaborating with passionate engineers, artists, and leaders at Infoeye Software. Building innovative digital fashion and 3D simulation solutions together.
               </p>
             </div>
@@ -833,7 +833,7 @@ export default function AboutCinematicExperience() {
               href="https://infoeye.com/company/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-white hover:text-black hover:border-white shrink-0"
+              className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold text-neutral-800 shadow-xs transition hover:bg-neutral-50 hover:border-neutral-400 shrink-0"
             >
               <span>Visit Infoeye Company</span>
               <span>↗</span>
@@ -853,9 +853,9 @@ export default function AboutCinematicExperience() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.75, delay: 0 }}
               whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/15 bg-neutral-900/80 p-3 shadow-xl transition-all duration-300"
+              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
             >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-950">
+              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
                 <img
                   src="/office/IMG_0548.jpeg?v=2"
                   alt="Infoeye Company Team"
@@ -877,9 +877,9 @@ export default function AboutCinematicExperience() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.75, delay: 0.12 }}
               whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/15 bg-neutral-900/80 p-3 shadow-xl transition-all duration-300"
+              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
             >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-950">
+              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
                 <img
                   src="/office/IMG_0549.jpeg"
                   alt="Infoeye Team & Leadership"
@@ -901,9 +901,9 @@ export default function AboutCinematicExperience() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.75, delay: 0.24 }}
               whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/15 bg-neutral-900/80 p-3 shadow-xl transition-all duration-300"
+              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
             >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-950">
+              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
                 <img
                   src="/office/1.jpg"
                   alt="Ashok Meena 3D Studio Workstation"

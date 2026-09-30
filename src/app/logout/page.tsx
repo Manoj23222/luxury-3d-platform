@@ -20,8 +20,8 @@ export default function LogoutPage() {
   }, [router]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
-      <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
+    <main className="flex min-h-screen items-center justify-center bg-[#fafafc] text-neutral-900">
+      <div className="rounded-3xl border border-neutral-200/90 bg-white/95 p-8 shadow-lg font-medium text-sm">
         Logging out...
       </div>
     </main>

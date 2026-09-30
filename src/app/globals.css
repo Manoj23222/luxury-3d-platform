@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05070b;
-  --surface: #0d1117;
-  --card: rgba(255, 255, 255, 0.04);
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #ffffff;
-  --muted: #a1a1aa;
-  --accent: #6ee7ff;
+  --background: #ffffff;
+  --surface: #fafafa;
+  --card: rgba(255, 255, 255, 0.95);
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #0a0a0a;
+  --muted: #71717a;
+  --accent: #d4af37;
 }
 
 *,
@@ -28,13 +28,13 @@ body {
   font-family: var(--font-inter), Arial, sans-serif;
 
   background:
-    radial-gradient(circle at 20% 15%, rgba(0,180,255,.18), transparent 35%),
-    radial-gradient(circle at 80% 20%, rgba(120,119,198,.14), transparent 35%),
-    radial-gradient(circle at 50% 100%, rgba(255,255,255,.05), transparent 45%),
-    linear-gradient(180deg, #0a0f18 0%, #05070b 45%, #020203 100%);
+    radial-gradient(circle at 18% 12%, rgba(214, 185, 120, 0.08), transparent 38%),
+    radial-gradient(circle at 82% 18%, rgba(220, 230, 248, 0.35), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(245, 242, 235, 0.7), transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #faf9f6 50%, #f4f2eb 100%);
 }
 
-/* Premium Glass Glow */
+/* Premium Subtle White Luxury Vignette */
 body::before {
   content: "";
   position: fixed;
@@ -43,7 +43,7 @@ body::before {
   z-index: -1;
 
   background:
-    radial-gradient(circle at center, transparent 0%, rgba(0,0,0,.15) 65%, rgba(0,0,0,.55) 100%);
+    radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.3) 65%, rgba(240, 238, 232, 0.45) 100%);
 }
 
 /* Luxury Grain */
@@ -52,7 +52,7 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: .035;
+  opacity: .018;
   z-index: -1;
 
   background-image:
@@ -80,7 +80,7 @@ body::after {
 }
 
 ::-webkit-scrollbar-track {
-  background: #06080c;
+  background: #f4f3ef;
 }
 
 ::-webkit-scrollbar-thumb {

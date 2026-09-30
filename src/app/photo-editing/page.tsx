@@ -539,47 +539,47 @@ export default async function PhotoEditingPage() {
   const works = await getPhotoWorks();
 
   return (
-    <main className="min-h-screen bg-[#12100e] text-stone-100 selection:bg-amber-900/60 selection:text-white">
+    <main className="min-h-screen bg-[#faf8f5] text-neutral-900 selection:bg-amber-500/20 selection:text-amber-950">
       <Navbar />
 
       {/* Luxury Hero Banner Section */}
-      <section className="relative overflow-hidden border-b border-neutral-800 bg-black pt-28 pb-14 text-white">
-        {/* Background Banner Image Clearly Visible */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+      <section className="relative overflow-hidden border-b border-stone-200/80 bg-gradient-to-b from-[#fbfbfd] via-[#f7f6f2] to-[#faf8f5] pt-28 pb-14 text-neutral-950">
+        {/* Background Banner Image with Luxury Pearl Light Grading */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
             src="/creative-portfolio-hero-banner.png"
             alt="Creative Portfolio Luxury Banner"
-            className="h-full w-full object-cover object-center opacity-80"
+            className="h-full w-full object-cover object-center opacity-20 filter contrast-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#faf8f5] via-transparent to-[#fbfbfd]/70" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               {/* Luxury Badge */}
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-bold text-white backdrop-blur-md shadow-md">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-300/80 bg-white/90 px-3.5 py-1 text-xs font-bold text-stone-800 backdrop-blur-md shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Ashok Meena • Selected Creative Showcase</span>
               </span>
 
               {/* Main Headline */}
-              <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-5xl">
+              <h1 className="mt-4 text-3xl font-black tracking-tight text-neutral-950 sm:text-5xl lg:text-5xl">
                 Creative Design & Visual Portfolio
               </h1>
 
               {/* Luxury Domain & Skills Strip */}
-              <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs sm:text-sm font-semibold text-neutral-300">
-                <span className="text-white font-bold">All Work</span>
-                <span className="text-neutral-500">•</span>
+              <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs sm:text-sm font-semibold text-neutral-600">
+                <span className="text-neutral-950 font-bold">All Work</span>
+                <span className="text-stone-300">•</span>
                 <span>3D Design</span>
-                <span className="text-neutral-500">•</span>
+                <span className="text-stone-300">•</span>
                 <span>Photo Editing</span>
-                <span className="text-neutral-500">•</span>
+                <span className="text-stone-300">•</span>
                 <span>Graphic Design</span>
-                <span className="text-neutral-500">•</span>
+                <span className="text-stone-300">•</span>
                 <span>Digital Fashion</span>
-                <span className="text-neutral-500">•</span>
+                <span className="text-stone-300">•</span>
                 <span>Product Visualization</span>
               </div>
             </div>
@@ -588,14 +588,14 @@ export default async function PhotoEditingPage() {
             <div className="flex shrink-0 flex-wrap items-center gap-2.5">
               <Link
                 href="/contact?subject=Photo%20Editing%20%26%20Design%20Order"
-                className="rounded-full bg-white px-6 py-3 text-center text-xs font-black text-black shadow-lg transition hover:bg-neutral-200 hover:scale-105"
+                className="rounded-full bg-neutral-950 px-6 py-3 text-center text-xs font-black text-white shadow-lg transition hover:bg-neutral-800 hover:scale-105"
               >
                 Hire for Project ✉️
               </Link>
 
               <Link
                 href="/portfolio"
-                className="rounded-full border border-white/30 bg-black/40 backdrop-blur-md px-5 py-3 text-center text-xs font-bold text-white shadow-md transition hover:border-white hover:bg-white/10"
+                className="rounded-full border border-stone-300 bg-white/90 backdrop-blur-md px-5 py-3 text-center text-xs font-bold text-neutral-800 shadow-xs transition hover:border-neutral-400 hover:bg-white"
               >
                 Explore 3D Models
               </Link>

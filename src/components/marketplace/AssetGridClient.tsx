@@ -171,10 +171,10 @@ function PortfolioCard({
         onMouseLeave={handleMouseLeave}
         className={`group block relative aspect-square w-full overflow-hidden rounded-2xl border ${
           accent.border
-        } bg-neutral-900/90 shadow-md backdrop-blur-xl transition-all duration-500 ease-out focus:outline-none ${
+        } bg-white shadow-md backdrop-blur-xl transition-all duration-500 ease-out focus:outline-none ${
           isHovered
             ? `shadow-[0_20px_50px_-10px_${accent.glow}]`
-            : "shadow-[0_4px_16px_rgba(0,0,0,0.5)] hover:shadow-2xl"
+            : "shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-2xl"
         }`}
         style={{
           transform:
@@ -193,23 +193,23 @@ function PortfolioCard({
             className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106 will-change-transform"
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-neutral-500 bg-neutral-900">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-neutral-400 bg-neutral-100">
             <span className="text-2xl">🏺</span>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">
               No Preview
             </span>
           </div>
         )}
 
         {/* Studio Light / Diagonal Reflection Sweep on Hover */}
-        <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-full" />
+        <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-full" />
 
         {/* Ambient Hover Vignette Overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Optional 3D Room Live Indicator Pill */}
         {item.modelUrl && (
-          <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 rounded-full bg-black/80 px-2.5 py-0.5 text-[9px] font-bold tracking-wider text-white backdrop-blur-md uppercase border border-white/15 shadow-md">
+          <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 rounded-full bg-neutral-950/85 px-2.5 py-0.5 text-[9px] font-bold tracking-wider text-white backdrop-blur-md uppercase border border-white/20 shadow-md">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span>3D Room</span>
           </div>
@@ -290,15 +290,15 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
   }, [assets, search, filter, sort]);
 
   return (
-    <div className="min-h-screen bg-[#070709] text-white">
+    <div className="min-h-screen bg-[#fafafc] text-neutral-900">
       {/* ================= 1. LUXURY 3D PORTFOLIO HERO WITH CINEMATIC PARALLAX ================= */}
       <section
         ref={heroRef}
         onMouseMove={handleHeroMouseMove}
         onMouseLeave={handleHeroMouseLeave}
-        className="relative overflow-hidden border-b border-white/10 bg-[#070709] pt-28 pb-14 text-white"
+        className="relative overflow-hidden border-b border-neutral-200/80 bg-gradient-to-b from-[#fbfbfe] via-[#f7f8fc] to-[#fafafc] pt-28 pb-14 text-neutral-950"
       >
-        {/* Layer 1: Background Banner Image with Dark Luxury Grading */}
+        {/* Layer 1: Background Banner Image with Luxury Light Grading */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div
             className="h-full w-full transition-transform duration-300 ease-out"
@@ -311,17 +311,17 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
             <img
               src="/portfolio-3d-hero-banner.png"
               alt="Luxury 3D Archive Banner"
-              className="h-full w-full object-cover object-center opacity-40 filter brightness-75 contrast-125"
+              className="h-full w-full object-cover object-center opacity-20 filter contrast-110"
             />
           </div>
-          {/* Gradients to Blend Seamlessly into Luxury Dark Obsidian Background */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-[#070709]/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#070709]/90 via-transparent to-[#070709]/90" />
+          {/* Gradients to Blend Seamlessly into Luxury White Background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#fafafc] via-[#fafafc]/75 to-[#fafafc]/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#fafafc]/90 via-transparent to-[#fafafc]/90" />
         </div>
 
         {/* Ambient Glowing Orbs */}
         <div
-          className="pointer-events-none absolute -left-20 top-10 h-80 w-80 rounded-full bg-emerald-500/15 blur-[120px] transition-transform duration-500 ease-out"
+          className="pointer-events-none absolute -left-20 top-10 h-80 w-80 rounded-full bg-emerald-500/8 blur-[120px] transition-transform duration-500 ease-out"
           style={{
             transform: !isReducedMotion
               ? `translate3d(${heroMouse.x * 1.2}px, ${heroMouse.y * 1.2}px, 0)`
@@ -329,7 +329,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
           }}
         />
         <div
-          className="pointer-events-none absolute right-1/4 bottom-0 h-80 w-80 rounded-full bg-cyan-500/10 blur-[120px] transition-transform duration-500 ease-out"
+          className="pointer-events-none absolute right-1/4 bottom-0 h-80 w-80 rounded-full bg-cyan-500/8 blur-[120px] transition-transform duration-500 ease-out"
           style={{
             transform: !isReducedMotion
               ? `translate3d(${-heroMouse.x * 1.0}px, ${-heroMouse.y * 1.0}px, 0)`
@@ -339,9 +339,9 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
 
         {/* Cyber Grid Overlay */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          className="pointer-events-none absolute inset-0 opacity-[0.02]"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, #000000 1px, transparent 0)",
             backgroundSize: "24px 24px",
           }}
         />
@@ -362,9 +362,9 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3.5 py-1 text-xs font-bold text-emerald-300 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-800 backdrop-blur-md shadow-xs"
               >
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Ashok Meena • 3D Creative Studio</span>
               </motion.div>
 
@@ -373,17 +373,17 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-3 text-xs font-bold uppercase tracking-[0.25em] text-neutral-400"
+                className="mt-3 text-xs font-bold uppercase tracking-[0.25em] text-neutral-500"
               >
                 Luxury 3D Archive
               </motion.p>
 
-              {/* Hero Title with Metallic Luxury Gradient */}
+              {/* Hero Title */}
               <motion.h1
                 initial={{ opacity: 0, y: 22, letterSpacing: "-0.01em" }}
                 animate={{ opacity: 1, y: 0, letterSpacing: "-0.03em" }}
                 transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-1 text-3xl font-black tracking-tight text-white sm:text-5xl"
+                className="mt-1 text-3xl font-black tracking-tight text-neutral-950 sm:text-5xl"
               >
                 3D Portfolio & Models
               </motion.h1>
@@ -393,7 +393,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-2 text-xs sm:text-sm font-semibold text-neutral-300"
+                className="mt-2 text-xs sm:text-sm font-semibold text-neutral-600"
               >
                 Explore interactive 3D visualizations, CGI renders, and custom assets.
               </motion.p>
@@ -403,18 +403,18 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.35 }}
-                className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-bold text-neutral-300"
+                className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-bold text-neutral-600"
               >
-                <span className="text-white font-extrabold">Architecture</span>
-                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-950 font-extrabold">Architecture</span>
+                <span className="text-neutral-300">•</span>
                 <span>Product</span>
-                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-300">•</span>
                 <span>Game Assets</span>
-                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-300">•</span>
                 <span>Interior</span>
-                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-300">•</span>
                 <span>Characters</span>
-                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-300">•</span>
                 <span>3D Fashion</span>
               </motion.div>
             </div>
@@ -433,10 +433,10 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                   placeholder="Search 3D works..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-56 sm:w-64 rounded-full border border-white/15 bg-white/5 backdrop-blur-md py-2.5 pl-9 pr-8 text-xs font-semibold text-white placeholder-neutral-400 shadow-sm transition-all duration-300 focus:w-64 sm:focus:w-72 focus:border-white/50 focus:bg-white/10 focus:outline-none focus:scale-[1.01] focus:shadow-[0_0_25px_rgba(255,255,255,0.12)]"
+                  className="w-56 sm:w-64 rounded-full border border-neutral-300 bg-white/95 backdrop-blur-md py-2.5 pl-9 pr-8 text-xs font-semibold text-neutral-900 placeholder-neutral-400 shadow-xs transition-all duration-300 focus:w-64 sm:focus:w-72 focus:border-neutral-500 focus:bg-white focus:outline-none focus:scale-[1.01] focus:shadow-[0_0_20px_rgba(0,0,0,0.06)]"
                 />
                 <svg
-                  className="absolute left-3 top-3 h-4 w-4 text-neutral-400 transition-colors group-focus-within:text-white"
+                  className="absolute left-3 top-3 h-4 w-4 text-neutral-400 transition-colors group-focus-within:text-neutral-900"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -452,7 +452,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 {search && (
                   <button
                     onClick={() => setSearch("")}
-                    className="absolute right-3 top-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/15 text-[10px] font-bold text-neutral-300 hover:bg-white hover:text-black transition-colors"
+                    className="absolute right-3 top-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-neutral-200 text-[10px] font-bold text-neutral-600 hover:bg-neutral-950 hover:text-white transition-colors"
                   >
                     ×
                   </button>
@@ -463,11 +463,11 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="rounded-full border border-white/15 bg-[#0f1015] backdrop-blur-md px-4 py-2.5 text-xs font-bold text-neutral-200 shadow-sm transition-all duration-300 hover:border-white/40 focus:border-white/50 focus:outline-none focus:scale-[1.01] focus:shadow-[0_0_20px_rgba(255,255,255,0.1)] cursor-pointer"
+                className="rounded-full border border-neutral-300 bg-white backdrop-blur-md px-4 py-2.5 text-xs font-bold text-neutral-800 shadow-xs transition-all duration-300 hover:border-neutral-400 focus:border-neutral-500 focus:outline-none focus:scale-[1.01] cursor-pointer"
               >
-                <option value="Newest" className="bg-neutral-900 text-white">Newest First</option>
-                <option value="Most Viewed" className="bg-neutral-900 text-white">Most Viewed</option>
-                <option value="Name A-Z" className="bg-neutral-900 text-white">Name (A-Z)</option>
+                <option value="Newest" className="bg-white text-neutral-900">Newest First</option>
+                <option value="Most Viewed" className="bg-white text-neutral-900">Most Viewed</option>
+                <option value="Name A-Z" className="bg-white text-neutral-900">Name (A-Z)</option>
               </select>
             </motion.div>
           </div>
@@ -475,7 +475,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
       </section>
 
       {/* ================= 2. CATEGORY FILTERS PILLS ================= */}
-      <section className="relative border-b border-white/10 bg-[#070709] transition-colors">
+      <section className="relative border-b border-neutral-200/80 bg-white/90 backdrop-blur-md transition-colors">
         <div className="mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-4 py-3.5 sm:px-6 lg:px-8 scrollbar-none">
           {categories.map((x) => {
             const isSelected = filter === x;
@@ -485,8 +485,8 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 onClick={() => setFilter(x)}
                 className={`relative whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold transition-all duration-300 active:scale-95 ${
                   isSelected
-                    ? "text-neutral-950"
-                    : "text-neutral-300 hover:text-white hover:bg-white/10 border border-white/10"
+                    ? "text-white"
+                    : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 border border-neutral-200/80"
                 }`}
               >
                 {/* FLIP Active Pill Sliding Background */}
@@ -494,7 +494,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                   <motion.div
                     layoutId="activeCategoryPill"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                    className="absolute inset-0 rounded-full bg-white shadow-md"
+                    className="absolute inset-0 rounded-full bg-neutral-950 shadow-md"
                   />
                 )}
                 <span className="relative z-10">{x}</span>
@@ -508,15 +508,15 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Header Stats */}
         <div className="mb-6 flex items-center justify-between">
-          <p className="text-xs font-semibold text-neutral-400">
-            Showing <span className="text-white font-extrabold">{filteredAssets.length}</span>{" "}
+          <p className="text-xs font-semibold text-neutral-500">
+            Showing <span className="text-neutral-950 font-extrabold">{filteredAssets.length}</span>{" "}
             curated 3D works
           </p>
 
           {filter !== "All" && (
             <button
               onClick={() => setFilter("All")}
-              className="text-xs font-bold text-neutral-400 hover:text-white transition-colors"
+              className="text-xs font-bold text-neutral-500 hover:text-neutral-950 transition-colors"
             >
               Reset filter
             </button>
@@ -528,13 +528,13 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="rounded-3xl border border-dashed border-white/15 bg-white/5 p-14 text-center shadow-xs"
+            className="rounded-3xl border border-dashed border-neutral-300 bg-white p-14 text-center shadow-xs"
           >
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-2xl text-neutral-300">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-2xl text-neutral-600">
               🔍
             </div>
-            <p className="mt-4 text-base font-bold text-white">No 3D projects found</p>
-            <p className="mt-1 text-xs text-neutral-400 max-w-sm mx-auto">
+            <p className="mt-4 text-base font-bold text-neutral-950">No 3D projects found</p>
+            <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
               We couldn't find any matching 3D models. Try adjusting your search query or selecting another category.
             </p>
             <button
@@ -542,7 +542,7 @@ export default function AssetGridClient({ assets }: { assets: Asset[] }) {
                 setSearch("");
                 setFilter("All");
               }}
-              className="mt-5 rounded-full bg-white px-5 py-2 text-xs font-bold text-black transition hover:bg-neutral-200"
+              className="mt-5 rounded-full bg-neutral-950 px-5 py-2 text-xs font-bold text-white transition hover:bg-neutral-800"
             >
               Clear All Filters
             </button>

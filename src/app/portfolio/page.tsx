@@ -22,7 +22,7 @@ export default async function PortfolioPage() {
   const projects = await getProjects();
 
   return (
-    <main className="min-h-screen bg-[#070709] text-white selection:bg-neutral-800 selection:text-white">
+    <main className="min-h-screen bg-[#fafafc] text-neutral-950 selection:bg-neutral-200 selection:text-black">
       <Navbar />
       <AssetGridClient assets={projects} />
     </main>

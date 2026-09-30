@@ -31,10 +31,10 @@ export default async function ProjectDetailPage({
 
   if (!project) {
     return (
-      <main className="min-h-screen bg-[#07070a] text-white">
+      <main className="min-h-screen bg-[#fafafc] text-neutral-900">
         <Navbar />
         <section className="mx-auto max-w-4xl px-5 py-40 text-center sm:px-6">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border border-white/10 bg-neutral-900/80 text-neutral-400 shadow-2xl backdrop-blur-xl">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border border-neutral-200 bg-white text-neutral-400 shadow-xl backdrop-blur-xl">
             <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -44,16 +44,16 @@ export default async function ProjectDetailPage({
               />
             </svg>
           </div>
-          <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-neutral-950 sm:text-4xl">
             3D Asset Not Found
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm text-neutral-400">
+          <p className="mx-auto mt-3 max-w-md text-sm text-neutral-500">
             The requested 3D project or GLB archive does not exist in the digital vault or has been relocated.
           </p>
 
           <Link
             href="/portfolio"
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white px-8 py-3 text-xs font-bold uppercase tracking-wider text-black transition duration-300 hover:scale-105 hover:bg-neutral-200"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-neutral-950 px-8 py-3 text-xs font-bold uppercase tracking-wider text-white transition duration-300 hover:scale-105 hover:bg-neutral-800"
           >
             <span>← Return to 3D Portfolio</span>
           </Link>
@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#07070a] text-white selection:bg-amber-500/30 selection:text-amber-200">
+    <main className="min-h-screen bg-[#fafafc] text-neutral-900 selection:bg-neutral-200 selection:text-black">
       <Navbar />
       <ViewTracker id={id} />
 

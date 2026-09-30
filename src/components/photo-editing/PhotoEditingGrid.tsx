@@ -323,19 +323,19 @@ function PhysicalBook({
           }`}
         >
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold tracking-widest text-amber-400/90 uppercase">
+            <span className="text-[11px] font-mono font-bold tracking-widest text-amber-800 uppercase">
               📖 SPREAD OPEN
             </span>
-            <span className="text-stone-500">•</span>
-            <span className="font-mono text-xs text-stone-300">
-              PLATE <span className="text-amber-300 font-black">{formattedCurrent}</span>
-              <span className="text-stone-500 mx-1">/</span>
-              <span className="text-stone-400">{formattedTotal}</span>
+            <span className="text-stone-300">•</span>
+            <span className="font-mono text-xs text-stone-600">
+              PLATE <span className="text-amber-900 font-black">{formattedCurrent}</span>
+              <span className="text-stone-300 mx-1">/</span>
+              <span className="text-stone-500">{formattedTotal}</span>
             </span>
           </div>
           <button
             onClick={handleCloseBook}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-600/80 bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-amber-300 px-3.5 py-1 text-xs font-bold transition shadow-sm cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white hover:bg-stone-50 text-stone-800 hover:text-amber-900 px-3.5 py-1 text-xs font-bold transition shadow-xs cursor-pointer"
           >
             <span>📕 Close Book</span>
             <span className="text-stone-400 text-xs">✕</span>
@@ -360,7 +360,7 @@ function PhysicalBook({
         >
           {/* Hardcover Outer Leather/Cloth Board Base */}
           <div
-            className="relative mx-auto rounded-[28px] sm:rounded-[38px] p-2.5 sm:p-4 lg:p-5 bg-gradient-to-b from-[#3a2c20] via-[#261d15] to-[#17120c] border-2 border-amber-600/40 ring-1 ring-amber-400/20 shadow-[0_45px_100px_-20px_rgba(0,0,0,0.95),0_20px_50px_-10px_rgba(0,0,0,0.9),inset_0_2px_4px_rgba(255,255,255,0.18)]"
+            className="relative mx-auto rounded-[28px] sm:rounded-[38px] p-2.5 sm:p-4 lg:p-5 bg-gradient-to-b from-[#3a2c20] via-[#261d15] to-[#17120c] border-2 border-amber-600/40 ring-1 ring-amber-400/20 shadow-[0_35px_80px_-15px_rgba(70,50,30,0.35),0_15px_35px_-10px_rgba(0,0,0,0.18),inset_0_2px_4px_rgba(255,255,255,0.25)]"
             style={{
               clipPath: isOpen ? "inset(-30px -30px -50px 0%)" : "inset(-30px -30px -50px 50%)",
               transition: "clip-path 0.95s cubic-bezier(0.25, 1, 0.45, 1)",
@@ -825,16 +825,16 @@ export default function PhotoEditingGrid({
   }, [works]);
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-[#faf8f5]">
       {/* ================================================================= */}
       {/* BOOK 1 (TOP): SINGLE IMAGES PORTFOLIO MONOGRAPH                   */}
       {/* ================================================================= */}
       <section
         id="single-images-book"
-        className="relative overflow-hidden border-b border-amber-900/20"
+        className="relative overflow-hidden border-b border-stone-200/80"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 36%, rgba(220, 180, 125, 0.13), rgba(24, 21, 18, 0.88) 65%, #12100e 100%)",
+            "radial-gradient(ellipse 75% 55% at 50% 40%, rgba(255, 255, 255, 0.98), rgba(247, 244, 237, 0.85) 60%, #f4efe4 100%)",
         }}
       >
         <PhysicalBook
@@ -854,7 +854,7 @@ export default function PhotoEditingGrid({
         className="relative overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 36%, rgba(210, 175, 120, 0.12), rgba(22, 19, 17, 0.88) 65%, #100e0d 100%)",
+            "radial-gradient(ellipse 75% 55% at 50% 40%, rgba(255, 255, 255, 0.98), rgba(245, 242, 235, 0.85) 60%, #f0ebe0 100%)",
         }}
       >
         <PhysicalBook
