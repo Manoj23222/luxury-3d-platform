@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import BeforeAfterSlider from "./BeforeAfterSlider";
 
 export type PhotoWorkItem = {
@@ -30,9 +29,19 @@ interface PhotoEditingGridProps {
   initialWorks: PhotoWorkItem[];
 }
 
+const SOFTWARE_TABS = [
+  { id: "all", label: "All", badge: "✦" },
+  { id: "photoshop", label: "Adobe Photoshop", badge: "Ps" },
+  { id: "illustrator", label: "Adobe Illustrator", badge: "Ai" },
+  { id: "canva", label: "Canva", badge: "C" },
+  { id: "blender", label: "Blender", badge: "3D" },
+] as const;
+
+type SoftwareTabId = (typeof SOFTWARE_TABS)[number]["id"];
+
 export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps) {
   const [works, setWorks] = useState<PhotoWorkItem[]>(initialWorks || []);
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedTab, setSelectedTab] = useState<SoftwareTabId>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // Fetch latest uploaded photos on mount
@@ -41,7 +50,6 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.works) && data.works.length > 0) {
-          // Merge newly fetched DB works with initial fallbacks
           const dbIds = new Set(data.works.map((w: PhotoWorkItem) => w._id));
           const uniqueInitial = initialWorks.filter((w) => !dbIds.has(w._id));
           setWorks([...data.works, ...uniqueInitial]);
@@ -50,36 +58,93 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
       .catch(() => {});
   }, [initialWorks]);
 
-  // Extract all categories dynamically
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    works.forEach((w) => {
-      if (w.category && w.category.trim()) {
-        set.add(w.category.trim());
-      }
-    });
-    return ["All", "Before & After", "Single Artworks", ...Array.from(set)];
-  }, [works]);
-
-  // Filtered works based on selected category
+  // Filtered works based on the selected software tab
   const filteredWorks = useMemo(() => {
-    if (selectedCategory === "All") return works;
-    if (selectedCategory === "Before & After") {
-      return works.filter((w) => {
-        const hasBefore = Boolean(w.beforeImage && w.beforeImage.trim());
-        const isNotSame = w.beforeImage !== w.afterImage;
-        return (w.workType === "before_after" || hasBefore) && isNotSame;
-      });
-    }
-    if (selectedCategory === "Single Artworks") {
-      return works.filter((w) => {
-        if (w.workType === "single" || w.workType === "banner") return true;
-        if (!w.beforeImage || !w.beforeImage.trim()) return true;
-        return w.beforeImage === w.afterImage;
-      });
-    }
-    return works.filter((w) => w.category === selectedCategory);
-  }, [works, selectedCategory]);
+    if (selectedTab === "all") return works;
+
+    return works.filter((w) => {
+      const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
+      const cat = (w.category || "").toLowerCase();
+      const tags = (w.tags || []).join(" ").toLowerCase();
+      const title = (w.title || "").toLowerCase();
+
+      if (selectedTab === "photoshop") {
+        const hasPhotoshop = sw.some(
+          (s) =>
+            s.includes("photoshop") ||
+            s.includes("lightroom") ||
+            s.includes("capture one") ||
+            s.includes("retouch")
+        );
+        return (
+          hasPhotoshop ||
+          cat.includes("retouch") ||
+          cat.includes("background") ||
+          cat.includes("grading") ||
+          cat.includes("portrait") ||
+          cat.includes("fashion & portrait") ||
+          cat.includes("white background") ||
+          tags.includes("retouch") ||
+          title.includes("retouch")
+        );
+      }
+
+      if (selectedTab === "illustrator") {
+        const hasIllustrator = sw.some((s) => s.includes("illustrator") || s.includes("indesign"));
+        return (
+          hasIllustrator ||
+          cat.includes("branding") ||
+          cat.includes("logo") ||
+          cat.includes("vector") ||
+          cat.includes("banner") ||
+          cat.includes("outline") ||
+          cat.includes("path") ||
+          cat.includes("packing") ||
+          cat.includes("packaging") ||
+          tags.includes("vector") ||
+          tags.includes("logo")
+        );
+      }
+
+      if (selectedTab === "canva") {
+        const hasCanva = sw.some((s) => s.includes("canva"));
+        return (
+          hasCanva ||
+          cat.includes("social media") ||
+          cat.includes("ads") ||
+          cat.includes("ad creative") ||
+          cat.includes("food & beverage") ||
+          cat.includes("banner") ||
+          tags.includes("banner") ||
+          tags.includes("social media") ||
+          tags.includes("poster")
+        );
+      }
+
+      if (selectedTab === "blender") {
+        const hasBlender = sw.some(
+          (s) => s.includes("blender") || s.includes("substance") || s.includes("3d")
+        );
+        return (
+          hasBlender ||
+          cat.includes("3d") ||
+          cat.includes("garment") ||
+          cat.includes("cgi") ||
+          cat.includes("jewelry & luxury") ||
+          tags.includes("3d") ||
+          tags.includes("cgi") ||
+          title.includes("3d") ||
+          title.includes("cgi") ||
+          title.includes("perfume") ||
+          title.includes("watch") ||
+          title.includes("burger") ||
+          title.includes("ice")
+        );
+      }
+
+      return true;
+    });
+  }, [works, selectedTab]);
 
   // Lightbox navigation
   const activeItem = lightboxIndex !== null ? filteredWorks[lightboxIndex] : null;
@@ -122,35 +187,41 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
   }, [lightboxIndex]);
 
   return (
-    <section className="relative w-full bg-[#faf8f5] px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <section className="relative w-full bg-[#faf8f5] px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* ========================================================= */}
-        {/* FILTER CATEGORY PILLS BAR                                 */}
+        {/* EXACT SOFTWARE TABS (All, Photoshop, Illustrator, Canva, Blender) */}
         {/* ========================================================= */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200/80 pb-6">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat;
+        <div className="flex items-center justify-center border-b border-stone-200/80 pb-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {SOFTWARE_TABS.map((tab) => {
+              const isSelected = selectedTab === tab.id;
+
               return (
                 <button
-                  key={cat}
+                  key={tab.id}
                   type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  onClick={() => setSelectedTab(tab.id)}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold tracking-tight transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? "bg-neutral-950 text-white shadow-sm"
-                      : "bg-white/80 text-stone-600 border border-stone-200/90 hover:bg-white hover:text-neutral-950"
+                      ? "bg-neutral-950 text-white shadow-md scale-[1.02]"
+                      : "bg-white/90 text-stone-700 border border-stone-300/80 hover:bg-white hover:border-neutral-400 hover:text-neutral-950 shadow-2xs"
                   }`}
                 >
-                  {cat}
+                  <span
+                    className={`inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-mono font-black ${
+                      isSelected
+                        ? "bg-white/20 text-white"
+                        : "bg-stone-100 text-stone-800 border border-stone-200"
+                    }`}
+                  >
+                    {tab.badge}
+                  </span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
           </div>
-
-          <span className="text-xs font-mono font-medium text-stone-500 shrink-0">
-            {filteredWorks.length} Photographs / Artworks
-          </span>
         </div>
 
         {/* ========================================================= */}

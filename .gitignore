@@ -42,3 +42,6 @@ next-env.d.ts
 backup/
 *.html
 *_files/
+*.ai
+/public/illustrator/
+
