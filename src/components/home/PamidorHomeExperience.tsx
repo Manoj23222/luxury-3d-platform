@@ -220,9 +220,9 @@ export default function PamidorHomeExperience() {
                 </div>
               </div>
 
-              {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout (Zoomed In) */}
-              <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end">
-                <div className="relative w-full max-w-[620px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center select-none overflow-visible">
+              {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout (Aligned Down to Divider Div) */}
+              <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end self-end">
+                <div className="relative w-full max-w-[620px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center select-none overflow-visible translate-y-8 sm:translate-y-12 lg:translate-y-16">
                   <Image
                     src="/ashok.png"
                     alt="Ashok Meena - Senior 3D Designer & Photo Editor"
@@ -236,7 +236,7 @@ export default function PamidorHomeExperience() {
             </div>
 
             {/* 1.5px Architectural Rule at Bottom of Hero */}
-            <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] mt-12 lg:mt-16" />
+            <div aria-hidden="true" className="relative z-10 h-[1.5px] w-full bg-[#D8D7D1] mt-12 lg:mt-16" />
           </div>
         </HeroFlowerCanvas>
       </section>
