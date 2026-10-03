@@ -277,6 +277,13 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                   work.beforeImage !== work.afterImage;
                 const has3DModel = Boolean(work.modelUrl);
 
+                const isIllustrator =
+                  displayImg.includes("illustrator-previews") ||
+                  displayImg.includes("/illustrator/") ||
+                  work._id.startsWith("ai-") ||
+                  (work.softwareUsed || []).some((s) => s.toLowerCase().includes("illustrator")) ||
+                  selectedTab === "illustrator";
+
                 return (
                   <motion.div
                     key={work._id || idx}
@@ -289,15 +296,32 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                       setLightboxIndex(idx);
                       setViewMode(has3DModel ? "3d" : "render");
                     }}
-                    className="group relative aspect-[3/4] sm:aspect-[4/5] cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl border border-stone-200/80 bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300"
+                    className={`group relative ${
+                      isIllustrator && selectedTab === "illustrator"
+                        ? "aspect-square"
+                        : "aspect-[3/4] sm:aspect-[4/5]"
+                    } cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl border border-stone-200/80 ${
+                      isIllustrator ? "bg-white" : "bg-stone-100"
+                    } shadow-xs hover:shadow-xl transition-all duration-300`}
                   >
-                    {/* Clean Gallery Image Tile */}
-                    <img
-                      src={displayImg}
-                      alt={work.title || "Photo Artwork"}
-                      loading="lazy"
-                      className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
+                    {/* Clean Gallery Image Tile - Correct uncropped scaling for Illustrator */}
+                    {isIllustrator ? (
+                      <div className="flex h-full w-full items-center justify-center p-3.5 sm:p-5">
+                        <img
+                          src={displayImg}
+                          alt={work.title || "Illustrator Artwork"}
+                          loading="lazy"
+                          className="max-h-full max-w-full object-contain object-center transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={displayImg}
+                        alt={work.title || "Photo Artwork"}
+                        loading="lazy"
+                        className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                    )}
 
                     {/* Clean Subtle Top-Right Badge for 3D View or Before/After */}
                     {has3DModel ? (
@@ -312,7 +336,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                     ) : null}
 
                     {/* Hover Overlay with Clean Zoom / 3D Indicator */}
-                    <div className="pointer-events-none absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="pointer-events-none absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       {has3DModel ? (
                         <div className="flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-1.5 text-neutral-950 font-bold text-xs tracking-wider uppercase shadow-xl transform scale-90 group-hover:scale-100 transition-transform duration-200">
                           <span className="text-sm">🎮</span>
@@ -451,7 +475,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                 </div>
               ) : (
                 /* High-Res Single Image View */
-                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-stone-200/90 bg-white/80 p-2">
+                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-stone-200/90 bg-white p-2.5 sm:p-4">
                   <img
                     src={activeItem.afterImage || activeItem.thumbnail || activeItem.beforeImage}
                     alt={activeItem.title || "Full Artwork"}
@@ -469,7 +493,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                   e.stopPropagation();
                   handleNext();
                 }}
-                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 hover:bg-white hover:text-black border border-white/20 text-white transition-all cursor-pointer text-xl"
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/95 hover:bg-neutral-950 hover:text-white border border-stone-300/80 text-stone-800 shadow-md transition-all cursor-pointer text-xl"
                 aria-label="Next image"
               >
                 ›
