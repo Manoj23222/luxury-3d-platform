@@ -220,16 +220,16 @@ export default function PamidorHomeExperience() {
                 </div>
               </div>
 
-              {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout */}
+              {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout (Zoomed In) */}
               <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end">
-                <div className="relative w-full max-w-[560px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center select-none">
+                <div className="relative w-full max-w-[620px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center select-none overflow-visible">
                   <Image
                     src="/ashok.png"
                     alt="Ashok Meena - Senior 3D Designer & Photo Editor"
                     fill
                     priority
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-contain object-bottom filter drop-shadow-[0_22px_38px_rgba(10,10,10,0.22)] transition-transform duration-500 ease-out hover:scale-[1.015] pointer-events-none"
+                    className="object-contain object-bottom filter drop-shadow-[0_22px_38px_rgba(10,10,10,0.22)] scale-[1.18] sm:scale-[1.24] origin-bottom transition-transform duration-500 ease-out pointer-events-none"
                   />
                 </div>
               </div>
