@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import HeroFlowerInteractive from "./HeroFlowerInteractive";
 
 // ==========================================
 // SOFTWARE PRODUCTION STACK DATA
@@ -218,23 +219,12 @@ export default function PamidorHomeExperience() {
               </div>
             </div>
 
-            {/* Right Column: Large Vertical Hero Portrait / Visual */}
+            {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout & Interactive Flowers */}
             <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-[560px] aspect-[4/5] sm:aspect-[787/904] overflow-hidden bg-[#E2E0D8] border border-[#D8D7D1] shadow-[0_20px_60px_-15px_rgba(10,10,10,0.18)]">
-                <Image
-                  src="/ashok_photo.jpg"
-                  alt="Ashok Meena - Senior 3D Designer & Photo Editor"
-                  fill
-                  priority
-                  className="object-cover object-top filter grayscale contrast-105 hover:grayscale-0 transition-all duration-700 ease-out"
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                />
-
-                {/* Subtle Luxury Corner Label */}
-                
-
-               
-              </div>
+              <HeroFlowerInteractive
+                src="/ashok.png"
+                alt="Ashok Meena - Senior 3D Designer & Photo Editor"
+              />
             </div>
           </div>
 
