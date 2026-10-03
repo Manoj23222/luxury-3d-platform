@@ -1,8 +1,24 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+
+const Luxury3DShowroom = dynamic(
+  () => import("@/components/3d/Luxury3DShowroom"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[60vh] min-h-[460px] w-full flex-col items-center justify-center rounded-3xl border border-white/10 bg-[#08080c] text-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+        <span className="mt-3 text-xs font-mono uppercase tracking-widest text-neutral-400">
+          Loading 3D WebGL Scene...
+        </span>
+      </div>
+    ),
+  }
+);
 
 export type PhotoWorkItem = {
   _id: string;
@@ -23,6 +39,8 @@ export type PhotoWorkItem = {
   featured?: boolean;
   views?: number;
   likes?: number;
+  modelUrl?: string;
+  isPortfolio3D?: boolean;
 };
 
 interface PhotoEditingGridProps {
@@ -43,6 +61,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
   const [works, setWorks] = useState<PhotoWorkItem[]>(initialWorks || []);
   const [selectedTab, setSelectedTab] = useState<SoftwareTabId>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<"3d" | "render">("3d");
 
   // Fetch latest uploaded photos on mount
   useEffect(() => {
@@ -151,15 +170,23 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
 
   const handleNext = useCallback(() => {
     if (lightboxIndex === null) return;
-    setLightboxIndex((prev) => (prev !== null ? (prev + 1) % filteredWorks.length : null));
-  }, [lightboxIndex, filteredWorks.length]);
+    setLightboxIndex((prev) => {
+      if (prev === null) return null;
+      const nextIdx = (prev + 1) % filteredWorks.length;
+      setViewMode(filteredWorks[nextIdx]?.modelUrl ? "3d" : "render");
+      return nextIdx;
+    });
+  }, [lightboxIndex, filteredWorks]);
 
   const handlePrev = useCallback(() => {
     if (lightboxIndex === null) return;
-    setLightboxIndex((prev) =>
-      prev !== null ? (prev - 1 + filteredWorks.length) % filteredWorks.length : null
-    );
-  }, [lightboxIndex, filteredWorks.length]);
+    setLightboxIndex((prev) => {
+      if (prev === null) return null;
+      const nextIdx = (prev - 1 + filteredWorks.length) % filteredWorks.length;
+      setViewMode(filteredWorks[nextIdx]?.modelUrl ? "3d" : "render");
+      return nextIdx;
+    });
+  }, [lightboxIndex, filteredWorks]);
 
   // Keyboard navigation for Lightbox
   useEffect(() => {
@@ -248,57 +275,73 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                 const hasBeforeAfter =
                   Boolean(work.beforeImage && work.beforeImage.trim()) &&
                   work.beforeImage !== work.afterImage;
+                const has3DModel = Boolean(work.modelUrl);
 
-              return (
-                <motion.div
-                  key={work._id || idx}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => setLightboxIndex(idx)}
-                  className="group relative aspect-[3/4] sm:aspect-[4/5] cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl border border-stone-200/80 bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300"
-                >
-                  {/* Clean Gallery Image Tile */}
-                  <img
-                    src={displayImg}
-                    alt={work.title || "Photo Artwork"}
-                    loading="lazy"
-                    className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
+                return (
+                  <motion.div
+                    key={work._id || idx}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => {
+                      setLightboxIndex(idx);
+                      setViewMode(has3DModel ? "3d" : "render");
+                    }}
+                    className="group relative aspect-[3/4] sm:aspect-[4/5] cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl border border-stone-200/80 bg-stone-100 shadow-xs hover:shadow-xl transition-all duration-300"
+                  >
+                    {/* Clean Gallery Image Tile */}
+                    <img
+                      src={displayImg}
+                      alt={work.title || "Photo Artwork"}
+                      loading="lazy"
+                      className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
 
-                  {/* Clean Subtle Top-Right Badge for Before/After Items */}
-                  {hasBeforeAfter && (
-                    <div className="absolute top-2.5 right-2.5 z-10 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold text-white border border-white/20">
-                      Before / After
+                    {/* Clean Subtle Top-Right Badge for 3D View or Before/After */}
+                    {has3DModel ? (
+                      <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 rounded-full bg-black/75 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold text-white border border-white/20 shadow-md">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>3D View</span>
+                      </div>
+                    ) : hasBeforeAfter ? (
+                      <div className="absolute top-2.5 right-2.5 z-10 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold text-white border border-white/20">
+                        Before / After
+                      </div>
+                    ) : null}
+
+                    {/* Hover Overlay with Clean Zoom / 3D Indicator */}
+                    <div className="pointer-events-none absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      {has3DModel ? (
+                        <div className="flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-1.5 text-neutral-950 font-bold text-xs tracking-wider uppercase shadow-xl transform scale-90 group-hover:scale-100 transition-transform duration-200">
+                          <span className="text-sm">🎮</span>
+                          <span>Open 3D View</span>
+                        </div>
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-neutral-950 shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-200">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
+                            />
+                          </svg>
+                        </div>
+                      )}
                     </div>
-                  )}
-
-                  {/* Hover Overlay with Clean Zoom Indicator */}
-                  <div className="pointer-events-none absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-neutral-950 shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-200">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
 
@@ -311,13 +354,42 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-3 sm:p-6 select-none"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 backdrop-blur-xl p-2 sm:p-5 select-none"
           >
-            {/* Top Bar with Counter and Close Button */}
-            <div className="absolute top-4 inset-x-4 sm:inset-x-8 flex items-center justify-between z-50 text-white">
+            {/* Top Bar with Counter, 3D Toggle, and Close Button */}
+            <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-8 flex items-center justify-between z-50 text-white gap-2 sm:gap-3">
               <span className="text-xs font-mono tracking-widest uppercase bg-white/10 px-3 py-1.5 rounded-full border border-white/15">
                 {lightboxIndex + 1} / {filteredWorks.length}
               </span>
+
+              {/* 3D Model Toggle Switch if modelUrl exists */}
+              {activeItem.modelUrl && (
+                <div className="flex items-center gap-1 rounded-full bg-neutral-900/90 p-1 border border-white/20 shadow-lg backdrop-blur-md">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("3d")}
+                    className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      viewMode === "3d"
+                        ? "bg-white text-neutral-950 shadow-md scale-102"
+                        : "text-neutral-300 hover:text-white"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>3D Interactive</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("render")}
+                    className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      viewMode === "render"
+                        ? "bg-white text-neutral-950 shadow-md scale-102"
+                        : "text-neutral-300 hover:text-white"
+                    }`}
+                  >
+                    2D Render
+                  </button>
+                </div>
+              )}
 
               <button
                 type="button"
@@ -347,11 +419,23 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
             {/* Main Lightbox Content Area */}
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative max-h-[85vh] max-w-[90vw] lg:max-w-5xl w-full flex items-center justify-center"
+              className="relative max-h-[88vh] max-w-[95vw] lg:max-w-6xl w-full flex items-center justify-center"
             >
-              {activeItem.beforeImage &&
-              activeItem.afterImage &&
-              activeItem.beforeImage !== activeItem.afterImage ? (
+              {activeItem.modelUrl && viewMode === "3d" ? (
+                /* Interactive 3D WebGL Showroom View */
+                <div className="relative w-full max-w-5xl h-[68vh] sm:h-[76vh] max-h-[780px] min-h-[460px] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl bg-[#08080c]">
+                  <Luxury3DShowroom
+                    url={activeItem.modelUrl}
+                    fileName={activeItem.title}
+                    category={activeItem.category}
+                    projectName={activeItem.title}
+                    fallbackImage={activeItem.afterImage || activeItem.thumbnail}
+                    className="!h-full !min-h-full !max-h-full"
+                  />
+                </div>
+              ) : activeItem.beforeImage &&
+                activeItem.afterImage &&
+                activeItem.beforeImage !== activeItem.afterImage ? (
                 /* Interactive Before & After Split Slider in Fullscreen */
                 <div className="w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-2xl border border-white/20 shadow-2xl">
                   <BeforeAfterSlider

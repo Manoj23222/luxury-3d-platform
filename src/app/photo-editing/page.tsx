@@ -67,7 +67,7 @@ async function getPhotoWorks() {
       clientName: p.brandName || "Luxury 3D Studio",
       projectYear: "2026",
       tags: ["Blender", "3D Model", p.category].filter(Boolean),
-      modelUrl: p.modelUrl || "",
+      modelUrl: p.glbUrl || p.modelUrl || "",
       featured: Boolean(p.featured),
       views: p.views || 100,
       likes: p.likes || 25,
