@@ -14,31 +14,31 @@ const softwareStack = [
     id: "photoshop",
     name: "Adobe Photoshop",
     category: "Photo Retouching",
-    icon: "/software-logos/photoshop.svg",
+    icon: "/Softwear Icon/photoshop.svg",
   },
   {
     id: "illustrator",
     name: "Adobe Illustrator",
     category: "Vector & Branding",
-    icon: "/software-logos/illustrator.svg",
+    icon: "/Softwear Icon/adobe-illustrator-svgrepo-com.svg",
   },
   {
     id: "lightroom",
     name: "Adobe Lightroom",
     category: "16-Bit RAW Grading",
-    icon: "/software-logos/lightroom.svg",
+    icon: "/Softwear Icon/adobe-lightroom-svgrepo-com.svg",
   },
   {
     id: "canva",
     name: "Canva",
     category: "Graphic Design",
-    icon: "/software-logos/canva.svg",
+    icon: "/Softwear Icon/canva-icon.webp",
   },
   {
     id: "blender",
     name: "Blender 3D",
     category: "3D CGI & Modeling",
-    icon: "/software-logos/blender.png",
+    icon: "/Softwear Icon/blender-svgrepo-com.svg",
   },
   {
     id: "clo3d",
@@ -50,13 +50,13 @@ const softwareStack = [
     id: "excel",
     name: "Microsoft Excel",
     category: "Data & Workflows",
-    icon: "/software-logos/excel.png",
+    icon: "/Softwear Icon/excel2-svgrepo-com.svg",
   },
   {
     id: "antigravity",
     name: "Google Antigravity",
     category: "Agentic AI & Coding",
-    icon: "/software-logos/antigravity.svg",
+    icon: "/Softwear Icon/google-antigravity.png",
   },
 ];
 
