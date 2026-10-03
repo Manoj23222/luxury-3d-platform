@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
 import PhotoEditingGrid from "@/components/photo-editing/PhotoEditingGrid";
 import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
@@ -103,10 +102,8 @@ export default async function WorkPage() {
 
   return (
     <main className="min-h-screen bg-[#faf8f5] text-neutral-900 selection:bg-amber-500/20 selection:text-amber-950">
-      <Navbar />
-
       {/* Luxury Hero Banner Section */}
-      <section className="relative overflow-hidden border-b border-stone-200/80 bg-gradient-to-b from-[#fbfbfd] via-[#f7f6f2] to-[#faf8f5] pt-28 pb-14 text-neutral-950">
+      <section className="relative overflow-hidden border-b border-stone-200/80 bg-gradient-to-b from-[#fbfbfd] via-[#f7f6f2] to-[#faf8f5] pt-12 sm:pt-16 pb-12 sm:pb-14 text-neutral-950">
         {/* Background Banner Image with Luxury Pearl Light Grading */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
