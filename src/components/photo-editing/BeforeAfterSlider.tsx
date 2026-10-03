@@ -128,7 +128,7 @@ export default function BeforeAfterSlider({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`group relative select-none overflow-hidden rounded-2xl bg-neutral-100 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:12px_12px] ${aspectRatio} ${className} cursor-ew-resize`}
+      className={`group relative select-none overflow-hidden rounded-2xl bg-white ${aspectRatio} ${className} cursor-ew-resize`}
       style={{ touchAction: "none" }}
     >
       {/* 1. AFTER / RETOUCHED IMAGE (Full Base Layer) */}
@@ -155,18 +155,18 @@ export default function BeforeAfterSlider({
         draggable={false}
       />
 
-      {/* 3. LABELS */}
-      <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex items-center gap-1.5 rounded-full bg-black/75 px-2 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider text-white shadow-xs backdrop-blur-md">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+      {/* 3. LABELS - Luxury White Stone Badges */}
+      <div className="pointer-events-none absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-stone-900 border border-stone-200/90 shadow-md backdrop-blur-md">
+        <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
         <span>{beforeLabel}</span>
       </div>
 
-      <div className="pointer-events-none absolute right-2.5 top-2.5 z-10 flex items-center gap-1.5 rounded-full bg-black/75 px-2 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider text-white shadow-xs backdrop-blur-md">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+      <div className="pointer-events-none absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-stone-900 border border-stone-200/90 shadow-md backdrop-blur-md">
+        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
         <span>{afterLabel}</span>
       </div>
 
-      {/* 4. OPTIONAL FIT TOGGLE (Fit: Full Image vs Fill: Cover) */}
+      {/* 4. OPTIONAL FIT TOGGLE - Luxury White Stone Button */}
       {showFitToggle && (
         <button
           type="button"
@@ -174,18 +174,18 @@ export default function BeforeAfterSlider({
             e.stopPropagation();
             setFitMode((prev) => (prev === "contain" ? "cover" : "contain"));
           }}
-          className="absolute bottom-3 right-3 z-30 flex items-center gap-1.5 rounded-full bg-black/80 px-3 py-1 text-[10.5px] font-bold text-white shadow-lg backdrop-blur-md transition hover:bg-black cursor-pointer"
+          className="absolute bottom-3 right-3 z-30 flex items-center gap-1.5 rounded-full bg-white/95 hover:bg-neutral-950 hover:text-white px-3.5 py-1.5 text-[11px] font-bold text-stone-800 border border-stone-300/80 shadow-md backdrop-blur-md transition-all cursor-pointer"
         >
           <span>{fitMode === "contain" ? "🔍 Fill Mode" : "📐 Full Image"}</span>
         </button>
       )}
 
-      {/* 5. SLIDER DIVIDER LINE & HANDLE */}
+      {/* 5. SLIDER DIVIDER LINE & LUXURY WHITE HANDLE */}
       <div
-        className="pointer-events-none absolute inset-y-0 z-20 w-0.5 bg-white shadow-[0_0_12px_rgba(0,0,0,0.8)]"
+        className="pointer-events-none absolute inset-y-0 z-20 w-0.5 bg-white/90 shadow-[0_0_8px_rgba(0,0,0,0.25)]"
         style={{ left: `${sliderPosition}%` }}
       >
-        <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-black/90 text-white shadow-2xl backdrop-blur-md transition-transform group-hover:scale-110 active:scale-95">
+        <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-stone-200 bg-white text-stone-900 shadow-xl backdrop-blur-md transition-transform group-hover:scale-110 active:scale-95">
           <svg
             className="h-4 w-4"
             fill="none"

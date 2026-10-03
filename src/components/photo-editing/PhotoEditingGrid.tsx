@@ -378,11 +378,15 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#fbfaf8]/95 backdrop-blur-2xl p-2 sm:p-5 select-none"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-2xl p-2 sm:p-5 select-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 95% 75% at 50% 45%, #ffffff 0%, #faf8f5 55%, #f2eee6 100%)",
+            }}
           >
             {/* Top Bar with Counter, 3D Toggle, and Close Button */}
-            <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-8 flex items-center justify-between z-50 text-stone-900 gap-2 sm:gap-3">
-              <span className="text-xs font-mono tracking-widest uppercase bg-white px-3 py-1.5 rounded-full border border-stone-300/80 text-stone-800 shadow-xs">
+            <div className="absolute top-3 sm:top-5 inset-x-3 sm:inset-x-8 flex items-center justify-between z-50 text-stone-900 gap-2 sm:gap-3">
+              <span className="text-xs font-mono font-bold tracking-widest uppercase bg-white px-3.5 py-1.5 rounded-full border border-stone-300/80 text-stone-800 shadow-xs">
                 {lightboxIndex + 1} / {filteredWorks.length}
               </span>
 
@@ -418,7 +422,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
               <button
                 type="button"
                 onClick={() => setLightboxIndex(null)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white hover:bg-neutral-950 hover:text-white border border-stone-300/80 text-stone-800 shadow-xs transition-colors cursor-pointer text-lg"
+                className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white hover:bg-neutral-950 hover:text-white border border-stone-300/80 text-stone-800 shadow-md transition-colors cursor-pointer text-lg font-bold"
                 aria-label="Close lightbox"
               >
                 ✕
@@ -461,8 +465,8 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
               ) : activeItem.beforeImage &&
                 activeItem.afterImage &&
                 activeItem.beforeImage !== activeItem.afterImage ? (
-                /* Interactive Before & After Split Slider in Fullscreen */
-                <div className="w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-2xl border border-stone-200/90 shadow-2xl bg-white">
+                /* Interactive Before & After Split Slider in Fullscreen with Luxury White Frame */
+                <div className="w-full max-w-4xl sm:max-w-5xl aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200/90 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.12)] bg-white p-1.5 sm:p-2">
                   <BeforeAfterSlider
                     beforeImage={activeItem.beforeImage}
                     afterImage={activeItem.afterImage}
@@ -470,16 +474,16 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                     afterLabel="POLISHED RETOUCH"
                     fitMode="contain"
                     showFitToggle={true}
-                    className="h-full w-full"
+                    className="h-full w-full !rounded-xl sm:!rounded-2xl"
                   />
                 </div>
               ) : (
-                /* High-Res Single Image View */
-                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-stone-200/90 bg-white p-2.5 sm:p-4">
+                /* High-Res Single Image View with Luxury White Frame */
+                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_25px_70px_-15px_rgba(0,0,0,0.12)] border border-stone-200/90 bg-white p-3 sm:p-5">
                   <img
                     src={activeItem.afterImage || activeItem.thumbnail || activeItem.beforeImage}
                     alt={activeItem.title || "Full Artwork"}
-                    className="max-h-[82vh] max-w-[88vw] w-auto h-auto object-contain rounded-xl"
+                    className="max-h-[80vh] max-w-[86vw] w-auto h-auto object-contain rounded-xl sm:rounded-2xl"
                   />
                 </div>
               )}
