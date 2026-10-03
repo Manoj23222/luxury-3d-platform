@@ -565,22 +565,22 @@ export default async function PhotoEditingPage() {
 
               {/* Main Headline */}
               <h1 className="mt-4 text-3xl font-black tracking-tight text-neutral-950 sm:text-5xl lg:text-5xl">
-                Creative Design & Visual Portfolio
+                Photo Retouching & Creative Gallery
               </h1>
 
               {/* Luxury Domain & Skills Strip */}
               <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs sm:text-sm font-semibold text-neutral-600">
                 <span className="text-neutral-950 font-bold">All Work</span>
                 <span className="text-stone-300">•</span>
-                <span>3D Design</span>
+                <span>Before & After Retouch</span>
                 <span className="text-stone-300">•</span>
-                <span>Photo Editing</span>
+                <span>Fashion & Beauty</span>
                 <span className="text-stone-300">•</span>
-                <span>Graphic Design</span>
+                <span>Product Retouching</span>
                 <span className="text-stone-300">•</span>
-                <span>Digital Fashion</span>
+                <span>White Background</span>
                 <span className="text-stone-300">•</span>
-                <span>Product Visualization</span>
+                <span>Commercial Banners</span>
               </div>
             </div>
 
@@ -604,7 +604,7 @@ export default async function PhotoEditingPage() {
         </div>
       </section>
 
-      {/* Premium Single-Image Physical Book Page-Turn Portfolio Gallery */}
+      {/* Clean Normal Photo Editing & Artwork Gallery Grid */}
       <PhotoEditingGrid initialWorks={works} />
     </main>
   );
