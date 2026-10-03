@@ -50,6 +50,7 @@ export default function Navbar() {
     return null;
   }
 
+  const isHomeActive = pathname === "/";
   const isWorkActive =
     pathname?.startsWith("/work") ||
     pathname?.startsWith("/photo-editing") ||
@@ -67,15 +68,19 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto max-w-[1720px] px-4 sm:px-10 lg:px-16 h-16 sm:h-[70px] flex items-center justify-between">
-        {/* Brand / Logo: Portfolio | 3D & Photo Editing */}
+        {/* Brand / Logo: Portfolio | 3D & Photo Editing (Red Background Button) */}
         <Link
           href="/"
-          className="group flex items-center gap-2 text-[#0A0A0A] transition-opacity hover:opacity-80 focus:outline-hidden"
+          className={`rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-xs hover:shadow-md active:scale-95 flex items-center gap-2 ${
+            isHomeActive
+              ? "bg-[#D12424] text-white ring-2 ring-[#D12424]/40 ring-offset-2 ring-offset-[#EFEEEB] brightness-90"
+              : "bg-[#D12424] text-white hover:bg-[#b01c1c]"
+          }`}
         >
-          <span className="text-sm sm:text-base font-black tracking-tight uppercase">
+          <span className="font-black tracking-tight uppercase">
             Portfolio
           </span>
-          <span className="hidden sm:inline-block text-[11px] font-mono text-[#76756F] uppercase tracking-widest pl-2 border-l border-[#D8D7D1]">
+          <span className="hidden sm:inline-block text-[10px] font-mono text-white/85 uppercase tracking-widest pl-2 border-l border-white/35">
             3D & Photo Editing
           </span>
         </Link>

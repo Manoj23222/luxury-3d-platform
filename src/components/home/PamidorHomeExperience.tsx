@@ -130,35 +130,6 @@ const skillsets = [
 
 export default function PamidorHomeExperience() {
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          subject: "Inquiry from Pamidor Home",
-          message: form.message,
-        }),
-      });
-      if (res.ok) {
-        setSubmitted(true);
-      }
-    } catch {
-      // fallback
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div className="relative w-full bg-[#EFEEEB] text-[#0A0A0A] font-sans selection:bg-[#D12424] selection:text-white overflow-x-hidden">
@@ -432,89 +403,6 @@ export default function PamidorHomeExperience() {
           <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] mt-8" />
         </div>
       </section>
-
-      {/* ========================================================= */}
-      {/* 5. THE ART LAB SECTION (#art-lab)                         */}
-      {/* ========================================================= */}
-      <section id="art-lab" className="relative w-full bg-[#EFEEEB] py-20 lg:py-32">
-        <div className="relative mx-auto w-full max-w-[1720px] px-6 sm:px-10 lg:px-16 space-y-12">
-          {/* Header */}
-          <div>
-            <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-[#0A0A0A]">
-              The Art Lab
-            </h2>
-            <p className="text-sm font-mono text-[#76756F] uppercase tracking-widest mt-2">
-              Unfiltered Experiments, 3D Monograph & Retouching Playground
-            </p>
-          </div>
-
-          <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1]" />
-
-          {/* 2-Column Editorial Grid (Exact Pamidor Style) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start">
-            {/* Column 1 */}
-            <div className="space-y-6">
-              <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#E2E0D8] border border-[#D8D7D1] shadow-lg">
-                <Image
-                  src="/images/creative-portfolio-banner.png"
-                  alt="Art Lab - Creative Monograph & Retouching"
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-700"
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                />
-              </div>
-              <p className="text-sm sm:text-base leading-relaxed text-[#4A4944]">
-                Let’s get one thing straight, I don&apos;t always play nicely within the lines.
-                Welcome to my creative playground — an unapologetic tribute to pure 3D art,
-                photorealistic simulations, and creative retouching monographs. It’s where I
-                completely ditch commercial constraints, calibrate bold cloth drapes, and let
-                unfiltered aesthetics take control.
-              </p>
-              <div>
-                <Link
-                  href="/work"
-                  className="inline-flex items-center gap-3 border border-[#0A0A0A] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-all duration-300"
-                >
-                  <span>Enter The Work & Retouching Studio</span>
-                  <span>→</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Column 2 */}
-            <div className="space-y-6">
-              <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#E2E0D8] border border-[#D8D7D1] shadow-lg">
-                <Image
-                  src="/images/ice.png"
-                  alt="Art Lab - 3D Sculpting & Visual Experiments"
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-700"
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                />
-              </div>
-              <p className="text-sm sm:text-base leading-relaxed text-[#4A4944]">
-                Think of this section as a curated showcase of personal 3D concepts, experimental
-                organic sculpts, and non-stop visual experiments. Loud, rebellious, and driven
-                entirely by raw creative instinct. No logic, no constraints, just pure art pushing
-                the boundaries of Blender and digital garment simulation.
-              </p>
-              <div>
-                <Link
-                  href="/portfolio"
-                  className="inline-flex items-center gap-3 border border-[#0A0A0A] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-all duration-300"
-                >
-                  <span>Explore 3D Models / GLB Lab</span>
-                  <span>→</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] mt-12" />
-        </div>
-      </section>
-
-    
     </div>
   );
 }
