@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
 import ViewTracker from "@/components/marketplace/ViewTracker";
 import RelatedAssets from "@/components/marketplace/RelatedAssets";
 import ProjectDetailExperience from "@/components/marketplace/ProjectDetailExperience";
@@ -32,7 +31,6 @@ export default async function ProjectDetailPage({
   if (!project) {
     return (
       <main className="min-h-screen bg-[#fafafc] text-neutral-900">
-        <Navbar />
         <section className="mx-auto max-w-4xl px-5 py-40 text-center sm:px-6">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border border-neutral-200 bg-white text-neutral-400 shadow-xl backdrop-blur-xl">
             <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +62,6 @@ export default async function ProjectDetailPage({
 
   return (
     <main className="min-h-screen bg-[#fafafc] text-neutral-900 selection:bg-neutral-200 selection:text-black">
-      <Navbar />
       <ViewTracker id={id} />
 
       <ProjectDetailExperience project={project}>

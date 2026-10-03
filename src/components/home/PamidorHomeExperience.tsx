@@ -194,7 +194,7 @@ export default function PamidorHomeExperience() {
           className="group flex items-center gap-2 text-[#0A0A0A] transition-opacity hover:opacity-75 focus:outline-hidden"
         >
           <span className="text-sm sm:text-base font-black tracking-tight uppercase">
-            ASHOK MEENA<span className="text-[#D12424]">®</span> STUDIO
+            Portfolio
           </span>
           <span className="hidden sm:inline-block text-[11px] font-mono text-[#76756F] uppercase tracking-widest pl-2 border-l border-[#D8D7D1]">
             3D & Photo Retouching

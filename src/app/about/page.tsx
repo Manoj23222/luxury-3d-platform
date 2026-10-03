@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Navbar from "@/components/layout/Navbar";
 import AboutCinematicExperience from "@/components/about/AboutCinematicExperience";
 
 export const metadata: Metadata = {
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#fafbfc] text-neutral-950">
-      <Navbar />
       <AboutCinematicExperience />
     </main>
   );
