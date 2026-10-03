@@ -163,43 +163,10 @@ export default function PamidorHomeExperience() {
   return (
     <div className="relative w-full bg-[#EFEEEB] text-[#0A0A0A] font-sans selection:bg-[#D12424] selection:text-white overflow-x-hidden">
       {/* ========================================================= */}
-      {/* 1. TOP HEADER & NAVIGATION (PAMIDOR ARCHITECTURAL BAR)   */}
-      {/* ========================================================= */}
-      <header className="relative z-40 w-full pt-8 pb-6 px-6 sm:px-10 lg:px-16 max-w-[1720px] mx-auto flex items-center justify-between">
-        {/* Studio Wordmark Logo */}
-        <Link
-          href="/"
-          className="group flex items-center gap-2 text-[#0A0A0A] transition-opacity hover:opacity-75 focus:outline-hidden"
-        >
-          <span className="text-sm sm:text-base font-black tracking-tight uppercase">
-            Portfolio
-          </span>
-          <span className="hidden sm:inline-block text-[11px] font-mono text-[#76756F] uppercase tracking-widest pl-2 border-l border-[#D8D7D1]">
-            3D & Photo Retouching
-          </span>
-        </Link>
-
-        {/* Navigation Links: Work | About | Contact */}
-        <nav className="flex items-center gap-4 sm:gap-7 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#0A0A0A]">
-          <Link href="/work" className="hover:text-[#D12424] transition-colors">
-            Work
-          </Link>
-          <span className="text-[#C2C0B6] select-none text-[11px]">|</span>
-          <Link href="/about" className="hover:text-[#D12424] transition-colors">
-            About
-          </Link>
-          <span className="text-[#C2C0B6] select-none text-[11px]">|</span>
-          <Link href="/contact" className="hover:text-[#D12424] transition-colors">
-            Contact
-          </Link>
-        </nav>
-      </header>
-
-      {/* ========================================================= */}
-      {/* 2. HERO SECTION (#top)                                    */}
+      {/* HERO SECTION (#top)                                       */}
       {/* ========================================================= */}
       <section id="top" className="relative w-full bg-[#EFEEEB]">
-        <div className="relative mx-auto w-full max-w-[1720px] px-6 sm:px-10 lg:px-16 min-h-[calc(100dvh-100px)] flex flex-col justify-between pb-12 pt-6 lg:pt-10">
+        <div className="relative mx-auto w-full max-w-[1720px] px-6 sm:px-10 lg:px-16 min-h-[calc(100dvh-70px)] flex flex-col justify-between pb-12 pt-24 sm:pt-28">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center flex-1">
             {/* Left Column: Typographic Hero */}
             <div className="lg:col-span-6 xl:col-span-6 space-y-6 sm:space-y-8 z-10">

@@ -756,7 +756,7 @@ function ContactFormContent() {
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#fafbfc] text-neutral-950 selection:bg-emerald-500 selection:text-white">
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-24">
         <Suspense
           fallback={
             <div className="py-24 text-center">

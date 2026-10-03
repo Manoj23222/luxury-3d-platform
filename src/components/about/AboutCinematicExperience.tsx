@@ -193,7 +193,7 @@ export default function AboutCinematicExperience() {
       {/* ======================================================== */}
       {/* 1. HERO — CINEMATIC PROFILE REVEAL                       */}
       {/* ======================================================== */}
-      <section id="hero" className="relative overflow-hidden border-b border-neutral-200/80 pt-10 sm:pt-14 pb-16 sm:pb-20">
+      <section id="hero" className="relative overflow-hidden border-b border-neutral-200/80 pt-24 sm:pt-28 pb-16 sm:pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-12 lg:p-14 shadow-[0_20px_60px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <div className="grid gap-10 lg:grid-cols-[280px_1fr] items-center">
