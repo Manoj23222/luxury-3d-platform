@@ -354,27 +354,27 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 backdrop-blur-xl p-2 sm:p-5 select-none"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#fbfaf8]/95 backdrop-blur-2xl p-2 sm:p-5 select-none"
           >
             {/* Top Bar with Counter, 3D Toggle, and Close Button */}
-            <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-8 flex items-center justify-between z-50 text-white gap-2 sm:gap-3">
-              <span className="text-xs font-mono tracking-widest uppercase bg-white/10 px-3 py-1.5 rounded-full border border-white/15">
+            <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-8 flex items-center justify-between z-50 text-stone-900 gap-2 sm:gap-3">
+              <span className="text-xs font-mono tracking-widest uppercase bg-white px-3 py-1.5 rounded-full border border-stone-300/80 text-stone-800 shadow-xs">
                 {lightboxIndex + 1} / {filteredWorks.length}
               </span>
 
               {/* 3D Model Toggle Switch if modelUrl exists */}
               {activeItem.modelUrl && (
-                <div className="flex items-center gap-1 rounded-full bg-neutral-900/90 p-1 border border-white/20 shadow-lg backdrop-blur-md">
+                <div className="flex items-center gap-1 rounded-full bg-stone-100 p-1 border border-stone-300/80 shadow-inner">
                   <button
                     type="button"
                     onClick={() => setViewMode("3d")}
                     className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                       viewMode === "3d"
-                        ? "bg-white text-neutral-950 shadow-md scale-102"
-                        : "text-neutral-300 hover:text-white"
+                        ? "bg-neutral-950 text-white shadow-xs scale-102"
+                        : "text-stone-600 hover:text-stone-950"
                     }`}
                   >
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span>3D Interactive</span>
                   </button>
                   <button
@@ -382,8 +382,8 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                     onClick={() => setViewMode("render")}
                     className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                       viewMode === "render"
-                        ? "bg-white text-neutral-950 shadow-md scale-102"
-                        : "text-neutral-300 hover:text-white"
+                        ? "bg-neutral-950 text-white shadow-xs scale-102"
+                        : "text-stone-600 hover:text-stone-950"
                     }`}
                   >
                     2D Render
@@ -394,7 +394,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
               <button
                 type="button"
                 onClick={() => setLightboxIndex(null)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white hover:text-black border border-white/20 text-white transition-colors cursor-pointer text-lg"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white hover:bg-neutral-950 hover:text-white border border-stone-300/80 text-stone-800 shadow-xs transition-colors cursor-pointer text-lg"
                 aria-label="Close lightbox"
               >
                 ✕
@@ -409,7 +409,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                   e.stopPropagation();
                   handlePrev();
                 }}
-                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 hover:bg-white hover:text-black border border-white/20 text-white transition-all cursor-pointer text-xl"
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/95 hover:bg-neutral-950 hover:text-white border border-stone-300/80 text-stone-800 shadow-md transition-all cursor-pointer text-xl"
                 aria-label="Previous image"
               >
                 ‹
@@ -422,8 +422,8 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
               className="relative max-h-[88vh] max-w-[95vw] lg:max-w-6xl w-full flex items-center justify-center"
             >
               {activeItem.modelUrl && viewMode === "3d" ? (
-                /* Interactive 3D WebGL Showroom View */
-                <div className="relative w-full max-w-5xl h-[68vh] sm:h-[76vh] max-h-[780px] min-h-[460px] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl bg-[#08080c]">
+                /* Interactive 3D WebGL Showroom View in Pure Luxury White Studio */
+                <div className="relative w-full max-w-5xl h-[68vh] sm:h-[76vh] max-h-[780px] min-h-[460px] overflow-hidden rounded-2xl sm:rounded-3xl border border-stone-200/90 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.12)] bg-[#faf8f5]">
                   <Luxury3DShowroom
                     url={activeItem.modelUrl}
                     fileName={activeItem.title}
@@ -431,13 +431,14 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                     projectName={activeItem.title}
                     fallbackImage={activeItem.afterImage || activeItem.thumbnail}
                     className="!h-full !min-h-full !max-h-full"
+                    whiteTheme={true}
                   />
                 </div>
               ) : activeItem.beforeImage &&
                 activeItem.afterImage &&
                 activeItem.beforeImage !== activeItem.afterImage ? (
                 /* Interactive Before & After Split Slider in Fullscreen */
-                <div className="w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-2xl border border-white/20 shadow-2xl">
+                <div className="w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-2xl border border-stone-200/90 shadow-2xl bg-white">
                   <BeforeAfterSlider
                     beforeImage={activeItem.beforeImage}
                     afterImage={activeItem.afterImage}
@@ -450,11 +451,11 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                 </div>
               ) : (
                 /* High-Res Single Image View */
-                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-white/15 bg-black/40">
+                <div className="relative max-h-[85vh] w-auto flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-stone-200/90 bg-white/80 p-2">
                   <img
                     src={activeItem.afterImage || activeItem.thumbnail || activeItem.beforeImage}
                     alt={activeItem.title || "Full Artwork"}
-                    className="max-h-[85vh] max-w-[90vw] w-auto h-auto object-contain rounded-2xl"
+                    className="max-h-[82vh] max-w-[88vw] w-auto h-auto object-contain rounded-xl"
                   />
                 </div>
               )}

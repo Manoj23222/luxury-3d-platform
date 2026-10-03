@@ -165,10 +165,12 @@ function StudioLighting({
   focusMode,
   theme,
   reducedMotion,
+  whiteTheme = false,
 }: {
   focusMode: boolean;
   theme: CategoryTheme;
   reducedMotion: boolean;
+  whiteTheme?: boolean;
 }) {
   const movingLightRef = useRef<THREE.DirectionalLight>(null);
 
@@ -184,12 +186,12 @@ function StudioLighting({
   return (
     <>
       {/* Ambient Fill */}
-      <ambientLight intensity={focusMode ? 0.45 : 0.95} />
+      <ambientLight intensity={whiteTheme ? 1.2 : focusMode ? 0.45 : 0.95} />
 
       {/* Main Studio Key Light */}
       <directionalLight
         position={[6, 9, 5]}
-        intensity={focusMode ? 2.8 : 1.9}
+        intensity={whiteTheme ? 2.2 : focusMode ? 2.8 : 1.9}
         color="#ffffff"
         castShadow
         shadow-mapSize={1024}
@@ -200,19 +202,19 @@ function StudioLighting({
       <directionalLight
         ref={movingLightRef}
         position={[0, 6, 5]}
-        intensity={focusMode ? 1.8 : 1.1}
+        intensity={whiteTheme ? 1.3 : focusMode ? 1.8 : 1.1}
         color="#ffffff"
       />
 
       {/* Studio Rim / Accent Light */}
       <directionalLight
         position={[-7, 5, -5]}
-        intensity={focusMode ? 2.4 : 1.2}
+        intensity={whiteTheme ? 1.4 : focusMode ? 2.4 : 1.2}
         color={theme.rimColor}
       />
 
       {/* Soft Bottom Fill */}
-      <directionalLight position={[0, -4, 3]} intensity={0.35} color="#d4d4d8" />
+      <directionalLight position={[0, -4, 3]} intensity={whiteTheme ? 0.5 : 0.35} color="#e5e5ea" />
 
       {/* Studio Environment HDR Reflection */}
       <Environment preset="studio" />
@@ -293,13 +295,13 @@ function CameraController({
 // ==========================================
 // STUDIO FLOOR WITH SOFT CONTACT SHADOW & REFLECTION
 // ==========================================
-function StudioShowroomFloor({ focusMode }: { focusMode: boolean }) {
+function StudioShowroomFloor({ focusMode, whiteTheme = false }: { focusMode: boolean; whiteTheme?: boolean }) {
   return (
     <group position={[0, -0.65, 0]}>
       {/* Contact Shadow on Floor */}
       <ContactShadows
         position={[0, 0, 0]}
-        opacity={focusMode ? 0.75 : 0.52}
+        opacity={whiteTheme ? 0.35 : focusMode ? 0.75 : 0.52}
         scale={14}
         blur={2.5}
         far={3.5}
@@ -310,9 +312,9 @@ function StudioShowroomFloor({ focusMode }: { focusMode: boolean }) {
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <circleGeometry args={[9, 64]} />
         <meshStandardMaterial
-          color={focusMode ? "#060608" : "#0d0d12"}
-          roughness={0.28}
-          metalness={0.7}
+          color={whiteTheme ? "#f1eee7" : focusMode ? "#060608" : "#0d0d12"}
+          roughness={whiteTheme ? 0.45 : 0.28}
+          metalness={whiteTheme ? 0.05 : 0.7}
         />
       </mesh>
     </group>
@@ -351,6 +353,7 @@ interface Luxury3DShowroomProps {
   projectName?: string;
   fallbackImage?: string;
   className?: string;
+  whiteTheme?: boolean;
 }
 
 export default function Luxury3DShowroom({
@@ -360,6 +363,7 @@ export default function Luxury3DShowroom({
   projectName = "3D Asset",
   fallbackImage,
   className = "",
+  whiteTheme = false,
 }: Luxury3DShowroomProps) {
   const theme = getCategoryTheme(category);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -432,13 +436,19 @@ export default function Luxury3DShowroom({
       onMouseMove={resetInactivityTimer}
       onMouseEnter={resetInactivityTimer}
       onTouchStart={resetInactivityTimer}
-      className={`group/showroom relative w-full select-none overflow-hidden rounded-3xl border border-white/10 bg-[#08080c] transition-all duration-700 ${
+      className={`group/showroom relative w-full select-none overflow-hidden rounded-3xl transition-all duration-700 ${
+        whiteTheme
+          ? "border border-stone-200/90 bg-gradient-to-b from-[#ffffff] via-[#faf8f5] to-[#f3f0e8]"
+          : "border border-white/10 bg-[#08080c]"
+      } ${
         isFullscreen
           ? "fixed inset-0 z-50 h-screen w-screen rounded-none border-none"
           : "h-[68vh] sm:h-[76vh] lg:h-[82vh] min-h-[580px] max-h-[920px]"
       } ${className}`}
       style={{
-        boxShadow: focusMode
+        boxShadow: whiteTheme
+          ? "0 25px 60px -15px rgba(0,0,0,0.08), 0 0 45px rgba(0,0,0,0.03)"
+          : focusMode
           ? "0 0 70px rgba(0, 0, 0, 0.95), inset 0 0 100px rgba(0, 0, 0, 0.95)"
           : `0 25px 60px -15px rgba(0,0,0,0.8), 0 0 45px rgba(${theme.accentRgb}, 0.08)`,
       }}
@@ -451,15 +461,31 @@ export default function Luxury3DShowroom({
           style={{
             width: focusMode ? "400px" : "750px",
             height: focusMode ? "400px" : "750px",
-            backgroundColor: focusMode ? `rgba(${theme.accentRgb}, 0.05)` : `rgba(${theme.accentRgb}, 0.12)`,
+            backgroundColor: whiteTheme
+              ? "rgba(255, 255, 255, 0.95)"
+              : focusMode
+              ? `rgba(${theme.accentRgb}, 0.05)`
+              : `rgba(${theme.accentRgb}, 0.12)`,
           }}
         />
 
         {/* Studio Vignette Overlay */}
-        <div className="absolute inset-0 bg-radial-[at_50%_45%] from-transparent via-[#08080c]/50 to-[#040406] opacity-90" />
+        <div
+          className={`absolute inset-0 transition-opacity duration-700 ${
+            whiteTheme
+              ? "bg-radial-[at_50%_40%] from-white/95 via-[#faf8f5]/70 to-[#eeeae2]/85 opacity-95"
+              : "bg-radial-[at_50%_45%] from-transparent via-[#08080c]/50 to-[#040406] opacity-90"
+          }`}
+        />
 
         {/* Studio Floor Gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#040406] via-[#08080c]/80 to-transparent" />
+        <div
+          className={`absolute inset-x-0 bottom-0 h-48 transition-all duration-700 ${
+            whiteTheme
+              ? "bg-gradient-to-t from-[#e5e1d6]/70 via-[#f4f1ea]/40 to-transparent"
+              : "bg-gradient-to-t from-[#040406] via-[#08080c]/80 to-transparent"
+          }`}
+        />
       </div>
 
       {/* TOP FLOATING HUD BAR */}
@@ -470,24 +496,44 @@ export default function Luxury3DShowroom({
       >
         {/* Left: Studio Live Status & Project Title Pill */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-neutral-950/80 px-3.5 py-1.5 backdrop-blur-xl shadow-lg">
+          <div
+            className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 backdrop-blur-xl shadow-xs transition-colors ${
+              whiteTheme
+                ? "border-stone-300/80 bg-white/90 text-stone-900"
+                : "border-white/10 bg-neutral-950/80 text-white shadow-lg"
+            }`}
+          >
             <span
               className="h-2 w-2 animate-pulse rounded-full"
               style={{ backgroundColor: theme.accent }}
             />
-            <span className="text-xs font-bold tracking-wider text-white uppercase">
+            <span
+              className={`text-xs font-bold tracking-wider uppercase ${
+                whiteTheme ? "text-stone-900" : "text-white"
+              }`}
+            >
               {projectName}
             </span>
           </div>
 
           <span
-            className={`hidden sm:inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md ${theme.badgeBg} ${theme.badgeBorder}`}
+            className={`hidden sm:inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md ${
+              whiteTheme
+                ? "border-stone-300/80 bg-white/90 text-stone-700"
+                : `${theme.badgeBg} ${theme.badgeBorder}`
+            }`}
           >
             {category || "3D Asset"}
           </span>
 
           {focusMode && (
-            <span className="rounded-full border border-amber-500/40 bg-amber-950/60 px-2.5 py-0.5 text-[10px] font-bold text-amber-300 backdrop-blur-md">
+            <span
+              className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold backdrop-blur-md ${
+                whiteTheme
+                  ? "border-amber-500/40 bg-amber-500/15 text-amber-800"
+                  : "border-amber-500/40 bg-amber-950/60 text-amber-300"
+              }`}
+            >
               Focus Active
             </span>
           )}
@@ -500,7 +546,11 @@ export default function Luxury3DShowroom({
             type="button"
             onClick={() => setAutoRotate(!autoRotate)}
             className={`flex items-center gap-1.5 rounded-full border px-3 sm:px-4 py-1.5 text-xs font-semibold backdrop-blur-xl transition-all duration-300 ${
-              autoRotate
+              whiteTheme
+                ? autoRotate
+                  ? "border-stone-900 bg-stone-950 text-white shadow-md"
+                  : "border-stone-300 bg-white/90 text-stone-700 hover:bg-white hover:text-stone-950 shadow-xs"
+                : autoRotate
                 ? "border-white/30 bg-white text-black shadow-lg shadow-white/10"
                 : "border-white/10 bg-neutral-950/80 text-neutral-300 hover:border-white/20 hover:text-white"
             }`}
@@ -528,7 +578,11 @@ export default function Luxury3DShowroom({
             type="button"
             onClick={() => setFocusMode(!focusMode)}
             className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold backdrop-blur-xl transition-all duration-300 ${
-              focusMode
+              whiteTheme
+                ? focusMode
+                  ? "border-amber-400/60 bg-amber-500/20 text-amber-900 shadow-md"
+                  : "border-stone-300 bg-white/90 text-stone-700 hover:border-stone-400 hover:text-stone-950"
+                : focusMode
                 ? "border-amber-400/50 bg-amber-500/20 text-amber-200 shadow-lg shadow-amber-500/10"
                 : "border-white/10 bg-neutral-950/80 text-neutral-300 hover:border-white/20 hover:text-white"
             }`}
@@ -549,7 +603,11 @@ export default function Luxury3DShowroom({
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-neutral-950/80 text-neutral-300 backdrop-blur-xl transition hover:border-white/20 hover:text-white"
+            className={`flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-xl transition ${
+              whiteTheme
+                ? "border-stone-300 bg-white/90 text-stone-700 hover:bg-white hover:text-stone-950 shadow-xs"
+                : "border-white/10 bg-neutral-950/80 text-neutral-300 hover:border-white/20 hover:text-white"
+            }`}
             title="Fullscreen Showroom"
           >
             {isFullscreen ? (
@@ -572,7 +630,13 @@ export default function Luxury3DShowroom({
         }`}
       >
         {/* Camera Angle Presets */}
-        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-neutral-950/85 p-1 backdrop-blur-2xl shadow-xl">
+        <div
+          className={`flex items-center gap-1 rounded-full border p-1 backdrop-blur-2xl ${
+            whiteTheme
+              ? "border-stone-300/80 bg-white/90 shadow-md shadow-stone-200/50"
+              : "border-white/10 bg-neutral-950/85 shadow-xl"
+          }`}
+        >
           {(Object.keys(CAMERA_PRESETS) as CameraPresetType[]).map((presetKey) => {
             const p = CAMERA_PRESETS[presetKey];
             const isActive = activePreset === presetKey;
@@ -586,12 +650,26 @@ export default function Luxury3DShowroom({
                   resetInactivityTimer();
                 }}
                 className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3.5 py-1 text-[11px] font-semibold transition-all duration-300 ${
-                  isActive
+                  whiteTheme
+                    ? isActive
+                      ? "bg-stone-950 text-white shadow-xs"
+                      : "text-stone-600 hover:text-stone-950"
+                    : isActive
                     ? "bg-white text-black shadow-md shadow-white/10"
                     : "text-neutral-400 hover:text-white"
                 }`}
               >
-                <span className={`text-[9px] opacity-60 font-mono ${isActive ? "text-black" : "text-neutral-500"}`}>
+                <span
+                  className={`text-[9px] font-mono ${
+                    whiteTheme
+                      ? isActive
+                        ? "text-stone-300"
+                        : "text-stone-400"
+                      : isActive
+                      ? "text-black"
+                      : "text-neutral-500"
+                  }`}
+                >
                   {p.number}
                 </span>
                 <span>{p.label}</span>
@@ -604,7 +682,11 @@ export default function Luxury3DShowroom({
         <button
           type="button"
           onClick={handleResetCamera}
-          className="flex items-center gap-1.5 rounded-full border border-white/10 bg-neutral-950/85 px-3.5 py-1.5 text-[11px] font-semibold text-neutral-300 backdrop-blur-2xl shadow-xl transition hover:border-white/20 hover:text-white"
+          className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] font-semibold backdrop-blur-2xl transition ${
+            whiteTheme
+              ? "border-stone-300/80 bg-white/90 text-stone-700 hover:bg-white hover:text-stone-950 shadow-xs"
+              : "border-white/10 bg-neutral-950/85 text-neutral-300 hover:border-white/20 hover:text-white shadow-xl"
+          }`}
         >
           <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -618,13 +700,29 @@ export default function Luxury3DShowroom({
         <ModelErrorBoundary
           fallback={
             <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-neutral-900/80 text-neutral-400">
+              <div
+                className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${
+                  whiteTheme
+                    ? "border-stone-300 bg-white text-stone-500 shadow-xs"
+                    : "border-white/10 bg-neutral-900/80 text-neutral-400"
+                }`}
+              >
                 <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <p className="mt-4 text-sm font-bold text-white">3D Showroom Notice</p>
-              <p className="mt-1 text-xs text-neutral-400 max-w-sm">
+              <p
+                className={`mt-4 text-sm font-bold ${
+                  whiteTheme ? "text-stone-900" : "text-white"
+                }`}
+              >
+                3D Showroom Notice
+              </p>
+              <p
+                className={`mt-1 text-xs max-w-sm ${
+                  whiteTheme ? "text-stone-500" : "text-neutral-400"
+                }`}
+              >
                 Unable to compile GLB geometry. Showing fallback rendering.
               </p>
             </div>
@@ -654,6 +752,7 @@ export default function Luxury3DShowroom({
               focusMode={focusMode}
               theme={theme}
               reducedMotion={reducedMotion}
+              whiteTheme={whiteTheme}
             />
 
             <Suspense fallback={<ShowroomLoader accent={theme.accent} />}>
@@ -667,7 +766,7 @@ export default function Luxury3DShowroom({
                 </Center>
               </Bounds>
 
-              <StudioShowroomFloor focusMode={focusMode} />
+              <StudioShowroomFloor focusMode={focusMode} whiteTheme={whiteTheme} />
             </Suspense>
 
             <OrbitControls
@@ -700,13 +799,29 @@ export default function Luxury3DShowroom({
         </div>
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-neutral-900/80 text-neutral-400">
+          <div
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${
+              whiteTheme
+                ? "border-stone-300 bg-white text-stone-500 shadow-xs"
+                : "border-white/10 bg-neutral-900/80 text-neutral-400"
+            }`}
+          >
             <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
             </svg>
           </div>
-          <p className="mt-4 text-sm font-bold text-white">Interactive 3D Showroom</p>
-          <p className="mt-1 text-xs text-neutral-400 max-w-sm">
+          <p
+            className={`mt-4 text-sm font-bold ${
+              whiteTheme ? "text-stone-900" : "text-white"
+            }`}
+          >
+            Interactive 3D Showroom
+          </p>
+          <p
+            className={`mt-1 text-xs max-w-sm ${
+              whiteTheme ? "text-stone-500" : "text-neutral-400"
+            }`}
+          >
             High-fidelity 3D asset viewer is ready for GLB/GLTF assets.
           </p>
         </div>
@@ -714,7 +829,13 @@ export default function Luxury3DShowroom({
 
       {/* Interaction Hint Footnote */}
       <div className="pointer-events-none absolute bottom-16 sm:bottom-4 inset-x-0 flex justify-center z-10">
-        <span className="rounded-full border border-white/5 bg-black/50 px-3.5 py-1 text-[10px] font-medium tracking-wider text-neutral-300 backdrop-blur-md">
+        <span
+          className={`rounded-full px-3.5 py-1 text-[10px] font-medium tracking-wider backdrop-blur-md ${
+            whiteTheme
+              ? "border border-stone-300/80 bg-white/90 text-stone-700 shadow-xs"
+              : "border border-white/5 bg-black/50 text-neutral-300"
+          }`}
+        >
           🖱️ DRAG TO ROTATE • SCROLL WHEEL TO ZOOM IN/OUT • RIGHT-CLICK TO PAN
         </span>
       </div>
