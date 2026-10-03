@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
 
 interface Particle {
   x: number;
@@ -38,12 +37,12 @@ const FLOWER_PALETTES = [
   { petal: "rgba(232, 121, 249, ", center: "#FDE047" },
 ];
 
-export default function HeroFlowerInteractive({
-  src = "/ashok.png",
-  alt = "Ashok Meena - Senior 3D Designer & Photo Editor",
+export default function HeroFlowerCanvas({
+  children,
+  className = "",
 }: {
-  src?: string;
-  alt?: string;
+  children: React.ReactNode;
+  className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,9 +51,9 @@ export default function HeroFlowerInteractive({
   const lastSpawnTimeRef = useRef<number>(0);
   const animFrameIdRef = useRef<number | null>(null);
 
-  // Spawn flower particles at (x, y)
+  // Spawn flower particles at (x, y) across the full width
   const spawnFlowers = useCallback((x: number, y: number, speedX = 0, speedY = 0) => {
-    // 2 to 4 particles per movement event
+    // 2 to 4 particles per movement
     const count = Math.floor(Math.random() * 2) + 2;
 
     for (let i = 0; i < count; i++) {
@@ -63,22 +62,22 @@ export default function HeroFlowerInteractive({
       const type = types[Math.floor(Math.random() * types.length)];
 
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 3.5 + 1.2;
+      const speed = Math.random() * 3.6 + 1.2;
 
-      // Initial outward burst with gentle momentum from mouse movement
+      // Outward burst with gentle momentum from cursor movement
       const vx = Math.cos(angle) * speed + speedX * 0.15;
-      const vy = Math.sin(angle) * speed + speedY * 0.15 - 1.2; // Slight upward buoyancy
+      const vy = Math.sin(angle) * speed + speedY * 0.15 - 1.0; // Gentle upward lift
 
       particlesRef.current.push({
-        x: x + (Math.random() - 0.5) * 16,
-        y: y + (Math.random() - 0.5) * 16,
+        x: x + (Math.random() - 0.5) * 18,
+        y: y + (Math.random() - 0.5) * 18,
         vx,
         vy,
         size: Math.random() * 16 + 14, // 14px to 30px
         rotation: Math.random() * Math.PI * 2,
         vRot: (Math.random() - 0.5) * 0.14,
         opacity: Math.random() * 0.25 + 0.75, // 0.75 to 1.0 (colorful & transparent)
-        decay: Math.random() * 0.012 + 0.009, // ~1.5 - 2s life
+        decay: Math.random() * 0.011 + 0.008, // ~1.5 - 2.2s lifetime
         type,
         petalColor: palette.petal,
         centerColor: palette.center,
@@ -86,13 +85,13 @@ export default function HeroFlowerInteractive({
       });
     }
 
-    // Limit maximum particles for peak 60FPS performance
-    if (particlesRef.current.length > 90) {
-      particlesRef.current.splice(0, particlesRef.current.length - 90);
+    // Limit maximum particles for smooth 60FPS
+    if (particlesRef.current.length > 130) {
+      particlesRef.current.splice(0, particlesRef.current.length - 130);
     }
   }, []);
 
-  // Handle pointer movement over the hero image
+  // Handle pointer movement across the ENTIRE top hero section (left to right)
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const container = containerRef.current;
     if (!container) return;
@@ -114,8 +113,8 @@ export default function HeroFlowerInteractive({
       dist = Math.hypot(speedX, speedY);
     }
 
-    // Trigger flower spawn if moved enough or elapsed enough time
-    if (dist > 7 || now - lastSpawnTimeRef.current > 40) {
+    // Trigger flower burst if moved enough or elapsed time
+    if (dist > 6 || now - lastSpawnTimeRef.current > 35) {
       spawnFlowers(x, y, speedX, speedY);
       lastMousePosRef.current = { x, y };
       lastSpawnTimeRef.current = now;
@@ -131,7 +130,7 @@ export default function HeroFlowerInteractive({
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Resize canvas with devicePixelRatio for Retina clarity
+    // Resize canvas with devicePixelRatio for sharp Retina rendering
     const resizeCanvas = () => {
       if (!container || !canvas) return;
       const rect = container.getBoundingClientRect();
@@ -166,13 +165,12 @@ export default function HeroFlowerInteractive({
         c.rotate(angle);
         c.beginPath();
         c.fillStyle = `${petalColor}${alpha})`;
-        // Teardrop petal
         c.ellipse(0, -distFromCenter, petalRadius * 0.65, petalRadius, 0, 0, Math.PI * 2);
         c.fill();
         c.restore();
       }
 
-      // Center pistil
+      // Center
       c.beginPath();
       c.arc(0, 0, size * 0.16, 0, Math.PI * 2);
       c.fillStyle = centerColor;
@@ -229,7 +227,7 @@ export default function HeroFlowerInteractive({
       }
       c.fill();
 
-      // Soft center glow
+      // Center sparkle point
       c.beginPath();
       c.arc(0, 0, size * 0.15, 0, Math.PI * 2);
       c.fillStyle = "#FFFFFF";
@@ -250,8 +248,8 @@ export default function HeroFlowerInteractive({
         // Physics update
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.04; // Gentle air gravity
-        p.vx *= 0.985; // Air resistance
+        p.vy += 0.035; // Gentle natural gravity
+        p.vx *= 0.985;
         p.vy *= 0.985;
         p.rotation += p.vRot;
         p.opacity -= p.decay;
@@ -299,31 +297,16 @@ export default function HeroFlowerInteractive({
       onPointerLeave={() => {
         lastMousePosRef.current = null;
       }}
-      className="group relative w-full max-w-[560px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center cursor-crosshair overflow-visible select-none"
+      className={`relative w-full overflow-hidden ${className}`}
     >
-      {/* Interactive 60FPS Flower & Petal Particle Canvas */}
+      {/* 60FPS Full-Width Flower & Petal Particle Canvas */}
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-30 overflow-visible"
+        className="pointer-events-none absolute inset-0 z-30 overflow-hidden"
       />
 
-      {/* Transparent Cutout Portrait with Organic Drop Shadow */}
-      <div className="relative w-full h-full flex items-end justify-center">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-contain object-bottom filter drop-shadow-[0_22px_38px_rgba(10,10,10,0.22)] transition-transform duration-500 ease-out group-hover:scale-[1.015] pointer-events-none"
-        />
-      </div>
-
-      {/* Interactive Hint Indicator Pill (Fades out when hovered) */}
-      <div className="pointer-events-none absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[10px] font-mono font-bold tracking-wider text-[#0A0A0A] backdrop-blur-md border border-[#D8D7D1] shadow-xs opacity-90 transition-opacity duration-300 group-hover:opacity-0">
-        <span className="text-rose-500 animate-pulse">🌸</span>
-        <span>HOVER TO BLOOM</span>
-      </div>
+      {/* Hero Children Content (Left text, Right portrait image, etc.) */}
+      {children}
     </div>
   );
 }

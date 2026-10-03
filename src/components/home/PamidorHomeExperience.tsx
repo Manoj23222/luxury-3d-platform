@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import HeroFlowerInteractive from "./HeroFlowerInteractive";
+import HeroFlowerCanvas from "./HeroFlowerCanvas";
 
 // ==========================================
 // SOFTWARE PRODUCTION STACK DATA
@@ -171,66 +171,74 @@ export default function PamidorHomeExperience() {
   return (
     <div className="relative w-full bg-[#EFEEEB] text-[#0A0A0A] font-sans selection:bg-[#D12424] selection:text-white overflow-x-hidden">
       {/* ========================================================= */}
-      {/* HERO SECTION (#top)                                       */}
+      {/* HERO SECTION (#top) — Full-width interactive blooming flowers on mouse move */}
       {/* ========================================================= */}
       <section id="top" className="relative w-full bg-[#EFEEEB]">
-        <div className="relative mx-auto w-full max-w-[1720px] px-6 sm:px-10 lg:px-16 min-h-[calc(100dvh-70px)] flex flex-col justify-between pb-12 pt-24 sm:pt-28">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center flex-1">
-            {/* Left Column: Typographic Hero */}
-            <div className="lg:col-span-6 xl:col-span-6 space-y-6 sm:space-y-8 z-10">
-              <div className="space-y-2">
-                <h1 className="text-[3.75rem] sm:text-[6rem] lg:text-[7rem] xl:text-[8rem] font-medium tracking-[-0.035em] leading-[0.88] text-[#0A0A0A] uppercase select-none">
-                  <span className="block hover:translate-x-1 transition-transform duration-300">
-                    Ashok
+        <HeroFlowerCanvas>
+          <div className="relative mx-auto w-full max-w-[1720px] px-6 sm:px-10 lg:px-16 min-h-[calc(100dvh-70px)] flex flex-col justify-between pb-12 pt-24 sm:pt-28">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center flex-1">
+              {/* Left Column: Typographic Hero */}
+              <div className="lg:col-span-6 xl:col-span-6 space-y-6 sm:space-y-8 z-10">
+                <div className="space-y-2">
+                  <h1 className="text-[3.75rem] sm:text-[6rem] lg:text-[7rem] xl:text-[8rem] font-medium tracking-[-0.035em] leading-[0.88] text-[#0A0A0A] uppercase select-none">
+                    <span className="block hover:translate-x-1 transition-transform duration-300">
+                      Ashok
+                    </span>
+                    <span className="block hover:translate-x-1 transition-transform duration-300">
+                      Meena
+                    </span>
+                  </h1>
+                </div>
+
+                {/* Tagline */}
+                <p className="text-base sm:text-xl font-normal leading-relaxed text-[#2A2A28] max-w-xl">
+                  3D Product Modeling, Digital Fashion & Photo Retouching.{" "}
+                  <span className="block font-medium text-[#0A0A0A] mt-0.5">
+                    I take the craft seriously.
                   </span>
-                  <span className="block hover:translate-x-1 transition-transform duration-300">
-                    Meena
-                  </span>
-                </h1>
+                </p>
+
+                {/* Chips / Skill Pills (Exact Pamidor Style) */}
+                <div className="pt-2">
+                  <ul className="flex flex-wrap gap-2.5 sm:gap-3 max-w-xl">
+                    {[
+                      "3D Product CGI",
+                      "CLO 3D Fashion",
+                      "Photo Retouching",
+                      "UX | Real-Time 3D",
+                      "Subdivision Modeling",
+                      "Color Grading",
+                    ].map((chip) => (
+                      <li
+                        key={chip}
+                        className="border-[1.2px] border-[#B8B6AF] px-4 py-2 text-xs sm:text-[13px] font-medium text-[#0A0A0A] bg-transparent hover:border-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-[#EFEEEB] transition-all duration-200 select-none cursor-default"
+                      >
+                        {chip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
-              {/* Tagline */}
-              <p className="text-base sm:text-xl font-normal leading-relaxed text-[#2A2A28] max-w-xl">
-                3D Product Modeling, Digital Fashion & Photo Retouching.{" "}
-                <span className="block font-medium text-[#0A0A0A] mt-0.5">
-                  I take the craft seriously.
-                </span>
-              </p>
-
-              {/* Chips / Skill Pills (Exact Pamidor Style) */}
-              <div className="pt-2">
-                <ul className="flex flex-wrap gap-2.5 sm:gap-3 max-w-xl">
-                  {[
-                    "3D Product CGI",
-                    "CLO 3D Fashion",
-                    "Photo Retouching",
-                    "UX | Real-Time 3D",
-                    "Subdivision Modeling",
-                    "Color Grading",
-                  ].map((chip) => (
-                    <li
-                      key={chip}
-                      className="border-[1.2px] border-[#B8B6AF] px-4 py-2 text-xs sm:text-[13px] font-medium text-[#0A0A0A] bg-transparent hover:border-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-[#EFEEEB] transition-all duration-200 select-none cursor-default"
-                    >
-                      {chip}
-                    </li>
-                  ))}
-                </ul>
+              {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout */}
+              <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end">
+                <div className="relative w-full max-w-[560px] aspect-[4/5] sm:aspect-[787/904] flex items-end justify-center select-none">
+                  <Image
+                    src="/ashok.png"
+                    alt="Ashok Meena - Senior 3D Designer & Photo Editor"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-contain object-bottom filter drop-shadow-[0_22px_38px_rgba(10,10,10,0.22)] transition-transform duration-500 ease-out hover:scale-[1.015] pointer-events-none"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout & Interactive Flowers */}
-            <div className="lg:col-span-6 xl:col-span-6 flex justify-center lg:justify-end">
-              <HeroFlowerInteractive
-                src="/ashok.png"
-                alt="Ashok Meena - Senior 3D Designer & Photo Editor"
-              />
-            </div>
+            {/* 1.5px Architectural Rule at Bottom of Hero */}
+            <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] mt-12 lg:mt-16" />
           </div>
-
-          {/* 1.5px Architectural Rule at Bottom of Hero */}
-          <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] mt-12 lg:mt-16" />
-        </div>
+        </HeroFlowerCanvas>
       </section>
 
       {/* ========================================================= */}
