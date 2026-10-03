@@ -44,7 +44,7 @@ const softwareStack = [
     id: "clo3d",
     name: "CLO 3D",
     category: "Digital Fashion & Drape",
-    icon: "/software-logos/clo3d.svg",
+    icon: "/Softwear Icon/clo3d.svg",
   },
   {
     id: "excel",
@@ -316,32 +316,6 @@ export default function PamidorHomeExperience() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* 8 Software Icons Quick-Access Grid */}
-            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-3.5">
-              {softwareStack.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white/50 border border-[#D8D7D1] hover:border-[#0A0A0A] hover:bg-white hover:shadow-md transition-all duration-300 group text-center cursor-default"
-                >
-                  <div className="relative h-11 w-11 sm:h-12 sm:w-12 rounded-xl overflow-hidden shadow-xs shrink-0 flex items-center justify-center bg-white p-1.5 border border-black/5 mb-2.5">
-                    <Image
-                      src={tool.icon}
-                      alt={tool.name}
-                      width={48}
-                      height={48}
-                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
-                    />
-                  </div>
-                  <span className="text-[11px] sm:text-xs font-bold text-[#0A0A0A] group-hover:text-[#D12424] transition-colors tracking-tight line-clamp-1">
-                    {tool.name}
-                  </span>
-                  <span className="text-[9.5px] font-mono text-[#76756F] uppercase tracking-wider mt-0.5 line-clamp-1">
-                    {tool.category}
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
 

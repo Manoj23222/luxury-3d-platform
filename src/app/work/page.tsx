@@ -130,8 +130,7 @@ export default async function WorkPage() {
 
               {/* Luxury Domain & Skills Strip */}
               <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs sm:text-sm font-semibold text-neutral-600">
-                <span className="text-neutral-950 font-bold">All</span>
-                <span className="text-stone-300">•</span>
+      
                 <span>Adobe Photoshop</span>
                 <span className="text-stone-300">•</span>
                 <span>Adobe Illustrator</span>
@@ -143,14 +142,7 @@ export default async function WorkPage() {
             </div>
 
             {/* Quick Action CTAs */}
-            <div className="flex shrink-0 flex-wrap items-center gap-2.5">
-              <Link
-                href="/contact?subject=Creative%20Design%20%26%203D%20Order"
-                className="rounded-full bg-neutral-950 px-6 py-3 text-center text-xs font-black text-white shadow-lg transition hover:bg-neutral-800 hover:scale-105"
-              >
-                Hire for Project ✉️
-              </Link>
-            </div>
+        
           </div>
         </div>
       </section>
