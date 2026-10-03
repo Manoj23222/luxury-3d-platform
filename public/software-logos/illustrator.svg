@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="26" fill="#330000"/>
+  <rect x="2.5" y="2.5" width="123" height="123" rx="23.5" fill="none" stroke="#FF9A00" stroke-width="3"/>
+  <!-- Illustrator Ai glyphs -->
+  <path d="M49 76.5H31L27 96H13L32.8 36h16.5L69 96H53l-4-19.5zm-3.4-16.2L40 47.2 34.2 60.3h11.4z" fill="#FF9A00"/>
+  <path d="M82.5 47c0-4.6 3.6-8 8.4-8 4.8 0 8.4 3.4 8.4 8 0 4.6-3.6 8-8.4 8-4.8 0-8.4-3.4-8.4-8zm14.5 15.5V96H84.6V62.5H97z" fill="#FF9A00"/>
+</svg>

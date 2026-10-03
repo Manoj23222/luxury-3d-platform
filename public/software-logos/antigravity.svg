@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="agyBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F0C20"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="45%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="26" fill="url(#agyBg)"/>
+  <rect x="2.5" y="2.5" width="123" height="123" rx="23.5" fill="none" stroke="#6366F1" stroke-width="2.5" stroke-opacity="0.5"/>
+  <!-- Antigravity orbit ring and core -->
+  <ellipse cx="64" cy="52" rx="36" ry="15" fill="none" stroke="url(#ringGrad)" stroke-width="4" transform="rotate(-20 64 52)"/>
+  <circle cx="64" cy="52" r="10" fill="#FFFFFF"/>
+  <circle cx="88" cy="43" r="4" fill="#38BDF8"/>
+  <circle cx="40" cy="61" r="3.5" fill="#C084FC"/>
+  <!-- Label -->
+  <text x="64" y="97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="14" text-anchor="middle" fill="#A5B4FC" letter-spacing="3">
+    ANTIGRAVITY
+  </text>
+</svg>

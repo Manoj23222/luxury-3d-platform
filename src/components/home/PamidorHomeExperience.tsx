@@ -6,21 +6,57 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 // ==========================================
-// CLIENTS & SOFTWARE LOGOS DATA
+// SOFTWARE PRODUCTION STACK DATA
 // ==========================================
-const marqueeItems = [
-  { name: "BLENDER 3D", type: "text" },
-  { name: "CLO 3D APPAREL", type: "text" },
-  { name: "SUBSTANCE PAINTER", type: "text" },
-  { name: "MARVELOUS DESIGNER", type: "text" },
-  { name: "ADOBE PHOTOSHOP", type: "text" },
-  { name: "UNREAL ENGINE 5", type: "text" },
-  { name: "THREE.JS WEBGL", type: "text" },
-  { name: "glTF DRACO", type: "text" },
-  { name: "OCTANE RENDER", type: "text" },
-  { name: "ADOBE LIGHTROOM", type: "text" },
-  { name: "BOOTKIT AI", type: "text" },
-  { name: "LUX3D PLATFORM", type: "text" },
+const softwareStack = [
+  {
+    id: "photoshop",
+    name: "Adobe Photoshop",
+    category: "Photo Retouching",
+    icon: "/software-logos/photoshop.svg",
+  },
+  {
+    id: "illustrator",
+    name: "Adobe Illustrator",
+    category: "Vector & Branding",
+    icon: "/software-logos/illustrator.svg",
+  },
+  {
+    id: "lightroom",
+    name: "Adobe Lightroom",
+    category: "16-Bit RAW Grading",
+    icon: "/software-logos/lightroom.svg",
+  },
+  {
+    id: "canva",
+    name: "Canva",
+    category: "Graphic Design",
+    icon: "/software-logos/canva.svg",
+  },
+  {
+    id: "blender",
+    name: "Blender 3D",
+    category: "3D CGI & Modeling",
+    icon: "/software-logos/blender.png",
+  },
+  {
+    id: "clo3d",
+    name: "CLO 3D",
+    category: "Digital Fashion & Drape",
+    icon: "/software-logos/clo3d.svg",
+  },
+  {
+    id: "excel",
+    name: "Microsoft Excel",
+    category: "Data & Workflows",
+    icon: "/software-logos/excel.png",
+  },
+  {
+    id: "antigravity",
+    name: "Google Antigravity",
+    category: "Agentic AI & Coding",
+    icon: "/software-logos/antigravity.svg",
+  },
 ];
 
 // ==========================================
@@ -239,30 +275,75 @@ export default function PamidorHomeExperience() {
             </p>
           </div>
 
-          {/* Continuous Infinite Clients / Collaborations Marquee */}
+          {/* Continuous Infinite Clients / Collaborations Marquee with Software Logos */}
           <div className="border-t border-[#D8D7D1] pt-10">
-            <p className="text-[11px] font-mono font-bold tracking-widest text-[#76756F] uppercase mb-6">
-              (CLIENTS & COLLABORATIONS / PRODUCTION STACK)
-            </p>
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-[11px] font-mono font-bold tracking-widest text-[#76756F] uppercase">
+                (CLIENTS & COLLABORATIONS / PRODUCTION STACK)
+              </p>
+              <span className="hidden sm:inline-block text-[10px] font-mono uppercase tracking-widest text-[#76756F]">
+                8 Core Creative Tools
+              </span>
+            </div>
 
+            {/* Seamless Infinite Marquee with Real Software Logo Images */}
             <div className="relative w-full overflow-hidden py-3">
               {/* Fade Masks */}
-              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#EFEEEB] to-transparent z-10" />
-              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#EFEEEB] to-transparent z-10" />
+              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#EFEEEB] to-transparent z-10" />
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#EFEEEB] to-transparent z-10" />
 
-              <div className="flex w-max animate-marquee gap-10 sm:gap-16 items-center">
-                {[...marqueeItems, ...marqueeItems].map((item, idx) => (
+              <div className="flex w-max animate-marquee gap-5 sm:gap-7 items-center">
+                {[...softwareStack, ...softwareStack].map((tool, idx) => (
                   <div
-                    key={`${item.name}-${idx}`}
-                    className="flex items-center gap-3 shrink-0 opacity-70 hover:opacity-100 transition-opacity cursor-default"
+                    key={`${tool.id}-${idx}`}
+                    className="flex items-center gap-3.5 shrink-0 px-4 sm:px-5 py-2.5 rounded-2xl bg-white/70 border border-[#D8D7D1] shadow-2xs hover:border-[#0A0A0A] hover:bg-white hover:shadow-md transition-all duration-300 group cursor-default"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#D12424]" />
-                    <span className="text-sm sm:text-base font-black tracking-wider uppercase text-[#0A0A0A]">
-                      {item.name}
-                    </span>
+                    <div className="relative h-10 w-10 sm:h-11 sm:w-11 rounded-xl overflow-hidden shadow-xs shrink-0 flex items-center justify-center bg-white p-1 border border-black/5">
+                      <Image
+                        src={tool.icon}
+                        alt={tool.name}
+                        width={44}
+                        height={44}
+                        className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs sm:text-sm font-bold tracking-tight text-[#0A0A0A] group-hover:text-[#D12424] transition-colors whitespace-nowrap">
+                        {tool.name}
+                      </span>
+                      <span className="text-[10px] font-mono text-[#76756F] uppercase tracking-wider whitespace-nowrap">
+                        {tool.category}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* 8 Software Icons Quick-Access Grid */}
+            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-3.5">
+              {softwareStack.map((tool) => (
+                <div
+                  key={tool.id}
+                  className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white/50 border border-[#D8D7D1] hover:border-[#0A0A0A] hover:bg-white hover:shadow-md transition-all duration-300 group text-center cursor-default"
+                >
+                  <div className="relative h-11 w-11 sm:h-12 sm:w-12 rounded-xl overflow-hidden shadow-xs shrink-0 flex items-center justify-center bg-white p-1.5 border border-black/5 mb-2.5">
+                    <Image
+                      src={tool.icon}
+                      alt={tool.name}
+                      width={48}
+                      height={48}
+                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+                    />
+                  </div>
+                  <span className="text-[11px] sm:text-xs font-bold text-[#0A0A0A] group-hover:text-[#D12424] transition-colors tracking-tight line-clamp-1">
+                    {tool.name}
+                  </span>
+                  <span className="text-[9.5px] font-mono text-[#76756F] uppercase tracking-wider mt-0.5 line-clamp-1">
+                    {tool.category}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
