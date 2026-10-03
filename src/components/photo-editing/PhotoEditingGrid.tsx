@@ -61,10 +61,8 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
   // Filtered works based on the selected software tab
   const filteredWorks = useMemo(() => {
     if (selectedTab === "all") {
-      // Show all genuine Photoshop, Illustrator, and Blender works (exclude old screenshots or canva)
+      // Show all Photoshop, Illustrator, and Blender works
       return works.filter((w) => {
-        const img = (w.afterImage || w.thumbnail || "").toLowerCase();
-        if (img.includes("screenshot")) return false;
         const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
         return !sw.includes("canva") || sw.includes("photoshop");
       });
@@ -82,22 +80,9 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
       const title = (w.title || "").toLowerCase();
       const img = (w.afterImage || w.thumbnail || "").toLowerCase();
 
-      // Strictly purge any old screenshot images across all specific tabs
-      if (img.includes("screenshot")) return false;
-
       if (selectedTab === "photoshop") {
-        const isAi = img.includes("illustrator") || w._id.startsWith("ai-");
-        const isBlend =
-          img.includes("blender") ||
-          w._id.startsWith("bl-") ||
-          w._id.startsWith("pw-blender-") ||
-          img.includes("burger.png") ||
-          img.includes("aura.png") ||
-          img.includes("34.png") ||
-          img.includes("ice.png") ||
-          img.includes("123.png") ||
-          Boolean((w as any).modelUrl);
-
+        const isAi = img.includes("illustrator");
+        const isBlend = sw.some((s) => s.includes("blender")) || cat.includes("3d") || img.includes("blender") || Boolean((w as any).modelUrl);
         if (isAi || isBlend) return false;
 
         const hasPhotoshop = sw.some(
@@ -121,37 +106,37 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
       }
 
       if (selectedTab === "illustrator") {
-        // ONLY genuine AI vector artworks from public/illustrator
-        const isAiImg = img.includes("illustrator-previews") || img.includes("/illustrator/");
-        const isAiId = w._id.startsWith("ai-");
-        return isAiImg || isAiId;
+        // ONLY genuine Illustrator artworks from /public/illustrator
+        return (
+          img.includes("illustrator-previews") ||
+          img.includes("/illustrator/") ||
+          w._id.startsWith("ai-")
+        );
       }
 
       if (selectedTab === "blender") {
-        // ONLY genuine 3D files, Blender models & master 3D CGI renders (exclude all old screenshots)
-        if (img.includes("illustrator") || w._id.startsWith("ai-")) return false;
-
-        const isBlenderPreview =
-          img.includes("blender-previews") ||
-          img.includes("/blender/") ||
-          w._id.startsWith("bl-");
-
-        const isMaster3DRender =
-          img.includes("burger.png") ||
-          img.includes("aura.png") ||
+        // All 3D Models from /portfolio and Blender renders
+        const hasBlender = sw.some((s) => s.includes("blender") || s.includes("3d"));
+        const hasModelUrl = Boolean((w as any).modelUrl);
+        const isBlendImg =
+          img.includes("blender") ||
+          img.includes("cloudinary") ||
+          img.includes("burger") ||
+          img.includes("aura") ||
           img.includes("34.png") ||
           img.includes("ice.png") ||
-          img.includes("123.png") ||
-          w._id.startsWith("pw-blender-");
+          img.includes("123.png");
 
-        const hasReal3DModel = Boolean(
-          (w as any).modelUrl &&
-            ((w as any).modelUrl.endsWith(".glb") ||
-              (w as any).modelUrl.endsWith(".blend") ||
-              (w as any).modelUrl.endsWith(".gltf"))
+        return (
+          hasBlender ||
+          hasModelUrl ||
+          isBlendImg ||
+          cat.includes("3d") ||
+          cat.includes("models") ||
+          cat.includes("cgi") ||
+          tags.includes("3d") ||
+          tags.includes("blender")
         );
-
-        return isBlenderPreview || isMaster3DRender || hasReal3DModel;
       }
 
       return true;
