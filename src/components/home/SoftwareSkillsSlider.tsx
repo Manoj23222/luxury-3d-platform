@@ -371,7 +371,7 @@ export const workstationCards: WorkstationCardData[] = [
       "Product Photo Editing",
     ],
     metrics: { label: "Experience", value: "6+ Yrs" },
-    actionLink: { label: "View Photo Work ↗", url: "/photo-editing" },
+    actionLink: { label: "View Photo Work ↗", url: "/work" },
   },
   {
     id: "illustrator",
@@ -405,7 +405,7 @@ export const workstationCards: WorkstationCardData[] = [
       "Business Card Design",
     ],
     metrics: { label: "Assets Built", value: "500+" },
-    actionLink: { label: "Explore Branding ↗", url: "/photo-editing" },
+    actionLink: { label: "Explore Branding ↗", url: "/work" },
   },
   {
     id: "blender",
@@ -509,7 +509,7 @@ export const workstationCards: WorkstationCardData[] = [
       "Highlight & Shadow Recovery",
     ],
     metrics: { label: "Precision", value: "16-Bit RAW" },
-    actionLink: { label: "Color Grading ↗", url: "/photo-editing" },
+    actionLink: { label: "Color Grading ↗", url: "/work" },
   },
   {
     id: "canva",
@@ -543,7 +543,7 @@ export const workstationCards: WorkstationCardData[] = [
       "Digital Layouts",
     ],
     metrics: { label: "Turnaround", value: "Rapid" },
-    actionLink: { label: "Design Decks ↗", url: "/photo-editing" },
+    actionLink: { label: "Design Decks ↗", url: "/work" },
   },
   {
     id: "excel",

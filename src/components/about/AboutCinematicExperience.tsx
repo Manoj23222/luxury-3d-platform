@@ -802,10 +802,10 @@ export default function AboutCinematicExperience() {
                     <span className="transition-transform duration-200 group-hover/btn:translate-x-1">↗</span>
                   </Link>
                   <Link
-                    href="/photo-editing"
+                    href="/work"
                     className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 transition shadow-xs"
                   >
-                    Photo Retouching ↗
+                    Creative Work ↗
                   </Link>
                 </div>
                 <span className="text-[11px] font-mono font-bold text-cyan-700">● Live Production</span>

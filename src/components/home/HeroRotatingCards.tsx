@@ -203,16 +203,16 @@ const cardsData: RotatingCard[] = [
     externalLinks: [
       {
         label: "📸 Before & After Library ↗",
-        url: "/photo-editing",
+        url: "/work",
         highlight: true,
       },
       {
         label: "Beauty Retouching ↗",
-        url: "/photo-editing",
+        url: "/work",
       },
       {
         label: "Color Grading ↗",
-        url: "/photo-editing",
+        url: "/work",
       },
     ],
   },
@@ -609,10 +609,10 @@ export default function HeroRotatingCards() {
                 </Link>
 
                 <Link
-                  href="/photo-editing"
+                  href="/work"
                   className="rounded-full border border-white/35 bg-transparent px-4 py-2.5 text-xs font-bold text-white shadow-xs transition duration-200 hover:border-white hover:bg-white/15"
                 >
-                  Branding
+                  Work
                 </Link>
 
                 <Link

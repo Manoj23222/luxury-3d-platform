@@ -135,8 +135,10 @@ export default function Navbar() {
   }, [pathname]);
 
   const isHomeActive = pathname === "/";
-  const isPortfolioActive = pathname.startsWith("/portfolio");
-  const isBrandingActive = pathname.startsWith("/photo-editing");
+  const isWorkActive =
+    pathname.startsWith("/work") ||
+    pathname.startsWith("/photo-editing") ||
+    pathname.startsWith("/portfolio");
   const isAboutActive = pathname.startsWith("/about");
   const isContactActive = pathname.startsWith("/contact");
 
@@ -309,11 +311,11 @@ export default function Navbar() {
                 transition={{ duration: 0.5, delay: 0.42, ease: "easeOut" }}
               >
                 <Link
-                  href="/photo-editing"
+                  href="/work"
                   className="group relative flex items-center justify-center rounded-full px-4 py-1 text-xs font-medium tracking-wide transition-all duration-200 hover:-translate-y-[0.5px] active:scale-[0.97] focus:outline-hidden"
                 >
                   {/* Active Sliding Indicator Pill */}
-                  {(isBrandingActive || isPortfolioActive) && (
+                  {isWorkActive && (
                     <motion.div
                       layoutId="luxuryActiveNavPill"
                       className="absolute inset-0 rounded-full overflow-hidden"
@@ -345,16 +347,16 @@ export default function Navbar() {
 
                   <span
                     className={`relative z-10 transition-colors duration-200 ${
-                      isBrandingActive || isPortfolioActive
+                      isWorkActive
                         ? "font-bold text-[#F7F5EF]"
                         : "text-[#E8E8E6]/80 group-hover:text-[#F7F5EF]"
                     }`}
                   >
-                    Portfolio
+                    Work
                   </span>
 
                   {/* Subtle Champagne Underline for Inactive */}
-                  {!(isBrandingActive || isPortfolioActive) && !reducedMotion && (
+                  {!isWorkActive && !reducedMotion && (
                     <span className="pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 h-[1.5px] w-0 rounded-full bg-[#D6B978] opacity-0 transition-all duration-200 group-hover:w-3.5 group-hover:opacity-90" />
                   )}
                 </Link>
@@ -517,22 +519,22 @@ export default function Navbar() {
                 </Link>
               </motion.div>
 
-              {/* Portfolio */}
+              {/* Work */}
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08, duration: 0.18 }}
               >
                 <Link
-                  href="/photo-editing"
+                  href="/work"
                   onClick={() => setMobileOpen(false)}
                   className={`block rounded-xl p-3 text-xs font-bold transition-all ${
-                    isBrandingActive || isPortfolioActive
+                    isWorkActive
                       ? "bg-[#1A1A1D] text-[#D6B978] border border-[#D6B978]/35 shadow-sm"
                       : "bg-white/[0.03] text-[#E8E8E6] hover:bg-white/[0.08]"
                   }`}
                 >
-                  Portfolio
+                  Work
                 </Link>
               </motion.div>
 

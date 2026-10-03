@@ -240,7 +240,7 @@ export default function VisitorAnalyticsView() {
     if (path === "/portfolio") return "🧊 3D Models Archive";
     if (path.startsWith("/portfolio/"))
       return "📦 3D Project (" + path.replace("/portfolio/", "") + ")";
-    if (path === "/photo-editing") return "✨ Creative & Retouching";
+    if (path === "/work" || path === "/photo-editing") return "✨ Work & Portfolio";
     if (path === "/contact") return "✉️ Contact Form";
     if (path === "/about") return "👤 About Ashok Meena";
     return path;

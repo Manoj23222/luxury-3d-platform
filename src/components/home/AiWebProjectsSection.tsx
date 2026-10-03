@@ -86,10 +86,10 @@ const projects: WebProject[] = [
       "Admin studio management hub with drag-and-drop file uploader pipeline",
       "Ultra-clean luxury typography, responsive layout, and zero-latency performance",
     ],
-    liveUrl: "/portfolio",
+    liveUrl: "/work",
     liveUrlLabel: "Explore 3D Web Platform ↗",
-    secondaryUrl: "/photo-editing",
-    secondaryUrlLabel: "Photo Retouching Studio ↗",
+    secondaryUrl: "/work",
+    secondaryUrlLabel: "Creative Work Studio ↗",
     icon: "💎",
     accentBorder:
       "border-purple-500/35 hover:border-purple-400/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.14)]",

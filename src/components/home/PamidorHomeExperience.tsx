@@ -84,7 +84,7 @@ const selectedProjects: ProjectItem[] = [
     timeline: "Ongoing",
     year: "2026",
     specs: "16-Bit RAW · Frequency Separation · Editorial Grading",
-    href: "/photo-editing",
+    href: "/work",
     image: "/images/creative-portfolio-banner.png",
     accent: "#D12424",
   },
@@ -204,9 +204,9 @@ export default function PamidorHomeExperience() {
         {/* Desktop Links & Menu Toggle Button */}
         <div className="flex items-center gap-6 sm:gap-10">
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A]">
-            <a href="#projects" className="hover:text-[#D12424] transition-colors">
+            <Link href="/work" className="hover:text-[#D12424] transition-colors">
               Work
-            </a>
+            </Link>
           
   
             <Link href="/about" className="hover:text-[#D12424] transition-colors">
@@ -264,9 +264,7 @@ export default function PamidorHomeExperience() {
             <div className="py-12 sm:py-16 max-w-4xl space-y-4 sm:space-y-6">
               {[
                 { label: "Home", href: "#top" },
-                { label: "Selected Work", href: "#projects" },
-                { label: "3D Models & Assets", href: "/portfolio" },
-                { label: "Photo Retouching Studio", href: "/photo-editing" },
+                { label: "Work & Portfolio", href: "/work" },
                 { label: "The Art Lab", href: "#art-lab" },
                 { label: "Skillset", href: "#skillset" },
                 { label: "About Ashok Meena", href: "/about" },
@@ -404,11 +402,11 @@ export default function PamidorHomeExperience() {
             </div>
 
             <p className="text-2xl sm:text-4xl lg:text-[2.65rem] font-medium leading-[1.25] tracking-tight text-[#0A0A0A]">
-              Hi, I’m Ashok — a 3D artist, digital fashion designer and high-end photo retoucher. I
-              build 3D models and CGI visuals that people remember and digital garments that drape
-              with physical realism. Clean subdivision topology, 16-bit color fidelity, and
-              real-time Web 3D architectures — and when the work demands commercial photo
-              retouching, studio lighting, or CGI motion, that gets crafted here too.
+              Hi, I’m Ashok -6+ Years of Professional Experience at Infoeye Software
+              I’m a creative professional specializing in 3D & Blender, Adobe tools, photo editing, and digital
+              production. Over the past 6+ years, I’ve worked on 3D modeling, rendering, image editing,
+              product visuals, and various digital projects.
+              I combine creativity, technical skills, and attention to detail to deliver clean and professional visual work.
             </p>
           </div>
 
@@ -616,10 +614,10 @@ export default function PamidorHomeExperience() {
               </p>
               <div>
                 <Link
-                  href="/photo-editing"
+                  href="/work"
                   className="inline-flex items-center gap-3 border border-[#0A0A0A] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-all duration-300"
                 >
-                  <span>Enter The Retouching Studio</span>
+                  <span>Enter The Work & Retouching Studio</span>
                   <span>→</span>
                 </Link>
               </div>

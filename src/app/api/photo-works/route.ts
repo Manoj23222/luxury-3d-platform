@@ -213,6 +213,7 @@ export async function POST(req: Request) {
     });
 
     try {
+      revalidatePath("/work");
       revalidatePath("/photo-editing");
       revalidatePath("/admin/photos");
     } catch {
