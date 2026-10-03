@@ -46,7 +46,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
 
   // Fetch latest uploaded photos on mount
   useEffect(() => {
-    fetch("/api/photos")
+    fetch("/api/photo-works")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.works) && data.works.length > 0) {
@@ -91,18 +91,21 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
 
       if (selectedTab === "illustrator") {
         const hasIllustrator = sw.some((s) => s.includes("illustrator") || s.includes("indesign"));
+        const isAiImg = (w.afterImage || "").includes("illustrator");
         return (
           hasIllustrator ||
+          isAiImg ||
+          cat.includes("illustrator") ||
           cat.includes("branding") ||
           cat.includes("logo") ||
           cat.includes("vector") ||
-          cat.includes("banner") ||
           cat.includes("outline") ||
           cat.includes("path") ||
           cat.includes("packing") ||
           cat.includes("packaging") ||
           tags.includes("vector") ||
-          tags.includes("logo")
+          tags.includes("logo") ||
+          tags.includes("illustrator")
         );
       }
 
@@ -110,12 +113,12 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
         const hasCanva = sw.some((s) => s.includes("canva"));
         return (
           hasCanva ||
+          cat.includes("canva") ||
           cat.includes("social media") ||
           cat.includes("ads") ||
           cat.includes("ad creative") ||
           cat.includes("food & beverage") ||
-          cat.includes("banner") ||
-          tags.includes("banner") ||
+          tags.includes("canva") ||
           tags.includes("social media") ||
           tags.includes("poster")
         );
@@ -125,14 +128,23 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
         const hasBlender = sw.some(
           (s) => s.includes("blender") || s.includes("substance") || s.includes("3d")
         );
+        const isBlendImg =
+          (w.afterImage || "").includes("blender") ||
+          (w.afterImage || "").includes("Burger") ||
+          (w.afterImage || "").includes("AURA") ||
+          (w.afterImage || "").includes("34.png") ||
+          (w.afterImage || "").includes("ice.png") ||
+          (w.afterImage || "").includes("123.png");
         return (
           hasBlender ||
+          isBlendImg ||
           cat.includes("3d") ||
           cat.includes("garment") ||
           cat.includes("cgi") ||
           cat.includes("jewelry & luxury") ||
           tags.includes("3d") ||
           tags.includes("cgi") ||
+          tags.includes("blender") ||
           title.includes("3d") ||
           title.includes("cgi") ||
           title.includes("perfume") ||

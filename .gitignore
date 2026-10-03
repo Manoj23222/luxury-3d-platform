@@ -44,4 +44,6 @@ backup/
 *_files/
 *.ai
 /public/illustrator/
-
+*.blend
+*.blend1
+/public/blender/

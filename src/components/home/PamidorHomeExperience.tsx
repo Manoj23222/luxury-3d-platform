@@ -368,13 +368,9 @@ export default function PamidorHomeExperience() {
                 />
 
                 {/* Subtle Luxury Corner Label */}
-                <div className="absolute top-4 left-4 bg-[#0A0A0A]/90 text-white text-[10px] font-mono px-3 py-1 uppercase tracking-widest backdrop-blur-md">
-                  Studio Lead · Ashok Meena
-                </div>
+                
 
-                <div className="absolute bottom-4 right-4 bg-[#EFEEEB]/90 text-[#0A0A0A] text-[10px] font-mono px-3 py-1 uppercase tracking-widest backdrop-blur-md border border-[#D8D7D1]">
-                  New Delhi / Remote Worldwide
-                </div>
+               
               </div>
             </div>
           </div>
