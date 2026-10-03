@@ -6,6 +6,7 @@ import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
 import Product from "@/models/Product";
 import { FALLBACK_PHOTO_WORKS } from "@/data/photoWorksData";
+import { FALLBACK_3D_PRODUCTS } from "@/lib/fallback-products";
 
 export const metadata: Metadata = {
   title: "Creative Portfolio | Ashok Meena",
@@ -16,6 +17,29 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const MAPPED_FALLBACK_3D_PRODUCTS = FALLBACK_3D_PRODUCTS.map((p) => ({
+  _id: p._id,
+  title: p.name || "3D Asset",
+  slug: p.slug,
+  workType: "single" as const,
+  category: p.category || "3D Models & Assets",
+  shortDescription: p.shortDescription || p.description?.slice(0, 120),
+  description: p.description,
+  beforeImage: "",
+  afterImage: p.thumbnail,
+  thumbnail: p.thumbnail,
+  softwareUsed: ["Blender"],
+  resolution: "3D GLB / PBR",
+  clientName: "Luxury 3D Studio",
+  projectYear: "2026",
+  tags: ["Blender", "3D Model", p.category].filter(Boolean),
+  modelUrl: p.modelUrl || "",
+  featured: Boolean(p.featured),
+  views: p.views || 100,
+  likes: p.likes || 25,
+  isPortfolio3D: true,
+}));
+
 async function getPhotoWorks() {
   try {
     await connectDB();
@@ -24,12 +48,15 @@ async function getPhotoWorks() {
       Product.find({ status: "Published" }).sort({ createdAt: -1 }).lean(),
     ]);
 
-    const mappedProducts = (productItems || []).map((p: any) => ({
-      _id: `prod-${p._id.toString()}`,
+    const productsSource =
+      productItems && productItems.length > 0 ? productItems : FALLBACK_3D_PRODUCTS;
+
+    const mappedProducts = productsSource.map((p: any) => ({
+      _id: String(p._id).startsWith("prod-") ? String(p._id) : `prod-${p._id.toString()}`,
       title: p.name || "3D Asset",
       slug: p.slug,
       workType: "single" as const,
-      category: "3D Models & Assets",
+      category: p.category || "3D Models & Assets",
       shortDescription: p.shortDescription || p.description?.slice(0, 120),
       description: p.description,
       beforeImage: "",
@@ -44,6 +71,7 @@ async function getPhotoWorks() {
       featured: Boolean(p.featured),
       views: p.views || 100,
       likes: p.likes || 25,
+      isPortfolio3D: true,
     }));
 
     const combinedDB = [...(photoItems || []), ...mappedProducts];
@@ -64,9 +92,9 @@ async function getPhotoWorks() {
         ...nonDuplicateFallbacks,
       ];
     }
-    return FALLBACK_PHOTO_WORKS;
+    return [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
   } catch {
-    return FALLBACK_PHOTO_WORKS;
+    return [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
   }
 }
 

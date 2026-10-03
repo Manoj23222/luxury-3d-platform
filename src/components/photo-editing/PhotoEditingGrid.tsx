@@ -115,27 +115,30 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
       }
 
       if (selectedTab === "blender") {
-        // All 3D Models from /portfolio and Blender renders
-        const hasBlender = sw.some((s) => s.includes("blender") || s.includes("3d"));
-        const hasModelUrl = Boolean((w as any).modelUrl);
-        const isBlendImg =
-          img.includes("blender") ||
-          img.includes("cloudinary") ||
-          img.includes("burger") ||
-          img.includes("aura") ||
-          img.includes("34.png") ||
-          img.includes("ice.png") ||
-          img.includes("123.png");
+        // Strictly the 3D Models that were on /portfolio:
+        // Exclude all Adobe images, Photoshop before/after retouching, and Illustrator vector artworks.
+        const isAdobe =
+          sw.some(
+            (s) =>
+              s.includes("photoshop") ||
+              s.includes("illustrator") ||
+              s.includes("lightroom") ||
+              s.includes("capture one") ||
+              s.includes("adobe")
+          ) ||
+          w.workType === "before_after" ||
+          w._id.startsWith("ai-") ||
+          w._id.startsWith("pw-");
 
+        if (isAdobe) {
+          return false;
+        }
+
+        // Must strictly be the 3D Models from /portfolio (Product collection or FALLBACK_3D_PRODUCTS)
         return (
-          hasBlender ||
-          hasModelUrl ||
-          isBlendImg ||
-          cat.includes("3d") ||
-          cat.includes("models") ||
-          cat.includes("cgi") ||
-          tags.includes("3d") ||
-          tags.includes("blender")
+          w._id.startsWith("prod-") ||
+          Boolean((w as any).isPortfolio3D) ||
+          Boolean((w as any).isPortfolioProduct)
         );
       }
 

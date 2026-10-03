@@ -4,6 +4,7 @@ import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
 import Product from "@/models/Product";
 import { FALLBACK_PHOTO_WORKS } from "@/data/photoWorksData";
+import { FALLBACK_3D_PRODUCTS } from "@/lib/fallback-products";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -39,12 +40,15 @@ export async function GET(req: Request) {
         Product.find({ status: "Published" }).sort({ featured: -1, createdAt: -1 }).lean(),
       ]);
 
-      const mappedProds = (prods || []).map((p: any) => ({
-        _id: `prod-${p._id.toString()}`,
+      const productsSource =
+        prods && prods.length > 0 ? prods : FALLBACK_3D_PRODUCTS;
+
+      const mappedProds = productsSource.map((p: any) => ({
+        _id: String(p._id).startsWith("prod-") ? String(p._id) : `prod-${p._id.toString()}`,
         title: p.name || "3D Asset",
         slug: p.slug,
         workType: "single",
-        category: "3D Models & Assets",
+        category: p.category || "3D Models & Assets",
         shortDescription: p.shortDescription || p.description?.slice(0, 120),
         description: p.description,
         beforeImage: "",
@@ -59,6 +63,7 @@ export async function GET(req: Request) {
         featured: Boolean(p.featured),
         views: p.views || 100,
         likes: p.likes || 25,
+        isPortfolio3D: true,
       }));
 
       dbItems = [...(photos || []), ...mappedProds];
