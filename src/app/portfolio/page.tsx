@@ -1,30 +1,5 @@
-import AssetGridClient from "@/components/marketplace/AssetGridClient";
-import Navbar from "@/components/layout/Navbar";
+import { redirect } from "next/navigation";
 
-async function getProjects() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-    const res = await fetch(`${baseUrl}/api/public/products`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    return data.products || [];
-  } catch {
-    return [];
-  }
-}
-
-export default async function PortfolioPage() {
-  const projects = await getProjects();
-
-  return (
-    <main className="min-h-screen bg-[#fafafc] text-neutral-950 selection:bg-neutral-200 selection:text-black">
-      <Navbar />
-      <AssetGridClient assets={projects} />
-    </main>
-  );
+export default function PortfolioPage() {
+  redirect("/photo-editing");
 }

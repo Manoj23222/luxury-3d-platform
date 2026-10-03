@@ -60,15 +60,31 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
 
   // Filtered works based on the selected software tab
   const filteredWorks = useMemo(() => {
-    if (selectedTab === "all") return works;
+    if (selectedTab === "all") {
+      // Show all Photoshop, Illustrator, and Blender works
+      return works.filter((w) => {
+        const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
+        return !sw.includes("canva") || sw.includes("photoshop");
+      });
+    }
+
+    if (selectedTab === "canva") {
+      // Canva is empty as explicitly requested: "Canva - emty"
+      return [];
+    }
 
     return works.filter((w) => {
       const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
       const cat = (w.category || "").toLowerCase();
       const tags = (w.tags || []).join(" ").toLowerCase();
       const title = (w.title || "").toLowerCase();
+      const img = (w.afterImage || w.thumbnail || "").toLowerCase();
 
       if (selectedTab === "photoshop") {
+        const isAi = img.includes("illustrator");
+        const isBlend = sw.some((s) => s.includes("blender")) || cat.includes("3d") || img.includes("blender") || Boolean((w as any).modelUrl);
+        if (isAi || isBlend) return false;
+
         const hasPhotoshop = sw.some(
           (s) =>
             s.includes("photoshop") ||
@@ -78,79 +94,46 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
         );
         return (
           hasPhotoshop ||
+          w.workType === "before_after" ||
           cat.includes("retouch") ||
           cat.includes("background") ||
           cat.includes("grading") ||
           cat.includes("portrait") ||
-          cat.includes("fashion & portrait") ||
-          cat.includes("white background") ||
+          cat.includes("fashion") ||
           tags.includes("retouch") ||
           title.includes("retouch")
         );
       }
 
       if (selectedTab === "illustrator") {
-        const hasIllustrator = sw.some((s) => s.includes("illustrator") || s.includes("indesign"));
-        const isAiImg = (w.afterImage || "").includes("illustrator");
-        return (
-          hasIllustrator ||
-          isAiImg ||
-          cat.includes("illustrator") ||
-          cat.includes("branding") ||
-          cat.includes("logo") ||
-          cat.includes("vector") ||
-          cat.includes("outline") ||
-          cat.includes("path") ||
-          cat.includes("packing") ||
-          cat.includes("packaging") ||
-          tags.includes("vector") ||
-          tags.includes("logo") ||
-          tags.includes("illustrator")
-        );
-      }
-
-      if (selectedTab === "canva") {
-        const hasCanva = sw.some((s) => s.includes("canva"));
-        return (
-          hasCanva ||
-          cat.includes("canva") ||
-          cat.includes("social media") ||
-          cat.includes("ads") ||
-          cat.includes("ad creative") ||
-          cat.includes("food & beverage") ||
-          tags.includes("canva") ||
-          tags.includes("social media") ||
-          tags.includes("poster")
-        );
+        // Only images from /public/illustrator
+        const isAiImg = img.includes("illustrator");
+        const hasIllustrator = sw.some((s) => s.includes("illustrator"));
+        return isAiImg || hasIllustrator;
       }
 
       if (selectedTab === "blender") {
-        const hasBlender = sw.some(
-          (s) => s.includes("blender") || s.includes("substance") || s.includes("3d")
-        );
+        // All 3D Models from /portfolio and Blender renders
+        const hasBlender = sw.some((s) => s.includes("blender") || s.includes("3d"));
+        const hasModelUrl = Boolean((w as any).modelUrl);
         const isBlendImg =
-          (w.afterImage || "").includes("blender") ||
-          (w.afterImage || "").includes("Burger") ||
-          (w.afterImage || "").includes("AURA") ||
-          (w.afterImage || "").includes("34.png") ||
-          (w.afterImage || "").includes("ice.png") ||
-          (w.afterImage || "").includes("123.png");
+          img.includes("blender") ||
+          img.includes("cloudinary") ||
+          img.includes("burger") ||
+          img.includes("aura") ||
+          img.includes("34.png") ||
+          img.includes("ice.png") ||
+          img.includes("123.png");
+
         return (
           hasBlender ||
+          hasModelUrl ||
           isBlendImg ||
           cat.includes("3d") ||
-          cat.includes("garment") ||
+          cat.includes("models") ||
           cat.includes("cgi") ||
-          cat.includes("jewelry & luxury") ||
           tags.includes("3d") ||
-          tags.includes("cgi") ||
-          tags.includes("blender") ||
-          title.includes("3d") ||
-          title.includes("cgi") ||
-          title.includes("perfume") ||
-          title.includes("watch") ||
-          title.includes("burger") ||
-          title.includes("ice")
+          tags.includes("blender")
         );
       }
 
@@ -239,16 +222,27 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
         {/* ========================================================= */}
         {/* NORMAL CLEAN IMAGE GALLERY GRID (BINA DETAILS KE)         */}
         {/* ========================================================= */}
-        <motion.div
-          layout
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredWorks.map((work, idx) => {
-              const displayImg = work.afterImage || work.thumbnail || work.beforeImage || "";
-              const hasBeforeAfter =
-                Boolean(work.beforeImage && work.beforeImage.trim()) &&
-                work.beforeImage !== work.afterImage;
+        {filteredWorks.length === 0 ? (
+          <div className="py-24 text-center rounded-3xl border border-dashed border-stone-300 bg-white/50 backdrop-blur-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 border border-stone-200 text-xl font-bold font-mono">
+              C
+            </div>
+            <h3 className="mt-4 text-base font-bold text-neutral-800">Canva Projects</h3>
+            <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">
+              No Canva projects uploaded yet.
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredWorks.map((work, idx) => {
+                const displayImg = work.afterImage || work.thumbnail || work.beforeImage || "";
+                const hasBeforeAfter =
+                  Boolean(work.beforeImage && work.beforeImage.trim()) &&
+                  work.beforeImage !== work.afterImage;
 
               return (
                 <motion.div
@@ -300,6 +294,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
             })}
           </AnimatePresence>
         </motion.div>
+        )}
       </div>
 
       {/* ========================================================= */}

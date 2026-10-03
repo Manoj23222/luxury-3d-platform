@@ -301,79 +301,19 @@ export default function Navbar() {
               </motion.div>
             </MagneticItem>
 
-            {/* 2. 3D MODELS (SHOWN DIRECTLY OUTSIDE) */}
+            {/* 2. PORTFOLIO LINK (UNIFIED 3D MODELS & PHOTO EDITING) */}
             <MagneticItem disabled={reducedMotion} maxDistance={2.5}>
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
-              >
-                <Link
-                  href="/portfolio"
-                  className="group relative flex items-center justify-center rounded-full px-3.5 py-1 text-xs font-medium tracking-wide transition-all duration-200 hover:-translate-y-[0.5px] active:scale-[0.97] focus:outline-hidden"
-                >
-                  {/* Active Sliding Indicator Pill */}
-                  {isPortfolioActive && (
-                    <motion.div
-                      layoutId="luxuryActiveNavPill"
-                      className="absolute inset-0 rounded-full overflow-hidden"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #1A1A1D 0%, #0B0B0D 100%)",
-                        border: "1px solid rgba(214, 185, 120, 0.35)",
-                        boxShadow:
-                          "0 3px 10px -2px rgba(0,0,0,0.6), inset 0 1px 1px 0 rgba(214,185,120,0.25)",
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 32,
-                      }}
-                    >
-                      {!reducedMotion && (
-                        <motion.div
-                          initial={{ x: "-100%", opacity: 0 }}
-                          animate={{ x: "200%", opacity: 0.8 }}
-                          transition={{ duration: 0.6, ease: "easeOut" }}
-                          className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D6B978] to-transparent"
-                        />
-                      )}
-                    </motion.div>
-                  )}
-
-                  <HoverShine />
-
-                  <span
-                    className={`relative z-10 transition-colors duration-200 ${
-                      isPortfolioActive
-                        ? "font-bold text-[#F7F5EF]"
-                        : "text-[#E8E8E6]/80 group-hover:text-[#F7F5EF]"
-                    }`}
-                  >
-                    3D Models
-                  </span>
-
-                  {/* Subtle Champagne Underline for Inactive */}
-                  {!isPortfolioActive && !reducedMotion && (
-                    <span className="pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 h-[1.5px] w-0 rounded-full bg-[#D6B978] opacity-0 transition-all duration-200 group-hover:w-3.5 group-hover:opacity-90" />
-                  )}
-                </Link>
-              </motion.div>
-            </MagneticItem>
-
-            {/* 3. BRANDING & VISUALS (SHOWN DIRECTLY OUTSIDE) */}
-            <MagneticItem disabled={reducedMotion} maxDistance={2.5}>
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.46, ease: "easeOut" }}
+                transition={{ duration: 0.5, delay: 0.42, ease: "easeOut" }}
               >
                 <Link
                   href="/photo-editing"
-                  className="group relative flex items-center justify-center rounded-full px-3.5 py-1 text-xs font-medium tracking-wide transition-all duration-200 hover:-translate-y-[0.5px] active:scale-[0.97] focus:outline-hidden"
+                  className="group relative flex items-center justify-center rounded-full px-4 py-1 text-xs font-medium tracking-wide transition-all duration-200 hover:-translate-y-[0.5px] active:scale-[0.97] focus:outline-hidden"
                 >
                   {/* Active Sliding Indicator Pill */}
-                  {isBrandingActive && (
+                  {(isBrandingActive || isPortfolioActive) && (
                     <motion.div
                       layoutId="luxuryActiveNavPill"
                       className="absolute inset-0 rounded-full overflow-hidden"
@@ -405,16 +345,16 @@ export default function Navbar() {
 
                   <span
                     className={`relative z-10 transition-colors duration-200 ${
-                      isBrandingActive
+                      isBrandingActive || isPortfolioActive
                         ? "font-bold text-[#F7F5EF]"
                         : "text-[#E8E8E6]/80 group-hover:text-[#F7F5EF]"
                     }`}
                   >
-                    Branding & Creative
+                    Portfolio
                   </span>
 
                   {/* Subtle Champagne Underline for Inactive */}
-                  {!isBrandingActive && !reducedMotion && (
+                  {!(isBrandingActive || isPortfolioActive) && !reducedMotion && (
                     <span className="pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 h-[1.5px] w-0 rounded-full bg-[#D6B978] opacity-0 transition-all duration-200 group-hover:w-3.5 group-hover:opacity-90" />
                   )}
                 </Link>
@@ -577,41 +517,22 @@ export default function Navbar() {
                 </Link>
               </motion.div>
 
-              {/* 3D Models */}
+              {/* Portfolio */}
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08, duration: 0.18 }}
               >
                 <Link
-                  href="/portfolio"
-                  onClick={() => setMobileOpen(false)}
-                  className={`block rounded-xl p-3 text-xs font-bold transition-all ${
-                    isPortfolioActive
-                      ? "bg-[#1A1A1D] text-[#D6B978] border border-[#D6B978]/35 shadow-sm"
-                      : "bg-white/[0.03] text-[#E8E8E6] hover:bg-white/[0.08]"
-                  }`}
-                >
-                  3D Models & Assets
-                </Link>
-              </motion.div>
-
-              {/* Branding & Creative */}
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12, duration: 0.18 }}
-              >
-                <Link
                   href="/photo-editing"
                   onClick={() => setMobileOpen(false)}
                   className={`block rounded-xl p-3 text-xs font-bold transition-all ${
-                    isBrandingActive
+                    isBrandingActive || isPortfolioActive
                       ? "bg-[#1A1A1D] text-[#D6B978] border border-[#D6B978]/35 shadow-sm"
                       : "bg-white/[0.03] text-[#E8E8E6] hover:bg-white/[0.08]"
                   }`}
                 >
-                  Branding & Creative Visuals
+                  Portfolio
                 </Link>
               </motion.div>
 

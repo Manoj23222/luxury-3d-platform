@@ -4,12 +4,13 @@ import Navbar from "@/components/layout/Navbar";
 import PhotoEditingGrid from "@/components/photo-editing/PhotoEditingGrid";
 import connectDB from "@/lib/mongodb";
 import PhotoWork from "@/models/PhotoWork";
+import Product from "@/models/Product";
 import { FALLBACK_PHOTO_WORKS } from "@/data/photoWorksData";
 
 export const metadata: Metadata = {
-  title: "Photo Retouching & Commercial Graphic Design Showcase | LUX3D",
+  title: "Creative Portfolio | Ashok Meena",
   description:
-    "Explore luxury photo retouching, Adobe Illustrator vector art, Blender 3D models and CGI, and commercial advertising creatives.",
+    "Explore luxury photo retouching, Adobe Illustrator vector art, and Blender 3D models showcase.",
 };
 
 export const dynamic = "force-dynamic";
@@ -18,20 +19,45 @@ export const revalidate = 0;
 async function getPhotoWorks() {
   try {
     await connectDB();
-    const items = await PhotoWork.find({ status: "Published" })
-      .sort({ createdAt: -1 })
-      .lean();
+    const [photoItems, productItems] = await Promise.all([
+      PhotoWork.find({ status: "Published" }).sort({ createdAt: -1 }).lean(),
+      Product.find({ status: "Published" }).sort({ createdAt: -1 }).lean(),
+    ]);
 
-    if (items && items.length > 0) {
+    const mappedProducts = (productItems || []).map((p: any) => ({
+      _id: `prod-${p._id.toString()}`,
+      title: p.name || "3D Asset",
+      slug: p.slug,
+      workType: "single" as const,
+      category: "3D Models & Assets",
+      shortDescription: p.shortDescription || p.description?.slice(0, 120),
+      description: p.description,
+      beforeImage: "",
+      afterImage: p.thumbnail,
+      thumbnail: p.thumbnail,
+      softwareUsed: ["Blender"],
+      resolution: "3D GLB / PBR",
+      clientName: p.brandName || "Luxury 3D Studio",
+      projectYear: "2026",
+      tags: ["Blender", "3D Model", p.category].filter(Boolean),
+      modelUrl: p.modelUrl || "",
+      featured: Boolean(p.featured),
+      views: p.views || 100,
+      likes: p.likes || 25,
+    }));
+
+    const combinedDB = [...(photoItems || []), ...mappedProducts];
+
+    if (combinedDB.length > 0) {
       const dbTitles = new Set(
-        items.map((x: any) => String(x.title || "").toLowerCase().trim())
+        combinedDB.map((x: any) => String(x.title || "").toLowerCase().trim())
       );
       const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
         (f) => !dbTitles.has(String(f.title || "").toLowerCase().trim())
       );
 
       return [
-        ...items.map((x: any) => ({
+        ...combinedDB.map((x: any) => ({
           ...x,
           _id: x._id.toString(),
         })),
