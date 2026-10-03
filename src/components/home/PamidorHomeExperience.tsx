@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // ==========================================
 // CLIENTS & SOFTWARE LOGOS DATA
@@ -130,31 +130,9 @@ const skillsets = [
 
 export default function PamidorHomeExperience() {
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  // Close menu on ESC
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,108 +179,21 @@ export default function PamidorHomeExperience() {
           </span>
         </Link>
 
-        {/* Desktop Links & Menu Toggle Button */}
-        <div className="flex items-center gap-6 sm:gap-10">
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A]">
-            <Link href="/work" className="hover:text-[#D12424] transition-colors">
-              Work
-            </Link>
-          
-  
-            <Link href="/about" className="hover:text-[#D12424] transition-colors">
-              About
-            </Link>
-          
-          </nav>
-
-          {/* Minimal 2-Line Architectural Hamburger */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle site menu"
-            className="group flex flex-col items-end justify-center gap-[7px] p-2 cursor-pointer focus:outline-hidden"
-          >
-            <span
-              className={`block h-[2px] bg-[#0A0A0A] transition-all duration-300 ${
-                menuOpen ? "w-7 rotate-45 translate-y-[9px]" : "w-8 group-hover:w-9"
-              }`}
-            />
-            <span
-              className={`block h-[2px] bg-[#0A0A0A] transition-all duration-300 ${
-                menuOpen ? "w-7 -rotate-45" : "w-6 group-hover:w-9"
-              }`}
-            />
-          </button>
-        </div>
+        {/* Navigation Links: Work | About | Contact */}
+        <nav className="flex items-center gap-4 sm:gap-7 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#0A0A0A]">
+          <Link href="/work" className="hover:text-[#D12424] transition-colors">
+            Work
+          </Link>
+          <span className="text-[#C2C0B6] select-none text-[11px]">|</span>
+          <Link href="/about" className="hover:text-[#D12424] transition-colors">
+            About
+          </Link>
+          <span className="text-[#C2C0B6] select-none text-[11px]">|</span>
+          <Link href="/contact" className="hover:text-[#D12424] transition-colors">
+            Contact
+          </Link>
+        </nav>
       </header>
-
-      {/* ========================================================= */}
-      {/* FULLSCREEN EDITORIAL SLIDE-OUT MENU DRAWER               */}
-      {/* ========================================================= */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-50 bg-[#EFEEEB] text-[#0A0A0A] px-6 sm:px-12 lg:px-20 py-10 flex flex-col justify-between overflow-y-auto"
-          >
-            <div className="flex items-center justify-between border-b border-[#D8D7D1] pb-6">
-              <span className="text-base font-black tracking-tight uppercase">
-                ASHOK MEENA<span className="text-[#D12424]">®</span> STUDIO
-              </span>
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                className="text-xs font-mono font-bold uppercase tracking-widest px-4 py-2 border border-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-colors cursor-pointer"
-              >
-                Close [✕]
-              </button>
-            </div>
-
-            <div className="py-12 sm:py-16 max-w-4xl space-y-4 sm:space-y-6">
-              {[
-                { label: "Home", href: "#top" },
-                { label: "Work & Portfolio", href: "/work" },
-                { label: "The Art Lab", href: "#art-lab" },
-                { label: "Skillset", href: "#skillset" },
-                { label: "About Ashok Meena", href: "/about" },
-                { label: "Contact / Dispatch", href: "#contact" },
-              ].map((item, idx) => (
-                <div key={item.label} className="overflow-hidden">
-                  <motion.div
-                    initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.05 * idx, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="group flex items-baseline gap-4 text-3xl sm:text-5xl lg:text-6xl font-medium tracking-tight hover:text-[#D12424] transition-colors"
-                    >
-                      <span className="text-xs sm:text-sm font-mono text-[#A8A7A0] group-hover:text-[#D12424]">
-                        0{idx + 1}
-                      </span>
-                      <span>{item.label}</span>
-                    </Link>
-                  </motion.div>
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t border-[#D8D7D1] pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono text-[#76756F]">
-              <a
-                href="mailto:3ddesigner5546@gmail.com"
-                className="hover:text-[#0A0A0A] underline underline-offset-4"
-              >
-                3DDESIGNER5546@GMAIL.COM
-              </a>
-              <p>© 2026 Ashok Meena Studio. All rights reserved.</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ========================================================= */}
       {/* 2. HERO SECTION (#top)                                    */}
