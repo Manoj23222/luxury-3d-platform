@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import HeroFlowerCanvas from "./HeroFlowerCanvas";
+import HomeLikeAndViews from "./HomeLikeAndViews";
 
 // ==========================================
 // SOFTWARE PRODUCTION STACK DATA
@@ -109,6 +110,11 @@ export default function PamidorHomeExperience() {
                     ))}
                   </ul>
                 </div>
+
+                {/* Live Like Button & Viewer Count */}
+                <div className="pt-2 sm:pt-3">
+                  <HomeLikeAndViews />
+                </div>
               </div>
 
               {/* Right Column: Large Vertical Hero Portrait with Transparent Cutout (Aligned Down to Divider Div) */}
@@ -162,6 +168,11 @@ export default function PamidorHomeExperience() {
               product visuals, and various digital projects.
               I combine creativity, technical skills, and attention to detail to deliver clean and professional visual work.
             </p>
+
+            {/* Social Engagement Stats & Like Bar */}
+            <div className="pt-6 sm:pt-8">
+              <HomeLikeAndViews />
+            </div>
           </div>
 
           {/* Continuous Infinite Clients / Collaborations Marquee with Software Logos */}
