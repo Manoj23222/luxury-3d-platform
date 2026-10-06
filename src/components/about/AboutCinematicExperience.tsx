@@ -1,1009 +1,741 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useReducedMotion } from "framer-motion";
 
-// Real Animated Number Counter Component
-function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
-
-  useEffect(() => {
-    if (!isInView) return;
-    const duration = 1200;
-    const startTime = performance.now();
-
-    const update = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(ease * value);
-      setCount(current);
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        setCount(value);
-      }
-    };
-
-    requestAnimationFrame(update);
-  }, [isInView, value]);
-
-  return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
-  );
-}
-
-// Magnetic Button Wrapper
-function MagneticButton({
-  children,
-  className,
-  href,
-  target,
-  rel,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  href?: string;
-  target?: string;
-  rel?: string;
-}) {
-  const btnRef = useRef<HTMLAnchorElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const isReducedMotion = useReducedMotion();
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (isReducedMotion || !btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    const x = e.clientX - (rect.left + rect.width / 2);
-    const y = e.clientY - (rect.top + rect.height / 2);
-    setPosition({ x: x * 0.2, y: y * 0.2 });
-  };
-
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
-  return (
-    <motion.a
-      ref={btnRef}
-      href={href}
-      target={target}
-      rel={rel}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 350, damping: 25 }}
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-      className={className}
-    >
-      {children}
-    </motion.a>
-  );
-}
-
-// ========================================================
-// 8 CORE SOFTWARE SKILLS STEP-BY-STEP DATA
-// ========================================================
-interface SoftwareSkillStep {
+interface ProductionStep {
   step: string;
-  name: string;
-  category: string;
+  title: string;
+  subtitle: string;
   icon: string;
+  image: string;
+  description: string;
+  deliverable: string;
   badge: string;
-  desc: string;
-  skills: string[];
 }
 
-const softwareSkillsSteps: SoftwareSkillStep[] = [
+const PRODUCTION_STEPS: ProductionStep[] = [
   {
-    step: "01",
-    name: "Adobe Photoshop",
-    category: "High-End Photo Retouching & Post-Production",
+    step: "Step 01",
+    title: "Adobe Photoshop",
+    subtitle: "16-Bit RAW Retouching & Compositing",
     icon: "/Softwear Icon/photoshop.svg",
-    badge: "6+ Yrs Mastery",
-    desc: "16-Bit RAW commercial photo retouching, non-destructive frequency separation, skin micro-texture preservation, e-commerce catalog enhancement, and high-end editorial color grading.",
-    skills: [
-      "16-Bit RAW Retouching",
-      "Frequency Separation",
-      "Background Removal & Editing",
-      "Skin Micro-Texture",
-      "Color Correction & Grading",
-      "Clipping Path & Masking",
-      "Product Photo Retouching",
-    ],
+    image: "/Skill/step-01.png",
+    description:
+      "Precision product isolation, clipping paths, realistic drop shadow casting, layer effects, and commercial packaging typography layout.",
+    deliverable: "16-Bit Master PSD / E-Commerce Hero Visual",
+    badge: "Post-Production",
   },
   {
-    step: "02",
-    name: "Adobe Illustrator",
-    category: "Vector Precision & Technical Branding",
+    step: "Step 02",
+    title: "Adobe Illustrator",
+    subtitle: "Vector Monograms & Precision Tech-Packs",
     icon: "/Softwear Icon/adobe-illustrator-svgrepo-com.svg",
-    badge: "500+ Assets",
-    desc: "Precision vector illustration, technical apparel tech-packs, brand identity systems, logo construction, typography layout, color separation, and commercial packaging print assets.",
-    skills: [
-      "Vector Tracing",
-      "Logo Designing",
-      "Apparel Tech-Packs",
-      "Typography & Layout",
-      "Packaging Design",
-      "Vector Illustration",
-      "Color Separation",
-    ],
+    image: "/Skill/step-02.png",
+    description:
+      "Bézier anchor curve alignment, Pathfinder booleans, vector kerning, and production tech-pack paths for luxury brand lockups ('Luxe Imaginary').",
+    deliverable: "Lossless Vector AI / SVG Tech-Pack",
+    badge: "Vector Design",
   },
   {
-    step: "03",
-    name: "Adobe Lightroom",
-    category: "16-Bit RAW Grading & Studio Lighting",
+    step: "Step 03",
+    title: "Adobe Lightroom Classic",
+    subtitle: "High-Dynamic-Range Tone & Color Calibration",
     icon: "/Softwear Icon/adobe-lightroom-svgrepo-com.svg",
-    badge: "Studio Grading",
-    desc: "Batch RAW commercial grading, tonal curve calibration, highlight/shadow dynamic balancing, exposure calibration, and high-volume commercial photo catalogues.",
-    skills: [
-      "16-Bit RAW Grading",
-      "Color Balancing",
-      "Tone Curves",
-      "Batch Processing",
-      "Noise Reduction",
-      "Selective Masking",
-      "Catalogue Calibration",
-    ],
+    image: "/Skill/step-03.png",
+    description:
+      "Tone curve luminance grading, warm gold saturation mapping, and batch catalogue synchronization across high-res studio photography.",
+    deliverable: "Color-Balanced Catalog / Production Preset",
+    badge: "Color Grading",
   },
   {
-    step: "04",
-    name: "Canva",
-    category: "Graphic Design & Marketing Collateral",
+    step: "Step 04",
+    title: "Canva Pro",
+    subtitle: "Multi-Channel Campaign & Collateral Design",
     icon: "/Softwear Icon/canva-icon.webp",
-    badge: "Fast Turnaround",
-    desc: "High-speed marketing asset creation, social media campaign banners, presentation decks, e-commerce graphics, and promotional design kits.",
-    skills: [
-      "Social Media Graphics",
-      "Marketing Collateral",
-      "Banner Designing",
-      "Presentation Decks",
-      "Brand Templates",
-      "Layout Composition",
-    ],
+    image: "/Skill/step-04.png",
+    description:
+      "Fast editorial banner composition, Spring Collection social layouts, responsive banners, and promotional retail packaging collaterals.",
+    deliverable: "Omnichannel Social & Digital Banner Kits",
+    badge: "Brand Collateral",
   },
   {
-    step: "05",
-    name: "Blender 3D",
-    category: "Hard-Surface CGI, PBR Shading & Real-Time GLB",
+    step: "Step 05",
+    title: "Blender 3D",
+    subtitle: "Sub-D Modeling & Procedural PBR Shaders",
     icon: "/Softwear Icon/blender-svgrepo-com.svg",
-    badge: "300+ 3D Models",
-    desc: "Subdivision hard-surface modeling, procedural PBR shader graphs, studio 3-point lighting setups, low-poly retopology, Cycles/Eevee renders, and web-ready GLB/glTF optimization.",
-    skills: [
-      "3D Product Modeling",
-      "Subdivision Surfaces",
-      "PBR Material Shaders",
-      "UV Unwrapping & Baking",
-      "Studio 3-Point Lighting",
-      "Photorealistic CGI",
-      "GLB/glTF Optimization",
-    ],
+    image: "/Skill/step-05.png",
+    description:
+      "Hard-surface Sub-D 3D modeling, clean quad mesh topology, procedural metallic gold node shader tree, and real-time viewport studio lighting.",
+    deliverable: "Production Sub-D 3D Model (.blend / .glb)",
+    badge: "3D Modeling",
   },
   {
-    step: "06",
-    name: "CLO 3D",
-    category: "Digital Fashion, Virtual Garments & Drape Physics",
+    step: "Step 06",
+    title: "CLO 3D",
+    subtitle: "Digital Apparel & Fabric Drape Simulation",
     icon: "/Softwear Icon/clo3d.svg",
-    badge: "Digital Fashion",
-    desc: "2D pattern construction to 3D garment simulation, multi-layer luxury fabric drape physics, micro-seam stitching, and realistic cloth animation calibrated for luxury apparel.",
-    skills: [
-      "2D to 3D Patterning",
-      "Cloth Drape Simulation",
-      "Fabric Physics Tuning",
-      "Micro-Seam Stitching",
-      "PBR Apparel Texturing",
-      "3D Fit Validation",
-      "High-Fidelity Garment Drape",
-    ],
-  },
-  {
-    step: "07",
-    name: "Microsoft Excel",
-    category: "Production Tracking, Data & Workflow Matrices",
-    icon: "/Softwear Icon/excel2-svgrepo-com.svg",
-    badge: "Workflow Control",
-    desc: "3D asset inventory cataloging, SKU metadata indexing, delivery schedules, data validation formulas, and client specification tracking matrices.",
-    skills: [
-      "Asset Cataloging",
-      "SKU Metadata Indexing",
-      "Formulas & Automation",
-      "Workflow Scheduling",
-      "Quality Control Checklists",
-      "Production Matrices",
-    ],
-  },
-  {
-    step: "08",
-    name: "Google Antigravity",
-    category: "Agentic AI Engineering & Next-Gen Coding",
-    icon: "/Softwear Icon/google-antigravity.png",
-    badge: "AI Orchestration",
-    desc: "Agentic AI workflows, autonomous developer orchestration, multi-agent collaboration, full-stack Next.js/Three.js architecture, and rapid deployment.",
-    skills: [
-      "Agentic AI Workflows",
-      "Autonomous Multi-Agent",
-      "TypeScript & Next.js",
-      "Three.js Integration",
-      "Prompt Engineering",
-      "Modern Web Architecture",
-    ],
+    image: "/Skill/step-06.png",
+    description:
+      "2D pattern garment drafting, precision cloth physics computation for Silk Crepe de Chine, dynamic fabric drape over product, and 3D fashion staging.",
+    deliverable: "Simulated 3D Garment Mesh & Animation",
+    badge: "3D Fashion",
   },
 ];
 
 export default function AboutCinematicExperience() {
-  const isReducedMotion = useReducedMotion();
+  const [selectedImage, setSelectedImage] = useState<{ src: string; title: string; step: string } | null>(null);
 
-  // Project Cards Mouse Highlight Tracking
-  const [bootkitPos, setBootkitPos] = useState({ x: 0, y: 0, isHovered: false });
-  const [lux3dPos, setLux3dPos] = useState({ x: 0, y: 0, isHovered: false });
-
-  // Active Scroll Section Tracking for Side Indicator
-  const [activeSection, setActiveSection] = useState("hero");
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-
-      if (scrollY < windowHeight * 0.6) {
-        setActiveSection("hero");
-      } else if (scrollY < windowHeight * 1.6) {
-        setActiveSection("skills");
-      } else if (scrollY < windowHeight * 2.5) {
-        setActiveSection("experience");
-      } else if (scrollY < windowHeight * 3.6) {
-        setActiveSection("projects");
-      } else {
-        setActiveSection("studio");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const handlePrint = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
 
   return (
-    <div className="relative bg-[#EFEEEB] text-[#0A0A0A] min-h-screen selection:bg-[#D12424] selection:text-white">
-      {/* ================= GLOBAL FLOATING AMBIENT GLOW & GRID ================= */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 h-[600px] w-[600px] rounded-full bg-black/[0.02] blur-[160px]" />
-        <div className="absolute bottom-1/3 right-1/4 h-[600px] w-[600px] rounded-full bg-[#D12424]/[0.02] blur-[160px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, #000000 1px, transparent 0)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-      </div>
-
-      {/* ================= DESKTOP STICKY SECTION SCROLL INDICATOR ================= */}
-      <div className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col items-end gap-3.5 select-none pointer-events-none">
-        {[
-          { id: "hero", label: "PROFILE" },
-          { id: "skills", label: "SKILLS" },
-          { id: "experience", label: "EXPERIENCE" },
-          { id: "projects", label: "PROJECTS" },
-          { id: "studio", label: "STUDIO" },
-        ].map((sec) => {
-          const isActive = activeSection === sec.id;
-          return (
-            <div key={sec.id} className="flex items-center gap-2.5 transition-all duration-300">
-              <span
-                className={`text-[9px] font-mono tracking-widest font-bold transition-all duration-300 ${
-                  isActive ? "text-[#D12424] opacity-100 translate-x-0" : "text-[#76756F] opacity-40 translate-x-2"
-                }`}
-              >
-                {sec.label}
-              </span>
-              <div
-                className={`rounded-full transition-all duration-300 ${
-                  isActive ? "h-6 w-1.5 bg-[#D12424] shadow-[0_0_12px_rgba(209,36,36,0.6)]" : "h-1.5 w-1.5 bg-[#76756F]"
-                }`}
-              />
-            </div>
-          );
-        })}
-      </div>
-
+    <div className="min-h-screen bg-[#EFEEEB] text-[#0A0A0A] font-sans selection:bg-[#D12424] selection:text-white pt-24 sm:pt-28 pb-16 sm:pb-24 px-3 sm:px-6 lg:px-8">
       {/* ======================================================== */}
-      {/* 1. HERO — PROFESSIONAL PROFILE & DETAILS (LEFT ALIGNED) */}
+      {/* EXECUTIVE RESUME CONTAINER (COMPACT LUXURY SHEET)        */}
       {/* ======================================================== */}
-      <section id="hero" className="relative overflow-hidden border-b border-[#D8D7D1] pt-24 sm:pt-28 pb-16 sm:pb-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="rounded-3xl border border-[#D8D7D1] bg-white p-6 sm:p-12 lg:p-14 shadow-sm backdrop-blur-2xl">
-            {/* Top Details (Left-Aligned, Photo Removed) */}
-            <div className="max-w-4xl space-y-5 text-left">
-              {/* Badges: Professional Profile + Available + Location */}
-              
-
-              {/* Name */}
-              <div className="overflow-hidden py-1">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#0A0A0A] leading-none">
-                  Ashok Meena
-                </h1>
-              </div>
-
-              {/* Job Title with Accent Bar */}
-              <div className="flex items-center gap-3 pt-0.5">
-                <div className="h-1 w-12 rounded-full bg-[#D12424]" />
-                <p className="text-base sm:text-lg lg:text-xl font-bold text-[#D12424]">
-                  Senior 3D Designer & Photo Editor
-                </p>
-              </div>
-
-              {/* Bio Paragraphs */}
-              <div className="space-y-2.5 pt-1 text-xs sm:text-sm leading-relaxed text-[#56554F] font-normal">
-                <p>
-                  Senior 3D & Graphic Designer with <strong className="text-[#0A0A0A] font-bold">6+ years of professional experience</strong> creating, optimizing, and delivering high-fidelity 3D assets for digital fashion, e-commerce, and real-time 3D web simulators.
-                </p>
-                <p>
-                  Proven expertise in <strong className="text-[#0A0A0A] font-bold">Blender, CLO 3D, and Adobe Creative Suite</strong> with end-to-end knowledge of 3D modeling, UV unwrapping, PBR texturing, lighting, typography, and asset optimization.
-                </p>
-                <p>
-                  Successfully delivered <strong className="text-[#0A0A0A] font-bold">300+ production-ready 3D models</strong> and digital assets with strict quality control for global platforms.
-                </p>
-              </div>
-
-              {/* Key Metrics Strip */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-y border-[#D8D7D1] py-4 mt-4">
-                {[
-                  { val: 6, suffix: "+ Yrs", label: "Experience", color: "text-[#0A0A0A]" },
-                  { text: "Infoeye", label: "Studio Position", color: "text-[#D12424]" },
-                  { val: 300, suffix: "+", label: "3D Assets Delivered", color: "text-[#0A0A0A]" },
-                  { val: 100, suffix: "%", label: "PBR & QC Quality", color: "text-[#0A0A0A]" },
-                ].map((metric, i) => (
-                  <div
-                    key={i}
-                    className="rounded-2xl border border-[#D8D7D1] bg-[#EFEEEB]/60 p-3.5 text-center shadow-2xs hover:border-[#0A0A0A] hover:bg-white transition-all"
-                  >
-                    <p className={`text-2xl font-black ${metric.color}`}>
-                      {metric.val !== undefined ? (
-                        <AnimatedNumber value={metric.val} suffix={metric.suffix} />
-                      ) : (
-                        metric.text
-                      )}
-                    </p>
-                    <p className="text-[10px] font-mono font-bold text-[#76756F] uppercase tracking-wider mt-0.5">
-                      {metric.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action Contact Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <MagneticButton
-                  href="mailto:ashokm3414@gmail.com"
-                  className="rounded-full bg-[#0A0A0A] px-6 py-2.5 text-xs font-black text-white shadow-md hover:bg-[#D12424] transition-colors"
-                >
-                  ✉️ ashokm3414@gmail.com
-                </MagneticButton>
-
-                <MagneticButton
-                  href="tel:+918000093300"
-                  className="rounded-full border border-[#D8D7D1] bg-white px-5 py-2.5 text-xs font-bold text-[#0A0A0A] hover:border-[#0A0A0A] hover:bg-[#EFEEEB] shadow-2xs transition-colors"
-                >
-                  📞 +91 80000 93300
-                </MagneticButton>
-
-                <MagneticButton
-                  href="/Ashok_Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-[#D8D7D1] bg-white px-5 py-2.5 text-xs font-bold text-[#0A0A0A] hover:border-[#D12424] hover:text-[#D12424] transition-colors shadow-2xs"
-                >
-                  Download Resume (PDF) ↓
-                </MagneticButton>
-              </div>
-            </div>
-
-            {/* DIVIDER LINE BEFORE SKILLS */}
-            <div aria-hidden="true" className="h-[1.5px] w-full bg-[#D8D7D1] my-12 sm:my-16" />
-
-            {/* ======================================================== */}
-            {/* SKILLS SECTION — LEFT & RIGHT STEP-BY-STEP               */}
-            {/* ======================================================== */}
-            <div id="skills" className="space-y-10">
-              {/* Heading */}
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-[#D8D7D1]">
-                <div>
-                  <span className="text-[11px] font-mono font-bold tracking-widest text-[#76756F] uppercase">
-                    (PRODUCTION STACK / STEP-BY-STEP WORKSTATIONS)
-                  </span>
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0A0A0A] tracking-tight mt-1">
-                    Skills
-                  </h2>
-                </div>
-                <span className="text-xs font-mono font-bold text-[#76756F] uppercase tracking-wider">
-                  8 Production Tools • End-to-End Pipeline
-                </span>
-              </div>
-
-              {/* Step By Step Left - Right Alternating Layout */}
-              <div className="relative">
-                {/* Central Connecting Spine Line on Desktop */}
-                <div
-                  aria-hidden="true"
-                  className="hidden lg:block absolute left-1/2 top-6 bottom-6 w-[2px] bg-[#D8D7D1] -translate-x-1/2"
-                />
-
-                <div className="space-y-8 sm:space-y-10">
-                  {softwareSkillsSteps.map((step, idx) => {
-                    const isLeft = idx % 2 === 0;
-
-                    return (
-                      <div
-                        key={step.name}
-                        className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14 items-center"
-                      >
-                        {/* Desktop Center Step Node Badge */}
-                        <div
-                          aria-hidden="true"
-                          className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white border-2 border-[#0A0A0A] items-center justify-center font-mono font-bold text-xs text-[#0A0A0A] shadow-xs z-20"
-                        >
-                          {step.step}
-                        </div>
-
-                        {/* Card Column */}
-                        <div
-                          className={`w-full ${
-                            isLeft ? "lg:col-start-1 lg:pr-6" : "lg:col-start-2 lg:pl-6"
-                          }`}
-                        >
-                          <motion.div
-                            initial={
-                              isReducedMotion
-                                ? { opacity: 0 }
-                                : { opacity: 0, x: isLeft ? -25 : 25 }
-                            }
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                            className="rounded-2xl border border-[#D8D7D1] bg-[#EFEEEB]/50 hover:bg-white p-5 sm:p-6 transition-all duration-300 hover:border-[#0A0A0A] hover:shadow-md group text-left"
-                          >
-                            {/* Card Header: Step Tag + Experience Badge */}
-                            <div className="flex items-center justify-between gap-2 mb-3.5">
-                              <span className="inline-flex items-center gap-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#D12424] bg-[#D12424]/10 px-2.5 py-0.5 rounded-full">
-                                Step {step.step}
-                              </span>
-                              <span className="font-mono text-[10.5px] font-bold text-[#76756F] uppercase tracking-wider bg-white border border-[#D8D7D1] px-2.5 py-0.5 rounded-full">
-                                {step.badge}
-                              </span>
-                            </div>
-
-                            {/* Software Logo + Name */}
-                            <div className="flex items-center gap-3.5 mb-3">
-                              <div className="relative h-11 w-11 sm:h-12 sm:w-12 rounded-xl overflow-hidden shadow-2xs shrink-0 flex items-center justify-center bg-white p-2 border border-[#D8D7D1]">
-                                <Image
-                                  src={step.icon}
-                                  alt={step.name}
-                                  width={40}
-                                  height={40}
-                                  className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
-                                />
-                              </div>
-                              <div>
-                                <h3 className="text-lg sm:text-xl font-bold text-[#0A0A0A] group-hover:text-[#D12424] transition-colors tracking-tight">
-                                  {step.name}
-                                </h3>
-                                <p className="text-[11px] font-mono text-[#76756F] uppercase tracking-wider">
-                                  {step.category}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Description */}
-                            <p className="text-xs sm:text-sm text-[#56554F] leading-relaxed mb-4">
-                              {step.desc}
-                            </p>
-
-                            {/* Specific Skills Pills */}
-                            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#D8D7D1]/70">
-                              {step.skills.map((skill) => (
-                                <span
-                                  key={skill}
-                                  className="text-[10.5px] font-semibold text-[#0A0A0A] bg-white border border-[#D8D7D1] rounded-md px-2 py-0.5 shadow-2xs"
-                                >
-                                  {skill}
-                                </span>
-                              ))}
-                            </div>
-                          </motion.div>
-                        </div>
-
-                        {/* Empty Space for the opposite column on desktop */}
-                        <div
-                          className={`hidden lg:block ${
-                            isLeft ? "lg:col-start-2" : "lg:col-start-1"
-                          }`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 2. EXPERIENCE & EDUCATION — TWO-PANEL 3D OPPOSITE OPENING */}
-      {/* ======================================================== */}
-      <section id="experience" className="py-20 border-b border-[#D8D7D1] bg-[#EFEEEB]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-2" style={{ perspective: "1400px" }}>
-            {/* Left Card: Work Experience (Rotates in from Left) */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { rotateY: -8, x: -80, scale: 0.94, opacity: 0 }
-              }
-              whileInView={{ rotateY: 0, x: 0, scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
-                  <span className="rounded-full bg-emerald-50 border border-emerald-500/30 px-3.5 py-1 text-xs font-mono font-bold text-emerald-800">
-                    2020 – Present (6+ Years)
-                  </span>
-                  <a
-                    href="https://infoeye.com/company/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold text-emerald-700 hover:underline"
-                  >
-                    Infoeye Software ↗
-                  </a>
-                </div>
-
-                <h2 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
-                  Senior 3D Designer & Photo Editor
-                </h2>
-                <p className="text-xs text-neutral-500 font-semibold mt-0.5">
-                  Infoeye Software • Sardarshahar, Rajasthan, India
-                </p>
-
-                <ul className="mt-5 space-y-3 text-xs sm:text-sm text-neutral-600">
-                  {[
-                    "Model, simulate, and optimize 3D apparel and hard-surface assets using Blender and CLO 3D.",
-                    "Successfully delivered 300+ production-ready 3D models with strict quality control for international client platforms.",
-                    "Lead non-destructive 16-bit RAW commercial photo retouching, frequency separation, and color grading.",
-                    "Engineered lightweight OBJ, GLB/glTF files with PBR materials for real-time 60 FPS web configurators.",
-                  ].map((point, idx) => (
-                    <motion.li
-                      key={idx}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: idx * 0.08 }}
-                      className="flex items-start gap-2.5"
-                    >
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: idx * 0.08 + 0.1 }}
-                        className="text-emerald-600 font-bold shrink-0 mt-0.5"
-                      >
-                        ✓
-                      </motion.span>
-                      <span>{point}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* President Dinner Recognition Badge */}
-              <div className="mt-6 pt-4 border-t border-neutral-200/80">
-                <a
-                  href="https://infoeye.com/news/staff/11540/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block rounded-2xl border border-amber-300 bg-amber-50/80 p-3.5 text-xs font-bold text-amber-900 shadow-xs transition hover:bg-amber-100/80"
-                >
-                  🏆 Official Executive Recognition: Infoeye President personally visited Ashok&apos;s home for dinner ↗
-                </a>
-              </div>
-            </motion.div>
-
-            {/* Right Card: Education & Vertical Timeline Drawing (Rotates in from Right) */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { rotateY: 8, x: 80, scale: 0.94, opacity: 0 }
-              }
-              whileInView={{ rotateY: 0, x: 0, scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
-                  <span className="rounded-full bg-neutral-100 border border-neutral-200 px-3.5 py-1 text-xs font-mono font-bold text-neutral-700">
-                    Academic Background
-                  </span>
-                  <span className="text-[11px] font-mono text-emerald-700">TIMELINE DRAWING</span>
-                </div>
-
-                {/* Animated Vertical Timeline Line and Degree Nodes */}
-                <div className="relative mt-6 pl-7 space-y-6">
-                  {/* Drawing Line */}
-                  <motion.div
-                    initial={{ scaleY: 0 }}
-                    whileInView={{ scaleY: 1 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute left-2.5 top-3 bottom-3 w-0.5 bg-gradient-to-b from-emerald-500 via-teal-500 to-cyan-500 origin-top shadow-[0_0_10px_rgba(16,185,129,0.4)]"
-                  />
-
-                  {/* Degree 1: M.Sc. */}
-                  <div className="relative">
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.3 }}
-                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-emerald-500 bg-white flex items-center justify-center shadow-xs"
-                    >
-                      <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    </motion.div>
-
-                    <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 hover:border-emerald-500/40 transition">
-                      <h3 className="text-sm font-black text-neutral-950">
-                        Master of Science (M.Sc.) in Computer Science
-                      </h3>
-                      <p className="text-xs font-bold text-emerald-700 mt-0.5">2025 – 2026 (Ongoing)</p>
-                      <p className="mt-1 text-xs text-neutral-500">
-                        Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Degree 2: B.A. */}
-                  <div className="relative">
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.6 }}
-                      className="absolute -left-7 top-1 h-5 w-5 rounded-full border-2 border-cyan-500 bg-white flex items-center justify-center shadow-xs"
-                    >
-                      <div className="h-2 w-2 rounded-full bg-cyan-500" />
-                    </motion.div>
-
-                    <div className="rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 hover:border-cyan-500/40 transition">
-                      <h3 className="text-sm font-black text-neutral-950">
-                        Bachelor of Arts (B.A.)
-                      </h3>
-                      <p className="text-xs font-bold text-cyan-700 mt-0.5">Graduated 2024</p>
-                      <p className="mt-1 text-xs text-neutral-500">
-                        Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between text-xs">
-                <span className="font-bold text-neutral-600">Languages:</span>
-                <span className="font-medium text-emerald-700">Hindi (Native) • English (Proficient)</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 3. SPECIALIZED SOFTWARE & CREATIVE WORKSTATIONS SLIDER   */}
-      {/* ======================================================== */}
-      
-
-      {/* ======================================================== */}
-      {/* 4. FEATURED AI WEB ENGINEERING & FULL-STACK MODULES      */}
-      {/* ======================================================== */}
-      <section id="projects" className="py-20 border-b border-[#D8D7D1] bg-[#EFEEEB]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200/80">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Full-Stack & AI Software Engineering</span>
-              </div>
-              <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-neutral-950 tracking-tight">
-                Featured Web Platforms & AI Applications
-              </h2>
-              <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 max-w-2xl">
-                Combining <strong className="text-neutral-950">M.Sc. Computer Science</strong> technical engineering with advanced <strong className="text-emerald-700">AI Prompt Engineering</strong> to build and deploy production web applications at scale.
-              </p>
-            </div>
-
-            <Link
-              href="/contact?subject=Full-Stack%20Web%20Development%20Inquiry"
-              className="inline-flex items-center gap-2 rounded-full bg-neutral-950 px-6 py-2.5 text-xs font-black text-white shadow-md transition hover:scale-105 shrink-0 hover:bg-neutral-800"
-            >
-              <span>Hire for Web Development</span>
-              <span>✉️</span>
-            </Link>
+      <div className="max-w-[1020px] mx-auto bg-white border border-[#D8D7D1] rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-9 lg:p-11 space-y-7 sm:space-y-9">
+        
+        {/* ====================================================== */}
+        {/* TOP BAR / RESUME ACTION CONTROLS                       */}
+        {/* ====================================================== */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-5 border-b border-[#D8D7D1]">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[#76756F] bg-[#EFEEEB] px-3 py-1 rounded-full border border-[#D8D7D1]">
+              Curriculum Vitae • Live Resume
+            </span>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[10.5px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-500/30 px-3 py-1 rounded-full">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Available for Projects
+            </span>
           </div>
 
-          {/* 2 Floating Technology Modules */}
-          <div className="mt-10 grid gap-8 lg:grid-cols-2" style={{ perspective: "1400px" }}>
-            {/* Project 1: BootKit */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { x: -70, rotateY: -6, scale: 0.94, opacity: 0 }
-              }
-              whileInView={{ x: 0, rotateY: 0, scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                setBootkitPos({ x: e.clientX - rect.left, y: e.clientY - rect.top, isHovered: true });
-              }}
-              onMouseLeave={() => setBootkitPos((prev) => ({ ...prev, isHovered: false }))}
-              className="relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between group"
-            >
-              {/* Internal Cursor Highlight */}
-              {bootkitPos.isHovered && !isReducedMotion && (
-                <div
-                  className="pointer-events-none absolute h-64 w-64 rounded-full bg-emerald-500/10 blur-2xl transition-transform duration-150"
-                  style={{ transform: `translate3d(${bootkitPos.x - 128}px, ${bootkitPos.y - 128}px, 0)` }}
-                />
-              )}
-
-              <div>
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="rounded-full bg-emerald-50 border border-emerald-500/30 px-3 py-0.5 text-[11px] font-bold text-emerald-800">
-                    🛒 Full-Stack E-Commerce & PWA
-                  </span>
-                  <span className="rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-0.5 text-[10.5px] font-mono font-bold">
-                    🤖 AI Prompt Engineered
-                  </span>
-                </div>
-
-                <h3 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
-                  BootKiT — Quick-Commerce & Grocery Delivery Platform
-                </h3>
-                <p className="mt-1 text-xs font-mono font-semibold text-emerald-700">
-                  Next.js • React • TypeScript • Supabase • Tailwind CSS • Vercel • PWA
-                </p>
-
-                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-600">
-                  Built a full-fledged quick-commerce progressive web app using AI-assisted rapid engineering. Features instant category indexing, live voice/text search, localized delivery addresses, dynamic cart & checkout management, and mobile PWA native navigation.
-                </p>
-
-                <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 space-y-2 text-xs text-neutral-600">
-                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-emerald-700">Highlights:</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> 10–20 minute delivery workflow & multi-category product catalog</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> Progressive Web App (PWA) installable on mobile devices</p>
-                  <p className="flex items-start gap-2"><span className="text-emerald-600 font-bold">✓</span> Production deployed on custom domain (bootkit.in)</p>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://www.bootkit.in/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-4 py-2 text-xs font-black text-white hover:bg-neutral-800 transition shadow-xs"
-                  >
-                    <span>Visit bootkit.in</span>
-                    <span className="transition-transform duration-200 group-hover/btn:translate-x-1">↗</span>
-                  </a>
-                  <a
-                    href="https://bootkit.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 transition shadow-xs"
-                  >
-                    Vercel Mirror ↗
-                  </a>
-                </div>
-                <span className="text-[11px] font-mono font-bold text-emerald-700">● Live Production</span>
-              </div>
-            </motion.div>
-
-            {/* Project 2: Lux3D */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { x: 70, rotateY: 6, scale: 0.94, opacity: 0 }
-              }
-              whileInView={{ x: 0, rotateY: 0, scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                setLux3dPos({ x: e.clientX - rect.left, y: e.clientY - rect.top, isHovered: true });
-              }}
-              onMouseLeave={() => setLux3dPos((prev) => ({ ...prev, isHovered: false }))}
-              className="relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)] flex flex-col justify-between group"
-            >
-              {/* Internal Cursor Highlight */}
-              {lux3dPos.isHovered && !isReducedMotion && (
-                <div
-                  className="pointer-events-none absolute h-64 w-64 rounded-full bg-cyan-500/10 blur-2xl transition-transform duration-150"
-                  style={{ transform: `translate3d(${lux3dPos.x - 128}px, ${lux3dPos.y - 128}px, 0)` }}
-                />
-              )}
-
-              <div>
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="rounded-full bg-cyan-50 border border-cyan-500/30 px-3 py-0.5 text-[11px] font-bold text-cyan-800">
-                    🧊 3D WebGL & Creative Platform
-                  </span>
-                  <span className="rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 px-3 py-0.5 text-[10.5px] font-mono font-bold">
-                    🤖 AI-Assisted Architecture
-                  </span>
-                </div>
-
-                <h3 className="mt-4 text-xl sm:text-2xl font-black text-neutral-950 tracking-tight">
-                  Lux3D — 3D & AI Creative Web Platform
-                </h3>
-                <p className="mt-1 text-xs font-mono font-semibold text-cyan-700">
-                  Next.js 16 • TypeScript • Three.js / WebGL • MongoDB • Tailwind CSS 4
-                </p>
-
-                <p className="mt-3 text-xs sm:text-[13px] leading-relaxed text-neutral-600">
-                  Architected an interactive 3D WebGL asset viewer and creative photo retouching showcase platform. Integrated 60 FPS Three.js orbit controls, Before/After image split sliders, and custom real-time traffic tracking analytics.
-                </p>
-
-                <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50/80 p-4 space-y-2 text-xs text-neutral-600">
-                  <p className="font-mono font-bold text-[10.5px] uppercase tracking-wider text-cyan-700">Highlights:</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> 60 FPS real-time Three.js WebGL orbit viewer for Blender GLB assets</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> Interactive Before/After split sliders & high-res image modals</p>
-                  <p className="flex items-start gap-2"><span className="text-cyan-600 font-bold">✓</span> Real-time live visitor tracking engine & admin traffic dashboard</p>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/portfolio"
-                    className="group/btn inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-4 py-2 text-xs font-black text-white hover:bg-neutral-800 transition shadow-xs"
-                  >
-                    <span>Explore 3D Platform</span>
-                    <span className="transition-transform duration-200 group-hover/btn:translate-x-1">↗</span>
-                  </Link>
-                  <Link
-                    href="/work"
-                    className="rounded-full border border-neutral-300 bg-white px-3.5 py-2 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 transition shadow-xs"
-                  >
-                    Creative Work ↗
-                  </Link>
-                </div>
-                <span className="text-[11px] font-mono font-bold text-cyan-700">● Live Production</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 5. COMPANY TEAM & STUDIO LIFE GALLERY                   */}
-      {/* ======================================================== */}
-      <section id="studio" className="py-20 border-b border-[#D8D7D1] bg-[#EFEEEB]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-neutral-200/80">
-            <div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-neutral-950 tracking-tight">
-                Company Team & Studio Life
-              </h2>
-              <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-2xl">
-                Collaborating with passionate engineers, artists, and leaders at Infoeye Software. Building innovative digital fashion and 3D simulation solutions together.
-              </p>
-            </div>
+          {/* Quick Actions: Download Resume PDF & Contact */}
+          <div className="flex items-center gap-2 shrink-0">
             <a
-              href="https://infoeye.com/company/"
+              href="/Ashok_Resume.pdf"
+              download="Ashok_Meena_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold text-neutral-800 shadow-xs transition hover:bg-neutral-50 hover:border-neutral-400 shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#D12424] hover:bg-[#b51c1c] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all active:scale-95"
+              title="Download official PDF copy of Ashok's resume"
             >
-              <span>Visit Infoeye Company</span>
-              <span>↗</span>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              <span>Download Resume (PDF)</span>
             </a>
-          </div>
 
-          {/* 3 Office Photos with Staggered Entrance & 3D Tilt */}
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Photo 1 */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { x: -40, rotate: -2, opacity: 0 }
-              }
-              whileInView={{ x: 0, rotate: 0, opacity: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.75, delay: 0 }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:bg-[#EFEEEB] text-[#0A0A0A] px-3.5 py-2 text-xs font-bold transition-colors cursor-pointer"
+              title="Print or Save as PDF"
             >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
-                <img
-                  src="/office/IMG_0548.jpeg?v=2"
-                  alt="Infoeye Company Team"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-                  loading="lazy"
-                />
-                <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-              </div>
-            </motion.div>
+              <svg className="w-3.5 h-3.5 text-[#56554F]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24-1.076-.672-2.126-1.27-3.076a9.006 9.006 0 0113.1 0c-.598.95-1.03 2-1.27 3.076M6 18h12M9 21h6m-9-9V4a1 1 0 011-1h8a1 1 0 011 1v8" />
+              </svg>
+              <span>Print</span>
+            </button>
 
-            {/* Photo 2 */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { y: 40, scale: 0.95, opacity: 0 }
-              }
-              whileInView={{ y: 0, scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.75, delay: 0.12 }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:border-[#0A0A0A] text-[#0A0A0A] px-3.5 py-2 text-xs font-bold transition-all"
             >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
-                <img
-                  src="/office/IMG_0549.jpeg"
-                  alt="Infoeye Team & Leadership"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-                  loading="lazy"
-                />
-                <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-              </div>
-            </motion.div>
-
-            {/* Photo 3 */}
-            <motion.div
-              initial={
-                isReducedMotion
-                  ? { opacity: 0 }
-                  : { x: 40, rotate: 2, opacity: 0 }
-              }
-              whileInView={{ x: 0, rotate: 0, opacity: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.75, delay: 0.24 }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-3 shadow-md transition-all duration-300"
-            >
-              <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-100">
-                <img
-                  src="/office/1.jpg"
-                  alt="Ashok Meena 3D Studio Workstation"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-                  loading="lazy"
-                />
-                <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-              </div>
-            </motion.div>
+              <span>Hire ✉️</span>
+            </Link>
           </div>
         </div>
-      </section>
+
+        {/* ====================================================== */}
+        {/* RESUME HEADER & CONTACT STRIP                          */}
+        {/* ====================================================== */}
+        <header className="space-y-3 text-left">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#0A0A0A] leading-tight">
+              Ashok Meena
+            </h1>
+            <p className="text-xs sm:text-sm font-bold text-[#D12424] tracking-wide">
+              Senior 3D Designer | 3D Apparel & Digital Fashion | Graphic & Product Visualization
+            </p>
+          </div>
+
+          {/* Compact Contact Metadata Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#D8D7D1] text-[11px] sm:text-xs font-mono text-[#56554F]">
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="text-[#0A0A0A]">📞</span>
+              <a href="tel:+918000093300" className="hover:text-[#D12424] hover:underline truncate">
+                +91 80000 93300
+              </a>
+            </div>
+
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="text-[#0A0A0A]">✉️</span>
+              <a href="mailto:ashokm3414@gmail.com" className="hover:text-[#D12424] hover:underline truncate">
+                ashokm3414@gmail.com
+              </a>
+            </div>
+
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="text-[#0A0A0A]">📍</span>
+              <span className="truncate">Sardarshahar, Rajasthan</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="text-[#0A0A0A]">🌐</span>
+              <Link href="/" className="hover:text-[#D12424] hover:underline font-bold truncate">
+                Official Portfolio
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* ====================================================== */}
+        {/* 1. PROFESSIONAL SUMMARY                                */}
+        {/* ====================================================== */}
+        <section className="space-y-2 text-left">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
+            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
+              Professional Summary
+            </h2>
+          </div>
+
+          <p className="text-xs sm:text-[13px] leading-relaxed text-[#4A4944] font-normal pl-3 sm:pl-4 border-l-2 border-[#D8D7D1]">
+            Senior 3D & Graphic Designer with <strong className="text-[#0A0A0A] font-bold">6+ years of professional experience</strong> creating, optimizing, and delivering high-fidelity 3D assets for digital fashion, e-commerce, and real-time 3D web simulators. Proven expertise in <strong className="text-[#0A0A0A] font-bold">Blender, CLO 3D, and Adobe Creative Suite</strong> with end-to-end knowledge of 3D modeling, UV unwrapping, PBR texturing, lighting, typography, and asset optimization. Successfully delivered <strong className="text-[#D12424] font-bold">300+ production-ready 3D models</strong> and digital assets with strict quality control for global client platforms.
+          </p>
+        </section>
+
+        {/* ====================================================== */}
+        {/* 2. PROFESSIONAL EXPERIENCE                             */}
+        {/* ====================================================== */}
+        <section className="space-y-3.5 text-left">
+          <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#D8D7D1]">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#D12424]" />
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
+                Professional Experience
+              </h2>
+            </div>
+            <span className="font-mono text-[10.5px] sm:text-[11px] font-bold text-[#76756F]">
+              6+ Years Total Tenure
+            </span>
+          </div>
+
+          <div className="space-y-3 pl-3 sm:pl-4 border-l-2 border-[#D8D7D1]">
+            {/* Job Header */}
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-[#0A0A0A]">
+                  Senior 3D & Graphic Designer
+                </h3>
+                <p className="text-[11px] sm:text-xs font-mono text-[#56554F]">
+                  Infoeye Software Pvt. Ltd. • Sardarshahar, Rajasthan, India
+                </p>
+              </div>
+              <span className="font-mono text-[11px] sm:text-xs font-extrabold text-[#D12424] sm:text-right">
+                2020 – Present (6+ Yrs)
+              </span>
+            </div>
+
+            {/* Bullet Points */}
+            <ul className="space-y-1.5 text-xs sm:text-[12.5px] text-[#4A4944] leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Model, simulate, and optimize photorealistic 3D apparel and product assets using <strong>Blender and CLO 3D</strong> for e-commerce platforms and web-based 3D configurators.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Executed full <strong>PBR texturing workflows</strong>, material setups, custom studio lighting, and high-resolution rendering, reducing asset load latency and render times.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Successfully delivered <strong>300+ 3D model corrections and asset libraries</strong> with consistent accuracy, tight turnaround times, and strict QC protocols.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Prepared production-ready, lightweight <strong>OBJ and GLB/glTF files</strong>, verified geometric scale, fixed visual glitches, and managed color/material SKU variants for client 3D simulators.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Applied advanced <strong>typography, layout design, and brand identity principles</strong> to produce promotional graphics, textures, and digital visuals using Photoshop and Illustrator.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
+                <span>Collaborated closely with 3D developers, creative directors, and cross-functional teams across multiple time zones.</span>
+              </li>
+            </ul>
+
+            {/* Executive Honor Callout Box */}
+            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50/70 p-2.5 sm:p-3 text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <span className="text-base shrink-0">🏆</span>
+                <span className="font-semibold text-[11px] sm:text-xs">
+                  Official Executive Recognition: Infoeye President personally visited Ashok&apos;s home for dinner in honor of dedication and senior production excellence.
+                </span>
+              </div>
+              <a
+                href="https://infoeye.com/news/staff/11540/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline shrink-0 hover:text-amber-800 text-[11px]"
+              >
+                Verification ↗
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================== */}
+        {/* 3. SOFTWARE TOOLS & CORE TECHNICAL SKILLS              */}
+        {/* ====================================================== */}
+        <section className="space-y-4 text-left">
+          <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#D8D7D1]">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#D12424]" />
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
+                Software & Technical Skills
+              </h2>
+            </div>
+            <span className="font-mono text-[10.5px] sm:text-[11px] font-bold text-[#76756F]">
+              8 Production Tools
+            </span>
+          </div>
+
+          {/* Compact 4-Column Software Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+            {[
+              {
+                name: "Blender 3D",
+                role: "3D CGI & Modeling",
+                icon: "/Softwear Icon/blender-svgrepo-com.svg",
+              },
+              {
+                name: "CLO 3D",
+                role: "Digital Apparel Fashion",
+                icon: "/Softwear Icon/clo3d.svg",
+              },
+              {
+                name: "Photoshop",
+                role: "16-Bit RAW Retouching",
+                icon: "/Softwear Icon/photoshop.svg",
+              },
+              {
+                name: "Illustrator",
+                role: "Vector & Tech-Packs",
+                icon: "/Softwear Icon/adobe-illustrator-svgrepo-com.svg",
+              },
+              {
+                name: "Lightroom",
+                role: "Color RAW Grading",
+                icon: "/Softwear Icon/adobe-lightroom-svgrepo-com.svg",
+              },
+              {
+                name: "Canva",
+                role: "Marketing Collateral",
+                icon: "/Softwear Icon/canva-icon.webp",
+              },
+              {
+                name: "Excel",
+                role: "Asset Indexing & Data",
+                icon: "/Softwear Icon/excel2-svgrepo-com.svg",
+              },
+              {
+                name: "Antigravity",
+                role: "Agentic AI & Coding",
+                icon: "/Softwear Icon/google-antigravity.png",
+              },
+            ].map((tool) => (
+              <div
+                key={tool.name}
+                className="flex items-center gap-2 p-2 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/40 hover:bg-white hover:border-[#0A0A0A] transition-all"
+              >
+                <div className="relative h-7 w-7 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-white p-1 border border-[#D8D7D1]">
+                  <Image
+                    src={tool.icon}
+                    alt={tool.name}
+                    width={28}
+                    height={28}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11.5px] font-bold text-[#0A0A0A] truncate">
+                    {tool.name}
+                  </div>
+                  <p className="text-[9.5px] font-mono text-[#76756F] truncate">
+                    {tool.role}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Categorized Skills Pills */}
+          <div className="pt-1 space-y-1.5 text-xs">
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
+                3D & Simulation:
+              </span>
+              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
+                {[
+                  "3D Apparel Construction",
+                  "CLO 3D Garment Drape",
+                  "Hard-Surface Sub-D",
+                  "Mesh Topology",
+                  "UV Mapping",
+                  "PBR Texturing",
+                  "Studio Lighting",
+                  "Cycles & Eevee",
+                ].map((s) => (
+                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
+                Post-Production:
+              </span>
+              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
+                {[
+                  "16-Bit RAW Retouching",
+                  "Frequency Separation",
+                  "Skin Micro-Texture",
+                  "Background Removal",
+                  "Clipping Paths",
+                  "Color Correction",
+                  "E-Commerce Catalogues",
+                ].map((s) => (
+                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
+                Pipeline & 3D Web:
+              </span>
+              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
+                {[
+                  "GLB / glTF Exports",
+                  "Draco Compression",
+                  "Low-Poly Retopology",
+                  "OBJ / FBX",
+                  "SKU Variant Management",
+                  "Quality Control (QC)",
+                ].map((s) => (
+                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ==================================================== */}
+          {/* STEP-BY-STEP SOFTWARE PRODUCTION WORKFLOW (ALTERNATING) */}
+          {/* ==================================================== */}
+          <div className="pt-4 border-t border-[#D8D7D1] space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-[#0A0A0A]">
+                  Step-by-Step Software Production Pipeline
+                </h3>
+                <p className="text-[10.5px] font-mono text-[#76756F]">
+                  Real production workflow screenshots across Adobe Creative Cloud, Blender & CLO 3D
+                </p>
+              </div>
+              <span className="font-mono text-[10px] text-[#D12424] font-bold bg-[#EFEEEB] px-2 py-0.5 rounded-full border border-[#D8D7D1]">
+                6 Steps • Click image to zoom
+              </span>
+            </div>
+
+            <div className="space-y-3 pt-1">
+              {PRODUCTION_STEPS.map((item, index) => {
+                const isEven = index % 2 === 1;
+                return (
+                  <div
+                    key={item.step}
+                    className="p-3 sm:p-4 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/25 hover:bg-white hover:border-[#0A0A0A] transition-all"
+                  >
+                    <div className={`grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center`}>
+                      {/* Text Column */}
+                      <div className={`md:col-span-7 space-y-2 ${isEven ? "md:order-2" : "md:order-1"}`}>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-[#0A0A0A] text-white">
+                            {item.step}
+                          </span>
+                          <span className="font-mono text-[10px] font-bold text-[#D12424] bg-red-50 border border-red-200 px-2 py-0.5 rounded">
+                            {item.badge}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="relative h-5 w-5 shrink-0">
+                            <Image
+                              src={item.icon}
+                              alt={item.title}
+                              width={20}
+                              height={20}
+                              className="object-contain"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="text-xs sm:text-sm font-bold text-[#0A0A0A]">
+                              {item.title}
+                            </h4>
+                            <p className="text-[10px] sm:text-[10.5px] font-mono text-[#76756F]">
+                              {item.subtitle}
+                            </p>
+                          </div>
+                        </div>
+
+                        <p className="text-[11px] sm:text-[12px] text-[#4A4944] leading-relaxed">
+                          {item.description}
+                        </p>
+
+                        <div className="pt-1 flex items-center gap-1.5 text-[10px] font-mono text-[#56554F]">
+                          <span className="text-[#0A0A0A] font-bold">Deliverable:</span>
+                          <span className="bg-white border border-[#D8D7D1] px-2 py-0.5 rounded text-[#0A0A0A]">
+                            {item.deliverable}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Image Preview Column */}
+                      <div className={`md:col-span-5 ${isEven ? "md:order-1" : "md:order-2"}`}>
+                        <div
+                          onClick={() => setSelectedImage({ src: item.image, title: item.title, step: item.step })}
+                          className="group relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-[#D8D7D1] bg-[#111] cursor-pointer shadow-xs hover:border-[#D12424] transition-all"
+                          title={`Click to expand ${item.title} workspace screenshot`}
+                        >
+                          <Image
+                            src={item.image}
+                            alt={`${item.title} Production Interface`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 400px"
+                            className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 text-white font-mono text-[10px] px-2.5 py-1 rounded-full border border-white/20 backdrop-blur-sm">
+                              🔍 Click to Zoom
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================== */}
+        {/* 4. EDUCATION                                           */}
+        {/* ====================================================== */}
+        <section className="space-y-3 text-left">
+          <div className="flex items-center gap-2 pb-1.5 border-b border-[#D8D7D1]">
+            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
+            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
+              Education
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Degree 1 */}
+            <div className="p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30 space-y-1">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="text-xs sm:text-[12.5px] font-bold text-[#0A0A0A]">
+                  Master of Science (M.Sc.) in Computer Science
+                </h3>
+                <span className="font-mono text-[10.5px] font-bold text-[#D12424] shrink-0">
+                  2025 – 2026
+                </span>
+              </div>
+              <p className="text-[10.5px] text-[#56554F]">
+                Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
+              </p>
+              <span className="inline-block text-[9.5px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-sm">
+                Pursuing (Ongoing)
+              </span>
+            </div>
+
+            {/* Degree 2 */}
+            <div className="p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30 space-y-1">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="text-xs sm:text-[12.5px] font-bold text-[#0A0A0A]">
+                  Bachelor of Arts (B.A.)
+                </h3>
+                <span className="font-mono text-[10.5px] font-bold text-[#56554F] shrink-0">
+                  Graduated 2024
+                </span>
+              </div>
+              <p className="text-[10.5px] text-[#56554F]">
+                Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
+              </p>
+              <span className="inline-block text-[9.5px] font-mono text-[#56554F] bg-white border border-[#D8D7D1] px-2 py-0.5 rounded-sm">
+                Completed
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================== */}
+        {/* 5. LANGUAGES & PROFESSIONAL STRENGTHS                  */}
+        {/* ====================================================== */}
+        <section className="space-y-3 text-left">
+          <div className="flex items-center gap-2 pb-1.5 border-b border-[#D8D7D1]">
+            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
+            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
+              Languages & Professional Strengths
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {/* Languages */}
+            <div className="space-y-1.5 p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30">
+              <p className="font-mono text-[10.5px] font-bold uppercase text-[#0A0A0A]">
+                Languages:
+              </p>
+              <ul className="space-y-1 text-[#4A4944] text-[11px] sm:text-xs">
+                <li>
+                  <strong className="text-[#0A0A0A]">Hindi:</strong> Native speaker. Devanagari script, translation, and proofreading.
+                </li>
+                <li>
+                  <strong className="text-[#0A0A0A]">English:</strong> Professional working proficiency for briefs and client communication.
+                </li>
+              </ul>
+            </div>
+
+            {/* Strengths */}
+            <div className="space-y-1.5 p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30">
+              <p className="font-mono text-[10.5px] font-bold uppercase text-[#0A0A0A]">
+                Key Professional Strengths:
+              </p>
+              <div className="flex flex-wrap gap-1 pt-0.5 text-[10.5px] text-[#4A4944]">
+                {[
+                  "Attention to Detail",
+                  "Visual Quality Assurance",
+                  "Tight Deadline Turnaround",
+                  "Remote Work Discipline",
+                  "Cross-Functional Teamwork",
+                  "AI & Data Accuracy",
+                ].map((strength) => (
+                  <span key={strength} className="bg-white border border-[#D8D7D1] rounded-md px-1.5 py-0.5">
+                    ✓ {strength}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* ====================================================== */}
+        {/* BOTTOM ACTION BAR (RESUME DOWNLOAD & CONTACT)          */}
+        {/* ====================================================== */}
+        <footer className="pt-5 border-t border-[#D8D7D1] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+          <div className="text-left">
+            <p className="text-xs font-bold text-[#0A0A0A]">
+              Need a verified offline copy of Ashok&apos;s Curriculum Vitae?
+            </p>
+            <p className="text-[10.5px] font-mono text-[#76756F]">
+              Official PDF formatted for HR review, client audits, and contract documentation.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href="/Ashok_Resume.pdf"
+              download="Ashok_Meena_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#D12424] hover:bg-[#b51c1c] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all active:scale-95"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              <span>Download Resume (PDF)</span>
+            </a>
+
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:border-[#0A0A0A] hover:bg-[#EFEEEB] text-[#0A0A0A] px-4 py-2 text-xs font-bold transition-all"
+            >
+              <span>Contact ✉️</span>
+            </Link>
+          </div>
+        </footer>
+
+      </div>
 
       {/* ======================================================== */}
-      {/* 6. BESPOKE CONTACT INQUIRY SECTION                       */}
+      {/* FULL-SCREEN LIGHTBOX MODAL FOR PRODUCTION WORKFLOW IMAGE */}
       {/* ======================================================== */}
-     
+      {selectedImage && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="relative max-w-5xl w-full bg-[#1A1A1A] border border-white/20 rounded-2xl overflow-hidden shadow-2xl space-y-2 p-3 sm:p-4 text-left"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-[#D12424] bg-white/10 px-2.5 py-0.5 rounded">
+                  {selectedImage.step}
+                </span>
+                <span className="text-white text-xs sm:text-sm font-bold">
+                  {selectedImage.title} • High-Resolution Production Workspace
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedImage(null)}
+                className="text-white/70 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+                aria-label="Close image modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="relative aspect-[16/10] w-full bg-black rounded-lg overflow-hidden border border-white/10">
+              <Image
+                src={selectedImage.src}
+                alt={selectedImage.title}
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-neutral-400">
+              <span>Press ESC or click background to close</span>
+              <a
+                href={selectedImage.src}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#D12424] hover:underline"
+              >
+                Open Original Image ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
