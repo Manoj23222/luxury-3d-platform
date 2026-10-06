@@ -3,6 +3,7 @@ import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import cloudinary from "@/lib/cloudinary";
 import { getCurrentUser } from "@/lib/auth";
+import { filterOutDeletedAssets } from "@/lib/deleted-assets";
 
 const MB = 1024 * 1024;
 
@@ -132,9 +133,11 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .lean();
 
+    const filtered = await filterOutDeletedAssets(products);
+
     return NextResponse.json({
       success: true,
-      products,
+      products: filtered,
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -287,7 +290,7 @@ downloadZipUrl: uploaded.zipFile?.url || zipUrlInput || downloadZipUrl,
 
       price,
       isFree,
-      downloadType,
+      downloadType: (downloadType as any) || "Free",
     
       license,
 
@@ -295,13 +298,13 @@ downloadZipUrl: uploaded.zipFile?.url || zipUrlInput || downloadZipUrl,
       seoDescription,
       seoKeywords,
 
-      status,
+      status: (status as any) || "Draft",
       featured,
-      visibility,
+      visibility: (visibility as any) || "Public",
 
-     creatorId: currentUser.id,
-creatorName: currentUser.name || "",
-creatorEmail: currentUser.email || "",
+      creatorId: currentUser.id,
+      creatorName: currentUser.name || "",
+      creatorEmail: currentUser.email || "",
     });
 
     return NextResponse.json({ success: true, product });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
+import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
 import Navbar from "@/components/layout/Navbar";
 
 const inter = Inter({
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} bg-white text-black antialiased`} suppressHydrationWarning>
         <AnalyticsTracker />
+        <CookieConsentBanner />
         <Navbar />
         {children}
       </body>

@@ -1,241 +1,83 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
+import { useState, useRef, useCallback, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
-interface ProjectType {
-  id: string;
-  label: string;
-  icon: string;
-  tagline: string;
-  code: string;
+interface HelpTopic {
+  question: string;
+  answer: string;
+  category: string;
 }
 
-const projectTypes: ProjectType[] = [
+const HELP_TOPICS: HelpTopic[] = [
   {
-    id: "3d-product",
-    label: "3D Product Modeling & CGI",
-    icon: "🏺",
-    tagline: "Sub-D topology, cosmetics, jewelry & product CGI",
-    code: "MOD-01",
+    category: "Delivery & Turnaround",
+    question: "What are your standard turnaround times for 3D and photo editing?",
+    answer:
+      "Most 3D product models (GLB / OBJ) and commercial photo retouching batches are completed within 24 to 72 hours. For urgent project deadlines or immediate campaign launches, fast-track delivery is available within 12–24 hours.",
   },
   {
-    id: "clo3d-fashion",
-    label: "CLO 3D Digital Fashion",
-    icon: "👗",
-    tagline: "2D to 3D garment patterning & cloth drape physics",
-    code: "MOD-02",
+    category: "File Formats & Assets",
+    question: "Which file formats and deliverables do you provide?",
+    answer:
+      "For 3D projects: Real-time GLB/glTF (web optimized), Blender (.blend), OBJ, FBX, and 4K PBR textures (Metallic/Roughness). For Creative & Retouching: 16-Bit master PSD files with non-destructive layers, print-ready TIFF (300 DPI), and web-ready WebP/JPEG.",
   },
   {
-    id: "photo-retouching",
-    label: "Photo Retouching & Grading",
-    icon: "🎨",
-    tagline: "16-Bit RAW frequency separation & commercial grading",
-    code: "MOD-03",
+    category: "Revisions & Approvals",
+    question: "How does the revision and review process work?",
+    answer:
+      "Every project includes clear milestone previews (wireframe, clay render, lighting setup, and color grade). You receive iterative review rounds to ensure the final output matches your vision perfectly before final asset handover.",
   },
   {
-    id: "web-3d",
-    label: "Real-Time Web 3D & GLB",
-    icon: "⚡",
-    tagline: "60 FPS Three.js, Draco compression & glTF assets",
-    code: "MOD-04",
+    category: "Commercial Rights & NDA",
+    question: "Do you sign NDAs and provide full commercial usage rights?",
+    answer:
+      "Yes, 100%. All client assets, unreleased products, and brand references are strictly confidential under mutual NDA. Upon final delivery, you own full commercial and worldwide reproduction rights for advertising, e-commerce, and packaging.",
   },
   {
-    id: "fullstack-ai",
-    label: "AI Full-Stack Web Apps",
-    icon: "🌐",
-    tagline: "Next.js 16, TypeScript, Supabase & PWAs",
-    code: "MOD-05",
-  },
-  {
-    id: "collaboration",
-    label: "General Creative Inquiry",
-    icon: "🤝",
-    tagline: "Custom freelance, studio contracts & partnerships",
-    code: "MOD-06",
+    category: "Urgent Support",
+    question: "Need urgent assistance or have an active project query?",
+    answer:
+      "For real-time urgent assistance, you can message directly on WhatsApp at +91 80000 93300 or send an email to ashokm3414@gmail.com for priority studio response within 2–4 hours.",
   },
 ];
 
-// Interactive Production Module Card Component
-function ProjectModuleCard({
-  pt,
-  isSelected,
-  onSelect,
-  isReducedMotion,
-}: {
-  pt: ProjectType;
-  isSelected: boolean;
-  onSelect: () => void;
-  isReducedMotion: boolean | null;
-}) {
-  const cardRef = useRef<HTMLButtonElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (isReducedMotion || !cardRef.current) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const xPct = (x / rect.width - 0.5) * 2;
-      const yPct = (y / rect.height - 0.5) * 2;
-
-      setTilt({
-        x: -yPct * 2.8,
-        y: xPct * 3.2,
-      });
-    },
-    [isReducedMotion]
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setTilt({ x: 0, y: 0 });
-    setIsHovered(false);
-  }, []);
-
-  return (
-    <button
-      ref={cardRef}
-      type="button"
-      onClick={onSelect}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      className={`group relative flex items-start gap-3.5 rounded-2xl p-4 text-left transition-all duration-300 cursor-pointer border backdrop-blur-xl overflow-hidden select-none ${
-        isSelected
-          ? "border-emerald-600 bg-emerald-50/90 shadow-[0_4px_20px_rgba(16,185,129,0.15)] ring-2 ring-emerald-500/30"
-          : "border-neutral-200/80 bg-white/80 hover:border-neutral-300 hover:bg-white shadow-xs"
-      }`}
-      style={{
-        perspective: "800px",
-        transform:
-          !isReducedMotion && isHovered
-            ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(8px) scale(1.02)`
-            : isSelected
-            ? "scale(1.015)"
-            : "scale(1)",
-        transformStyle: "preserve-3d",
-      }}
-    >
-      {/* Active Light Line Perimeter */}
-      {isSelected && (
-        <motion.div
-          layoutId="selectedModuleGlow"
-          transition={{ type: "spring", stiffness: 350, damping: 28 }}
-          className="pointer-events-none absolute inset-0 rounded-2xl border border-emerald-500/80 shadow-[inset_0_0_15px_rgba(52,211,153,0.12)]"
-        />
-      )}
-
-      {/* Light Sweep Reflection on Hover */}
-      <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-emerald-100/40 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-
-      {/* Module Code Badge & Icon */}
-      <div className="relative flex flex-col items-center gap-1 shrink-0">
-        <span
-          className={`flex h-10 w-10 items-center justify-center rounded-xl border text-lg shadow-inner transition-all duration-300 ${
-            isSelected
-              ? "bg-emerald-100 border-emerald-300 text-emerald-800 scale-110 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
-              : "bg-neutral-100 border-neutral-200 group-hover:scale-105 group-hover:border-neutral-300"
-          }`}
-          style={{ transform: !isReducedMotion && isHovered ? "translateZ(12px)" : undefined }}
-        >
-          {pt.icon}
-        </span>
-        <span className="text-[9px] font-mono font-bold tracking-widest text-neutral-500">
-          {pt.code}
-        </span>
-      </div>
-
-      {/* Title, Tagline & Active Indicator */}
-      <div className="min-w-0 flex-1 pt-0.5">
-        <div className="flex items-center justify-between gap-1">
-          <p
-            className={`text-xs sm:text-[13px] font-bold leading-tight truncate transition-colors duration-200 ${
-              isSelected ? "text-emerald-900" : "text-neutral-900 group-hover:text-emerald-800"
-            }`}
-          >
-            {pt.label}
-          </p>
-
-          {/* Active Status Beacon */}
-          {isSelected && (
-            <span className="flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[8.5px] font-mono font-bold text-emerald-800 shadow-xs animate-pulse">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span>ACTIVE</span>
-            </span>
-          )}
-        </div>
-
-        <p className="text-[11px] text-neutral-500 leading-relaxed truncate mt-1 group-hover:text-neutral-700 transition-colors">
-          {pt.tagline}
-        </p>
-      </div>
-    </button>
-  );
-}
-
-function ContactFormContent() {
+function ContactAndHelpContent() {
   const searchParams = useSearchParams();
   const initialSubject = searchParams.get("subject") || "";
   const isReducedMotion = useReducedMotion();
 
+  // Contact Form State
   const [form, setForm] = useState({
     name: "",
     email: "",
-    projectType: "3D Product Modeling & CGI",
-    subject: "",
+    topic: "3D Product Modeling",
+    subject: initialSubject || "",
     message: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [activeSignal, setActiveSignal] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Parallax / Cursor Light State
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Help Accordion State
+  const [openHelpIdx, setOpenHelpIdx] = useState<number | null>(0);
 
-  useEffect(() => {
-    if (initialSubject) {
-      setForm((prev) => ({
-        ...prev,
-        subject: initialSubject,
-      }));
-    }
-  }, [initialSubject]);
-
-  // Subtle Mouse Parallax & Follow Light
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (isReducedMotion || !containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      setCursorPos({ x, y });
-    },
-    [isReducedMotion]
-  );
-
-  const update = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-    setErrorMessage("");
+  const toggleHelp = (idx: number) => {
+    setOpenHelpIdx((prev) => (prev === idx ? null : idx));
   };
 
-  const handleSelectModule = (label: string) => {
-    update("projectType", label);
-    setActiveSignal(true);
-    setTimeout(() => setActiveSignal(false), 650);
-  };
+  const isEmailValid = useMemo(() => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+  }, [form.email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setErrorMessage("Please fill in your name, email, and a project description.");
+      setErrorMessage("Please fill in your name, email, and message.");
       return;
     }
 
@@ -246,7 +88,7 @@ function ContactFormContent() {
       const payload = {
         name: form.name.trim(),
         email: form.email.trim(),
-        subject: form.subject.trim() || `${form.projectType} opportunity`,
+        subject: form.subject.trim() || `${form.topic} Inquiry`,
         message: form.message.trim(),
       };
 
@@ -263,513 +105,447 @@ function ContactFormContent() {
         setSubmitted(true);
       } else {
         setErrorMessage(
-          data.message || "Failed to transmit dispatch. Please try again or reach out directly."
+          data.message || "Unable to send message. Please reach out directly via email or WhatsApp."
         );
       }
     } catch {
       setLoading(false);
-      setErrorMessage("Network connection error. Please try again or reach out via email/WhatsApp.");
+      setErrorMessage("Network error. Please try again or message via WhatsApp directly.");
     }
   };
 
-  const isEmailValid = useMemo(() => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-  }, [form.email]);
-
   return (
-    <div
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative space-y-12 select-none"
-    >
-      {/* ================= BACKGROUND AMBIENT CINEMATIC LIGHTING ================= */}
-      <div className="pointer-events-none absolute -inset-20 z-0 overflow-hidden">
-        {/* Cursor Following Ambient Glow */}
-        {!isReducedMotion && (
-          <div
-            className="absolute h-[600px] w-[600px] rounded-full bg-emerald-500/[0.04] blur-[150px] transition-transform duration-700 ease-out"
-            style={{
-              transform: `translate3d(${cursorPos.x - 300}px, ${cursorPos.y - 300}px, 0)`,
-            }}
-          />
-        )}
-        <div className="absolute top-10 left-10 h-96 w-96 rounded-full bg-indigo-600/10 blur-[130px] animate-pulse" />
-        <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-emerald-600/10 blur-[130px]" />
-      </div>
-
+    <div className="relative w-full max-w-[1520px] mx-auto px-5 sm:px-8 lg:px-12 pt-28 pb-24">
       {/* ======================================================== */}
-      {/* 1. CINEMATIC HERO BANNER — STUDIO POWER-ON SEQUENCE      */}
+      {/* 1. CINEMATIC HERO SECTION                                */}
       {/* ======================================================== */}
       <motion.div
-        initial={
-          isReducedMotion
-            ? { opacity: 0 }
-            : { opacity: 0, y: 30, filter: "blur(8px)", scale: 0.985 }
-        }
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        className="relative overflow-hidden rounded-3xl border border-neutral-200/80 bg-gradient-to-br from-white via-[#fbfbfe] to-[#f6f8fb] p-8 sm:p-12 lg:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] text-neutral-950 backdrop-blur-2xl"
+        initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="space-y-6 pb-12 sm:pb-16 border-b border-[#DCDAD4]"
       >
-        {/* Ambient Subtle Cyber Grid Overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        {/* Status Badge */}
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D12424] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#D12424]" />
+          </span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#2A2A28]">
+            Direct Studio Desk • Available for Projects &amp; Assistance
+          </span>
+        </div>
 
-        {/* Ambient Corner Flare */}
-        <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-emerald-500/10 blur-[90px]" />
-        <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-cyan-500/10 blur-[90px]" />
+        {/* Large Typographic Title */}
+        <div className="space-y-2">
+          <h1 className="text-[3.25rem] sm:text-[5.5rem] lg:text-[7rem] font-medium tracking-[-0.035em] leading-[0.92] text-[#0A0A0A] uppercase select-none">
+            <span className="block hover:translate-x-1.5 transition-transform duration-300">
+              Contact &amp;
+            </span>
+            <span className="block hover:translate-x-1.5 transition-transform duration-300 text-[#D12424]">
+              Help Desk
+            </span>
+          </h1>
+        </div>
 
-        <div className="relative z-10 max-w-3xl space-y-5">
-          {/* Status Indicator Pill */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="inline-flex items-center gap-2.5 rounded-full bg-white/90 border border-emerald-500/30 px-4 py-1.5 text-xs font-bold text-emerald-700 backdrop-blur-xl shadow-xs"
+        {/* Subtitle */}
+        <p className="text-base sm:text-xl font-normal leading-relaxed text-[#2A2A28] max-w-2xl">
+          Get in touch for bespoke 3D assets, photo retouching, or project support.{" "}
+          <span className="font-medium text-[#0A0A0A] block mt-1">
+            Every inquiry receives a personal review within 2–4 hours.
+          </span>
+        </p>
+
+        {/* Quick Contact Ribbon */}
+        <div className="pt-2 flex flex-wrap items-center gap-3">
+          <a
+            href="mailto:ashokm3414@gmail.com"
+            className="inline-flex items-center gap-2 rounded-full border border-[#DCDAD4] bg-white/80 px-4 py-2 text-xs font-semibold text-[#0A0A0A] hover:border-[#D12424] hover:text-[#D12424] transition-colors shadow-xs"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-            </span>
-            <span className="tracking-widest uppercase text-[10px] font-mono">
-              Direct Studio & Production Concierge
-            </span>
-          </motion.div>
-
-          {/* Hero Heading with Metallic Title Reveal */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-neutral-950 leading-[1.1]"
+            <span>ashokm3414@gmail.com</span>
+          </a>
+          <a
+            href="https://wa.me/918000093300"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-[#DCDAD4] bg-white/80 px-4 py-2 text-xs font-semibold text-[#0A0A0A] hover:border-[#D12424] hover:text-[#D12424] transition-colors shadow-xs"
           >
-            Let’s Engineer Something{" "}
-            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600">
-              Exceptional
-              {/* Single moving highlight across the word Exceptional */}
-              <motion.span
-                initial={{ x: "-100%", opacity: 0 }}
-                animate={{ x: "200%", opacity: [0, 1, 0] }}
-                transition={{ duration: 1.2, delay: 1.2, ease: "easeInOut" }}
-                className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12"
-              />
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.55 }}
-            className="text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed max-w-2xl"
-          >
-            Initiate a high-end collaboration for 3D CGI, CLO digital fashion, hyper-realistic photo
-            grading, or full-stack web platforms. All inquiries are reviewed personally within 2–4
-            hours.
-          </motion.p>
-
-          {/* Quick Highlight Spec Badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.7 }}
-            className="flex flex-wrap items-center gap-3 pt-2"
-          >
-            <span className="inline-flex items-center gap-2 rounded-xl bg-white/80 border border-neutral-200/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 backdrop-blur-md shadow-xs">
-              <span className="text-emerald-600">⚡</span> Response: 2–4 Hours
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-xl bg-white/80 border border-neutral-200/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 backdrop-blur-md shadow-xs">
-              <span className="text-cyan-600">🌍</span> Global Remote Contracts
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-xl bg-white/80 border border-neutral-200/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 backdrop-blur-md shadow-xs">
-              <span className="text-amber-600">💎</span> Uncompromising Quality
-            </span>
-          </motion.div>
+            <span>WhatsApp: +91 80000 93300</span>
+          </a>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DCDAD4] bg-[#F7F6F3] px-3.5 py-2 text-xs font-medium text-[#5A5852]">
+            <span>Jaipur, Rajasthan, India</span>
+          </span>
         </div>
       </motion.div>
 
       {/* ======================================================== */}
-      {/* 2. MAIN 2-COLUMN CINEMATIC COMMAND CENTER INTERFACE      */}
+      {/* 2. TWO-COLUMN INTERFACE: CONTACT + HELP                  */}
       {/* ======================================================== */}
-      <motion.div
-        initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-        className="grid gap-8 lg:grid-cols-12 items-start"
-      >
-        {/* ======================================================== */}
-        {/* LEFT COLUMN: PROJECT MODULES & PRODUCTION ROADMAP        */}
-        {/* ======================================================== */}
-        <div className="lg:col-span-6 space-y-6">
-          {/* A. Project Domain Selector Cards */}
-          <div className="rounded-3xl border border-neutral-200/80 bg-white/80 backdrop-blur-2xl p-6 sm:p-7 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)] space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-200/70 pb-4">
-              <div>
-                <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-600">
-                  Step 01 / Production Modules
-                </p>
-                <h3 className="text-sm font-black text-neutral-900 mt-0.5 tracking-tight">
-                  Choose Your Project Domain
-                </h3>
+      <div className="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        {/* ====================================================== */}
+        {/* LEFT COLUMN: CONTACT DISPATCH FORM                     */}
+        {/* ====================================================== */}
+        <motion.div
+          initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-7 space-y-6"
+        >
+          <div className="rounded-3xl border border-[#DCDAD4] bg-white p-6 sm:p-10 shadow-sm">
+            <div className="pb-6 border-b border-[#EFEFED]">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D12424]">
+                  Step 01 • Send Message
+                </span>
+                <span className="text-[11px] text-[#5A5852] font-mono">
+                  Response within 2–4 hrs
+                </span>
               </div>
-              <span className="rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700 px-3 py-1 text-[10px] font-mono font-bold">
-                6 Specialized Modules
-              </span>
-            </div>
-
-            {/* 6 Interactive Project Module Cards */}
-            <div className="grid gap-3 sm:grid-cols-2">
-              {projectTypes.map((pt) => (
-                <ProjectModuleCard
-                  key={pt.id}
-                  pt={pt}
-                  isSelected={form.projectType === pt.label}
-                  onSelect={() => handleSelectModule(pt.label)}
-                  isReducedMotion={isReducedMotion}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* B. Transparent Cinematic Execution Roadmap (3-Step Connected Pipeline) */}
-          <div className="rounded-3xl border border-neutral-200/80 bg-white/80 backdrop-blur-2xl p-6 sm:p-7 space-y-5 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.05)]">
-            <div className="flex items-center justify-between border-b border-neutral-200/70 pb-3.5">
-              <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-600">
-                Execution Roadmap • 3-Stage Pipeline
+              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#0A0A0A] mt-1.5">
+                Send a Project Inquiry
+              </h2>
+              <p className="text-xs sm:text-sm text-[#5A5852] mt-1">
+                Fill in your details below and we will get back to you promptly.
               </p>
-              <span className="text-[10px] font-mono text-neutral-500">01 ➔ 02 ➔ 03</span>
             </div>
-
-            {/* 3 Connected Pipeline Steps */}
-            <div className="relative grid gap-3 text-xs text-neutral-600">
-              {/* Step 1 */}
-              <div className="group relative flex items-start gap-3.5 rounded-2xl bg-neutral-50/80 p-4 border border-neutral-200/70 hover:border-emerald-500/40 hover:bg-emerald-50/30 transition-all duration-300">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-xs font-mono font-black text-neutral-950 shadow-xs">
-                  01
-                </span>
-                <div>
-                  <h4 className="font-bold text-neutral-900 leading-snug">
-                    Initial Assessment (2–4 Hrs)
-                  </h4>
-                  <p className="text-neutral-500 text-[11px] leading-relaxed mt-0.5">
-                    Comprehensive evaluation of technical specs, poly-count targets, moodboards, and delivery milestones.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="group relative flex items-start gap-3.5 rounded-2xl bg-neutral-50/80 p-4 border border-neutral-200/70 hover:border-emerald-500/40 hover:bg-emerald-50/30 transition-all duration-300">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-cyan-600 text-xs font-mono font-black text-neutral-950 shadow-xs">
-                  02
-                </span>
-                <div>
-                  <h4 className="font-bold text-neutral-900 leading-snug">
-                    Milestones & Production Sample
-                  </h4>
-                  <p className="text-neutral-500 text-[11px] leading-relaxed mt-0.5">
-                    Subdivision modeling previews, cloth physics calibration, and clear iteration milestones.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="group relative flex items-start gap-3.5 rounded-2xl bg-neutral-50/80 p-4 border border-neutral-200/70 hover:border-emerald-500/40 hover:bg-emerald-50/30 transition-all duration-300">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-600 text-xs font-mono font-black text-neutral-950 shadow-xs">
-                  03
-                </span>
-                <div>
-                  <h4 className="font-bold text-neutral-900 leading-snug">
-                    Final Delivery & Handover
-                  </h4>
-                  <p className="text-neutral-500 text-[11px] leading-relaxed mt-0.5">
-                    Pristine 8K CGI renders, 60 FPS optimized GLB meshes, or full-stack web builds delivered friction-free.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ======================================================== */}
-        {/* RIGHT COLUMN: CINEMATIC TRANSMISSION TERMINAL FORM       */}
-        {/* ======================================================== */}
-        <div className="lg:col-span-6 sticky top-28">
-          <div className="relative overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/90 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.07)]">
-            {/* Subtle Holographic Scanning Line Animation during Transmission */}
-            {loading && (
-              <motion.div
-                initial={{ top: "-10%" }}
-                animate={{ top: "110%" }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                className="pointer-events-none absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent shadow-[0_0_15px_rgba(52,211,153,0.8)] z-30"
-              />
-            )}
-
-            {/* Connecting Visual Signal Pulse */}
-            <AnimatePresence>
-              {activeSignal && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="pointer-events-none absolute inset-0 rounded-3xl border-2 border-emerald-500/50 shadow-[inset_0_0_30px_rgba(16,185,129,0.15)] z-20"
-                />
-              )}
-            </AnimatePresence>
-
-            {/* Subtle Inner Ambient Glow */}
-            <div className="pointer-events-none absolute top-0 right-0 h-64 w-64 bg-emerald-500/5 rounded-full blur-3xl" />
 
             {submitted ? (
-              /* ================= SUCCESS STATE: CINEMATIC CONFIRMATION ================= */
+              /* Success State */
               <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="py-14 text-center space-y-6"
+                className="py-12 text-center space-y-5"
               >
-                {/* Expanding Glowing Ring Signal */}
-                <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1.25, opacity: [0, 0.6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
-                    className="absolute inset-0 rounded-full border border-emerald-400"
-                  />
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 border-2 border-emerald-500 text-2xl text-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
-                    ✓
-                  </div>
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FBF0F0] border border-[#D12424]/30 text-2xl font-bold text-[#D12424]">
+                  ✓
                 </div>
-
-                <div className="space-y-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-300 px-3 py-0.5 text-[10px] font-mono font-bold text-emerald-800">
-                    TRANSMISSION PROTOCOL ACKNOWLEDGED
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight">
-                    Transmission Successful
+                <div className="space-y-1.5 max-w-md mx-auto">
+                  <h3 className="text-2xl font-semibold text-[#0A0A0A]">
+                    Message Sent Successfully
                   </h3>
-                  <p className="text-xs sm:text-sm text-neutral-600 max-w-md mx-auto leading-relaxed">
-                    Your project requirements have been securely delivered to the studio inbox. Expect a personal response at{" "}
-                    <strong className="text-emerald-700 font-semibold">{form.email}</strong> within 2–4 hours.
+                  <p className="text-xs sm:text-sm text-[#5A5852] leading-relaxed">
+                    Thank you, <strong className="text-[#0A0A0A]">{form.name}</strong>. Your inquiry has been sent to our studio desk. A confirmation response will be sent to{" "}
+                    <strong className="text-[#D12424]">{form.email}</strong> shortly.
                   </p>
                 </div>
-
-                <div className="pt-4 flex flex-wrap items-center justify-center gap-3.5">
+                <div className="pt-3 flex items-center justify-center gap-3">
                   <button
+                    type="button"
                     onClick={() => {
                       setSubmitted(false);
                       setForm({
                         name: "",
                         email: "",
-                        projectType: "3D Product Modeling & CGI",
+                        topic: "3D Product Modeling",
                         subject: "",
                         message: "",
                       });
                     }}
-                    className="rounded-full bg-neutral-950 text-white px-7 py-3 text-xs font-black hover:bg-neutral-800 transition-all duration-200 shadow-md cursor-pointer hover:scale-105"
+                    className="rounded-full bg-[#0A0A0A] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#D12424] transition cursor-pointer"
                   >
-                    Send Another Dispatch
+                    Send Another Message
                   </button>
-
                   <Link
-                    href="/portfolio"
-                    className="rounded-full border border-neutral-300 bg-neutral-100 px-6 py-3 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-200 transition-all duration-200 backdrop-blur-md"
+                    href="/"
+                    className="rounded-full border border-[#DCDAD4] bg-[#F7F6F3] px-5 py-2.5 text-xs font-bold text-[#0A0A0A] hover:bg-white transition"
                   >
-                    Explore 3D Models ↗
+                    Back to Home
                   </Link>
                 </div>
               </motion.div>
             ) : (
-              /* ================= INTERACTIVE DISPATCH TERMINAL FORM ================= */
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Form Header */}
-                <div className="border-b border-neutral-200/70 pb-4">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <h3 className="text-xl font-black text-neutral-950 tracking-tight">
-                        Secure Dispatch Form
-                      </h3>
-                    </div>
-
-                    {/* Animated Project-Type Badge */}
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={form.projectType}
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        transition={{ duration: 0.25 }}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-300/60 px-3 py-1 text-[11px] font-bold text-emerald-800 backdrop-blur-md shadow-xs"
-                      >
-                        <span>🎯</span>
-                        <span className="truncate max-w-[180px]">{form.projectType}</span>
-                      </motion.span>
-                    </AnimatePresence>
-                  </div>
-
-                  <p className="text-xs text-neutral-500 mt-1">
-                    Provide your creative specifications below for priority studio review.
-                  </p>
-                </div>
-
-                {/* Error Banner */}
+              /* Contact Form */
+              <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                 {errorMessage && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl border border-red-500/40 bg-red-50 p-3.5 text-xs font-semibold text-red-700 backdrop-blur-md shadow-xs"
-                  >
-                    ⚠️ {errorMessage}
-                  </motion.div>
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs font-medium text-red-700">
+                    {errorMessage}
+                  </div>
                 )}
 
-                {/* Name Input */}
+                {/* Name */}
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-bold text-neutral-800">
-                      Your Name <span className="text-emerald-600">*</span>
-                    </label>
-                    {form.name.trim().length > 0 && (
-                      <span className="text-[10px] font-mono text-emerald-600 font-bold">
-                        ✓ ACTIVE
-                      </span>
-                    )}
-                  </div>
+                  <label className="block text-xs font-bold text-[#0A0A0A] mb-1.5">
+                    Your Name <span className="text-[#D12424]">*</span>
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Elena Rostova"
                     value={form.name}
                     onFocus={() => setFocusedField("name")}
                     onBlur={() => setFocusedField(null)}
-                    onChange={(e) => update("name", e.target.value)}
-                    className={`w-full rounded-2xl border px-4 py-3.5 text-xs font-medium text-neutral-950 placeholder:text-neutral-400 transition-all duration-200 focus:outline-hidden shadow-inner ${
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, name: e.target.value }))
+                    }
+                    placeholder="e.g. Elena Rostova"
+                    className={`w-full rounded-2xl border px-4 py-3 text-xs font-medium text-[#0A0A0A] placeholder:text-neutral-400 outline-none transition ${
                       focusedField === "name"
-                        ? "border-emerald-600 bg-white ring-2 ring-emerald-500/20 shadow-xs"
-                        : "border-neutral-200 bg-neutral-50/80 hover:border-neutral-300"
+                        ? "border-[#0A0A0A] bg-white ring-2 ring-[#D12424]/20"
+                        : "border-[#DCDAD4] bg-[#F7F6F3] hover:border-neutral-400"
                     }`}
                   />
                 </div>
 
-                {/* Email Input with Live Format Verification */}
+                {/* Email */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-bold text-neutral-800">
-                      Email Address <span className="text-emerald-600">*</span>
+                    <label className="text-xs font-bold text-[#0A0A0A]">
+                      Email Address <span className="text-[#D12424]">*</span>
                     </label>
                     {form.email && (
                       <span
                         className={`text-[10px] font-mono font-bold ${
-                          isEmailValid ? "text-emerald-600" : "text-amber-600"
+                          isEmailValid ? "text-emerald-700" : "text-neutral-400"
                         }`}
                       >
-                        {isEmailValid ? "✓ VALID FORMAT" : "INPUTTING..."}
+                        {isEmailValid ? "✓ Valid email format" : "checking..."}
                       </span>
                     )}
                   </div>
                   <input
                     type="email"
                     required
-                    placeholder="e.g. elena@luxurystudio.com"
                     value={form.email}
                     onFocus={() => setFocusedField("email")}
                     onBlur={() => setFocusedField(null)}
-                    onChange={(e) => update("email", e.target.value)}
-                    className={`w-full rounded-2xl border px-4 py-3.5 text-xs font-medium text-neutral-950 placeholder:text-neutral-400 transition-all duration-200 focus:outline-hidden shadow-inner ${
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, email: e.target.value }))
+                    }
+                    placeholder="e.g. elena@brand.com"
+                    className={`w-full rounded-2xl border px-4 py-3 text-xs font-medium text-[#0A0A0A] placeholder:text-neutral-400 outline-none transition ${
                       focusedField === "email"
-                        ? "border-emerald-600 bg-white ring-2 ring-emerald-500/20 shadow-xs"
-                        : "border-neutral-200 bg-neutral-50/80 hover:border-neutral-300"
+                        ? "border-[#0A0A0A] bg-white ring-2 ring-[#D12424]/20"
+                        : "border-[#DCDAD4] bg-[#F7F6F3] hover:border-neutral-400"
                     }`}
                   />
                 </div>
 
-                {/* Message / Specifications Textarea with Character Counter */}
+                {/* Project / Help Topic */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-[#0A0A0A] mb-1.5">
+                      Service / Help Category
+                    </label>
+                    <select
+                      value={form.topic}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, topic: e.target.value }))
+                      }
+                      className="w-full rounded-2xl border border-[#DCDAD4] bg-[#F7F6F3] px-3.5 py-3 text-xs font-medium text-[#0A0A0A] outline-none hover:border-neutral-400 focus:border-[#0A0A0A] cursor-pointer"
+                    >
+                      <option value="3D Product Modeling">3D Product Modeling &amp; CGI</option>
+                      <option value="CLO 3D Digital Fashion">CLO 3D Digital Fashion</option>
+                      <option value="Photo Retouching & Grading">Photo Retouching &amp; Grading</option>
+                      <option value="Urgent Project Assistance">Urgent Project Assistance</option>
+                      <option value="General Inquiry">General Creative Inquiry</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#0A0A0A] mb-1.5">
+                      Subject (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={form.subject}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, subject: e.target.value }))
+                      }
+                      placeholder="e.g. E-commerce 3D assets"
+                      className="w-full rounded-2xl border border-[#DCDAD4] bg-[#F7F6F3] px-4 py-3 text-xs font-medium text-[#0A0A0A] placeholder:text-neutral-400 outline-none hover:border-neutral-400 focus:border-[#0A0A0A]"
+                    />
+                  </div>
+                </div>
+
+                {/* Message */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-bold text-neutral-800">
-                      Project Specifications & Scope <span className="text-emerald-600">*</span>
+                    <label className="text-xs font-bold text-[#0A0A0A]">
+                      Project Scope &amp; Details <span className="text-[#D12424]">*</span>
                     </label>
-                    <span className="text-[10px] font-mono text-neutral-400">
+                    <span className="text-[10px] text-[#5A5852] font-mono">
                       {form.message.length} chars
                     </span>
                   </div>
                   <textarea
                     required
                     rows={5}
-                    placeholder={`Describe your ${form.projectType} specs, polycounts, aesthetic goals, and delivery schedules...`}
                     value={form.message}
                     onFocus={() => setFocusedField("message")}
                     onBlur={() => setFocusedField(null)}
-                    onChange={(e) => update("message", e.target.value)}
-                    className={`w-full rounded-2xl border px-4 py-3.5 text-xs font-medium text-neutral-950 placeholder:text-neutral-400 transition-all duration-200 focus:outline-hidden resize-y shadow-inner leading-relaxed ${
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, message: e.target.value }))
+                    }
+                    placeholder="Describe your 3D modeling goals, polycount targets, reference links, or turnaround timeline..."
+                    className={`w-full rounded-2xl border px-4 py-3 text-xs font-medium text-[#0A0A0A] placeholder:text-neutral-400 outline-none resize-y transition ${
                       focusedField === "message"
-                        ? "border-emerald-600 bg-white ring-2 ring-emerald-500/20 shadow-xs"
-                        : "border-neutral-200 bg-neutral-50/80 hover:border-neutral-300"
+                        ? "border-[#0A0A0A] bg-white ring-2 ring-[#D12424]/20"
+                        : "border-[#DCDAD4] bg-[#F7F6F3] hover:border-neutral-400"
                     }`}
                   />
                 </div>
 
-                {/* Submit / Transmission Button */}
+                {/* Submit Button */}
                 <div className="pt-2">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group relative flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 py-4 text-xs font-black text-neutral-950 shadow-[0_4px_25px_rgba(52,211,153,0.35)] transition-all duration-300 hover:shadow-[0_6px_35px_rgba(52,211,153,0.5)] disabled:opacity-50 cursor-pointer hover:scale-[1.01] active:scale-95"
+                    className="w-full rounded-full bg-[#0A0A0A] py-3.5 text-xs font-bold text-white transition-all hover:bg-[#D12424] active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-sm"
                   >
-                    {loading ? (
-                      <>
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-950 border-t-transparent" />
-                        <span className="font-mono tracking-wider">TRANSMITTING DISPATCH...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Send Project Dispatch</span>
-                        <span className="text-sm transition-transform duration-200 group-hover:translate-x-1">
-                          →
-                        </span>
-                      </>
-                    )}
+                    {loading ? "Sending Message..." : "Submit Project Inquiry →"}
                   </button>
                 </div>
 
-                {/* Security / Confidentiality Footer */}
-                <div className="flex items-center justify-center gap-2 text-[10.5px] text-neutral-500 pt-1">
-                  <span>🔒</span>
-                  <span>End-to-end NDA protected & 100% confidential transmission.</span>
-                </div>
+                <p className="text-[11px] text-center text-[#5A5852] pt-1">
+                  Confidential communication. No spam, ever.
+                </p>
               </form>
             )}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        {/* ====================================================== */}
+        {/* RIGHT COLUMN: HELP & ASSISTANCE ACCORDION              */}
+        {/* ====================================================== */}
+        <motion.div
+          initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-5 space-y-6"
+        >
+          {/* Quick Help Direct Cards */}
+          <div className="rounded-3xl border border-[#DCDAD4] bg-white p-6 shadow-sm space-y-4">
+            <div className="pb-3 border-b border-[#EFEFED]">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D12424]">
+                Direct Help Channels
+              </span>
+              <h3 className="text-xl font-medium tracking-tight text-[#0A0A0A] mt-1">
+                Need Immediate Help?
+              </h3>
+              <p className="text-xs text-[#5A5852] mt-0.5">
+                Fastest ways to connect for live support and answers.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href="https://wa.me/918000093300"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col justify-between rounded-2xl border border-[#DCDAD4] bg-[#F7F6F3] p-4 hover:border-[#D12424] hover:bg-white transition cursor-pointer"
+              >
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-[#D12424] uppercase">
+                    Instant Messaging
+                  </span>
+                  <p className="text-xs font-bold text-[#0A0A0A] mt-1">
+                    WhatsApp Chat
+                  </p>
+                  <p className="text-[11px] text-[#5A5852] mt-0.5">
+                    Real-time chat &amp; file exchange
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-[#0A0A0A] group-hover:text-[#D12424] mt-3 block">
+                  Open Chat ↗
+                </span>
+              </a>
+
+              <a
+                href="tel:+918000093300"
+                className="group flex flex-col justify-between rounded-2xl border border-[#DCDAD4] bg-[#F7F6F3] p-4 hover:border-[#D12424] hover:bg-white transition cursor-pointer"
+              >
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-[#D12424] uppercase">
+                    Phone Support
+                  </span>
+                  <p className="text-xs font-bold text-[#0A0A0A] mt-1">
+                    Direct Studio Call
+                  </p>
+                  <p className="text-[11px] text-[#5A5852] mt-0.5">
+                    +91 80000 93300
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-[#0A0A0A] group-hover:text-[#D12424] mt-3 block">
+                  Call Now ↗
+                </span>
+              </a>
+            </div>
+          </div>
+
+          {/* Help & FAQ Accordion */}
+          <div className="rounded-3xl border border-[#DCDAD4] bg-white p-6 shadow-sm space-y-4">
+            <div className="pb-3 border-b border-[#EFEFED]">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D12424]">
+                Help Desk &amp; FAQs
+              </span>
+              <h3 className="text-xl font-medium tracking-tight text-[#0A0A0A] mt-1">
+                Frequently Asked Questions
+              </h3>
+              <p className="text-xs text-[#5A5852] mt-0.5">
+                Clear answers regarding workflow, turnaround, and deliverables.
+              </p>
+            </div>
+
+            <div className="divide-y divide-[#EFEFED]">
+              {HELP_TOPICS.map((item, idx) => {
+                const isOpen = openHelpIdx === idx;
+                return (
+                  <div key={item.question} className="py-3.5 first:pt-0 last:pb-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleHelp(idx)}
+                      className="w-full flex items-center justify-between text-left gap-3 group cursor-pointer"
+                    >
+                      <div>
+                        <span className="text-[9.5px] font-mono font-bold text-[#D12424] uppercase tracking-wider block">
+                          {item.category}
+                        </span>
+                        <span className="text-xs font-bold text-[#0A0A0A] group-hover:text-[#D12424] transition-colors leading-snug">
+                          {item.question}
+                        </span>
+                      </div>
+                      <span className="text-base font-mono text-[#5A5852] group-hover:text-[#0A0A0A] shrink-0 transition-transform duration-200">
+                        {isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <p className="text-xs text-[#5A5852] leading-relaxed pt-2.5">
+                            {item.answer}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#fafbfc] text-neutral-950 selection:bg-emerald-500 selection:text-white">
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-24">
-        <Suspense
-          fallback={
-            <div className="py-24 text-center">
-              <div className="inline-block h-7 w-7 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
-              <p className="text-xs font-semibold text-neutral-500 mt-3 font-mono">
-                INITIALIZING COMMAND CENTER...
-              </p>
-            </div>
-          }
-        >
-          <ContactFormContent />
-        </Suspense>
-      </section>
+    <main className="min-h-screen bg-[#EFEEEB] text-[#0A0A0A] selection:bg-[#D12424] selection:text-white font-sans">
+      <Suspense
+        fallback={
+          <div className="min-h-[70vh] flex items-center justify-center text-xs font-mono uppercase tracking-widest text-[#5A5852]">
+            Loading Contact &amp; Help Desk...
+          </div>
+        }
+      >
+        <ContactAndHelpContent />
+      </Suspense>
     </main>
   );
 }

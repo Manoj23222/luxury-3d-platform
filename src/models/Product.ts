@@ -84,6 +84,8 @@ creatorEmail: {
   type: String,
   default: "",
 },
+serialNumber: { type: Number, default: 0 },
+displayOrder: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -93,7 +95,12 @@ ProductSchema.index({ category: 1 });
 ProductSchema.index({ status: 1 });
 ProductSchema.index({ featured: 1 });
 ProductSchema.index({ creatorId: 1 });
+ProductSchema.index({ serialNumber: 1 });
 
-const Product = models.Product || mongoose.model("Product", ProductSchema);
+if (models.Product) {
+  delete models.Product;
+}
+
+const Product = mongoose.model("Product", ProductSchema);
 
 export default Product;

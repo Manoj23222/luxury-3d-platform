@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import VisitorLog from "@/models/VisitorLog";
+import PortfolioStats from "@/models/PortfolioStats";
 
 export async function GET() {
   try {
@@ -16,6 +17,17 @@ export async function GET() {
 
     // 7 Days ago for weekly trend chart
     const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+
+    // Total Likes from PortfolioStats
+    let totalLikes = 142;
+    try {
+      const statsDoc = await PortfolioStats.findOne({ key: "home" });
+      if (statsDoc && typeof statsDoc.likes === "number") {
+        totalLikes = statsDoc.likes;
+      }
+    } catch {
+      totalLikes = 142;
+    }
 
     // 1. Total Visits & Unique Visitors
     const totalVisits = await VisitorLog.countDocuments();
@@ -173,6 +185,7 @@ export async function GET() {
         todayVisits,
         todayUniqueVisitors,
         activeNow,
+        totalLikes,
         topPages,
         devices,
         topCountries,

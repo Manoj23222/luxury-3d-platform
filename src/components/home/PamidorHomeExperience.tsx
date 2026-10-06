@@ -170,9 +170,7 @@ export default function PamidorHomeExperience() {
             </p>
 
             {/* Social Engagement Stats & Like Bar */}
-            <div className="pt-6 sm:pt-8">
-              <HomeLikeAndViews />
-            </div>
+            
           </div>
 
           {/* Continuous Infinite Clients / Collaborations Marquee with Software Logos */}

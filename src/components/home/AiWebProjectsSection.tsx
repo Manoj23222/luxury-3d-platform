@@ -28,13 +28,13 @@ interface WebProject {
 const projects: WebProject[] = [
   {
     id: "bootkit",
-    title: "BootKiT — Quick-Commerce & Grocery Delivery Platform",
-    tagline: "High-Performance Mobile-First E-Commerce Progressive Web App",
-    badge: "🛒 Full-Stack E-Commerce & PWA",
+    title: "BootKiT — Official 3D & Digital Design Portfolio",
+    tagline: "High-Performance Modern Web Showcase & 3D Asset Explorer",
+    badge: "🎨 3D Portfolio Platform",
     badgeColor: "bg-emerald-950/80 border-emerald-400/40 text-emerald-300",
     aiBadge: "🤖 AI-Prompt Engineered",
     description:
-      "A production-grade, ultra-responsive quick-commerce grocery delivery web platform designed for 10–20 minute delivery workflows. Built with rapid AI prompt engineering combining modern full-stack architectures, instant search indexing, and native-feeling mobile PWA navigation.",
+      "A production-grade, ultra-responsive interactive portfolio and digital showcase platform. Built with modern full-stack architectures, instant asset indexing, and native-feeling mobile navigation for 3D visualization and design.",
     techStack: [
       "Next.js",
       "React",

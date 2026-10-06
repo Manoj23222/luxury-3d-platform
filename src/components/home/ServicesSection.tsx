@@ -250,7 +250,7 @@ const servicesList: ServiceTheme[] = [
     title: "AI-Powered Full-Stack Web Apps",
     subtitle: "Next.js, TypeScript, Supabase & PWA Development",
     description:
-      "Rapidly developing production-grade web applications, quick-commerce PWAs, and 3D web platforms using cutting-edge AI prompt engineering workflows.",
+      "Rapidly developing production-grade web applications, interactive 3D web platforms, and creative portfolio experiences using cutting-edge AI prompt engineering workflows.",
     deliverables: [
       "Custom Next.js & React Full-Stack Web Apps",
       "Mobile-First PWA with Offline & App-Like UX",

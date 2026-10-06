@@ -5,6 +5,8 @@ import PhotoWork from "@/models/PhotoWork";
 import Product from "@/models/Product";
 import { FALLBACK_PHOTO_WORKS } from "@/data/photoWorksData";
 import { FALLBACK_3D_PRODUCTS } from "@/lib/fallback-products";
+import { filterOutDeletedAssets } from "@/lib/deleted-assets";
+import { applyCustomOrders } from "@/lib/custom-orders";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -36,8 +38,8 @@ export async function GET(req: Request) {
       }
 
       const [photos, prods] = await Promise.all([
-        PhotoWork.find(filter).sort({ featured: -1, createdAt: -1 }).lean(),
-        Product.find({ status: "Published" }).sort({ featured: -1, createdAt: -1 }).lean(),
+        PhotoWork.find(filter).sort({ serialNumber: 1, featured: -1, createdAt: -1 }).lean(),
+        Product.find({ status: "Published" }).sort({ serialNumber: 1, featured: -1, createdAt: -1 }).lean(),
       ]);
 
       const productsSource =
@@ -54,15 +56,27 @@ export async function GET(req: Request) {
         beforeImage: "",
         afterImage: p.thumbnail,
         thumbnail: p.thumbnail,
-        softwareUsed: ["Blender"],
+        softwareUsed:
+          Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+            ? p.softwareUsed
+            : ["Blender"],
         resolution: "3D GLB / PBR",
         clientName: p.brandName || "Luxury 3D Studio",
         projectYear: "2026",
-        tags: ["Blender", "3D Model", p.category].filter(Boolean),
+        tags: [
+          ...(Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+            ? p.softwareUsed
+            : ["Blender"]),
+          "3D Model",
+          p.category,
+        ].filter(Boolean),
         modelUrl: p.glbUrl || p.modelUrl || "",
         featured: Boolean(p.featured),
         views: p.views || 100,
         likes: p.likes || 25,
+        serialNumber: Number(p.serialNumber || p.displayOrder || 0),
+        displayOrder: Number(p.serialNumber || p.displayOrder || 0),
+        createdAt: p.createdAt,
         isPortfolio3D: true,
       }));
 
@@ -77,13 +91,37 @@ export async function GET(req: Request) {
       const dbTitles = new Set(
         dbItems.map((x: any) => String(x.title || "").toLowerCase().trim())
       );
+      const replacedFallbackIds = new Set(
+        dbItems
+          .flatMap((p: any) => {
+            const tags: string[] = Array.isArray(p.tags) ? p.tags : [];
+            const fbTag = tags.find((t: string) => t.startsWith("fallbackId:"));
+            return fbTag ? [fbTag.replace("fallbackId:", "")] : [];
+          })
+          .filter(Boolean)
+      );
+
       const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
-        (f) => !dbTitles.has(String(f.title || "").toLowerCase().trim())
+        (f) =>
+          !replacedFallbackIds.has(f._id) &&
+          !dbTitles.has(String(f.title || "").toLowerCase().trim())
       );
       allWorks = [...dbItems, ...nonDuplicateFallbacks];
     } else {
       allWorks = FALLBACK_PHOTO_WORKS;
     }
+
+    allWorks = await filterOutDeletedAssets(allWorks);
+    allWorks = await applyCustomOrders(allWorks);
+
+    allWorks.sort((a: any, b: any) => {
+      const aSn = Number(a.serialNumber || a.displayOrder || 0);
+      const bSn = Number(b.serialNumber || b.displayOrder || 0);
+      if (aSn > 0 && bSn > 0) return aSn - bSn;
+      if (aSn > 0) return -1;
+      if (bSn > 0) return 1;
+      return 0;
+    });
 
     if (category && category !== "All") {
       allWorks = allWorks.filter((item) => item.category === category);
@@ -103,11 +141,18 @@ export async function GET(req: Request) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      works: allWorks,
-      total: allWorks.length,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        works: allWorks,
+        total: allWorks.length,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       {

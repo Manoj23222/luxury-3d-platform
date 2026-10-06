@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { getCurrentUser } from "@/lib/auth";
+import { recordDeletedAsset } from "@/lib/deleted-assets";
 
 export async function GET(
   _req: Request,
@@ -208,14 +209,17 @@ if (
   );
 }
 
-await product.deleteOne();
+    const prodTitle = product.name;
+    const prodSlug = product.slug;
+    await product.deleteOne();
 
-    if (!product) {
-      return NextResponse.json(
-        { success: false, message: "Project not found" },
-        { status: 404 }
-      );
-    }
+    await recordDeletedAsset({
+      id,
+      cleanId: id.replace(/^prod-/, ""),
+      title: prodTitle,
+      slug: prodSlug,
+      itemType: "3d",
+    });
 
     return NextResponse.json({
       success: true,

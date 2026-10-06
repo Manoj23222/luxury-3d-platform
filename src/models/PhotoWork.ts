@@ -43,6 +43,8 @@ const PhotoWorkSchema = new Schema(
     },
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
+    serialNumber: { type: Number, default: 0 },
+    displayOrder: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -51,6 +53,7 @@ PhotoWorkSchema.index({ category: 1 });
 PhotoWorkSchema.index({ workType: 1 });
 PhotoWorkSchema.index({ status: 1 });
 PhotoWorkSchema.index({ featured: 1 });
+PhotoWorkSchema.index({ serialNumber: 1 });
 
 if (models.PhotoWork) {
   delete models.PhotoWork;

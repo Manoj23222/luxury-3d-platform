@@ -1,0 +1,78 @@
+[
+  {
+    "assetId": "bl-facebook-logo",
+    "cleanId": "bl-facebook-logo",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:29.331Z"
+  },
+  {
+    "assetId": "bl-android-logo",
+    "cleanId": "bl-android-logo",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:31.576Z"
+  },
+  {
+    "assetId": "bl-boy-character",
+    "cleanId": "bl-boy-character",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:33.506Z"
+  },
+  {
+    "assetId": "bl-city-gate",
+    "cleanId": "bl-city-gate",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:36.029Z"
+  },
+  {
+    "assetId": "bl-city-buildings",
+    "cleanId": "bl-city-buildings",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:38.194Z"
+  },
+  {
+    "assetId": "bl-modern-building",
+    "cleanId": "bl-modern-building",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:40.715Z"
+  },
+  {
+    "assetId": "bl-umbrella-open",
+    "cleanId": "bl-umbrella-open",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:43.834Z"
+  },
+  {
+    "assetId": "bl-leather-notebook",
+    "cleanId": "bl-leather-notebook",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:46.119Z"
+  },
+  {
+    "assetId": "bl-moka-maker",
+    "cleanId": "bl-moka-maker",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:48.410Z"
+  },
+  {
+    "assetId": "bl-soda-can",
+    "cleanId": "bl-soda-can",
+    "title": "Commercial Beverage Yellow Soda Can 3D Model",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:47:55.826Z"
+  },
+  {
+    "assetId": "ai-01-product-cutout",
+    "cleanId": "ai-01-product-cutout",
+    "title": "Precision Vector Line Art & Product Cutout 01",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:48:26.655Z"
+  },
+  {
+    "assetId": "6ac4cb5951811043945a35e8",
+    "cleanId": "6ac4cb5951811043945a35e8",
+    "title": "Technical Vector Blueprint & Drawing 02",
+    "slug": "technical-vector-blueprint-drawing-02-9292",
+    "itemType": "photo",
+    "deletedAt": "2026-10-06T10:48:35.038Z"
+  }
+]

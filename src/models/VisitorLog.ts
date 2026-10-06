@@ -13,6 +13,11 @@ export interface IVisitorLog extends Document {
   city?: string;
   country?: string;
   region?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
+  consentGranted?: boolean;
+  locationMethod?: string;
   ip?: string;
   createdAt: Date;
 }
@@ -69,6 +74,26 @@ const VisitorLogSchema = new Schema<IVisitorLog>(
     region: {
       type: String,
       default: "Unknown",
+    },
+    postalCode: {
+      type: String,
+      default: "",
+    },
+    latitude: {
+      type: Number,
+      default: null,
+    },
+    longitude: {
+      type: Number,
+      default: null,
+    },
+    consentGranted: {
+      type: Boolean,
+      default: false,
+    },
+    locationMethod: {
+      type: String,
+      default: "",
     },
     ip: {
       type: String,

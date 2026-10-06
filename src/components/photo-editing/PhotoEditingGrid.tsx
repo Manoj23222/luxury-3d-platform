@@ -41,6 +41,9 @@ export type PhotoWorkItem = {
   likes?: number;
   modelUrl?: string;
   isPortfolio3D?: boolean;
+  serialNumber?: number;
+  displayOrder?: number;
+  createdAt?: string;
 };
 
 interface PhotoEditingGridProps {
@@ -58,110 +61,184 @@ const SOFTWARE_TABS = [
 type SoftwareTabId = (typeof SOFTWARE_TABS)[number]["id"];
 
 export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps) {
-  const [works, setWorks] = useState<PhotoWorkItem[]>(initialWorks || []);
+  const [works, setWorks] = useState<PhotoWorkItem[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = JSON.parse(localStorage.getItem("admin_deleted_assets") || "[]");
+        if (Array.isArray(stored) && stored.length > 0) {
+          const delSet = new Set(stored.map((s: string) => String(s).toLowerCase().trim()));
+          return (initialWorks || []).filter((w) => {
+            const rawId = String(w._id).toLowerCase();
+            const cleanId = rawId.replace(/^prod-/, "");
+            const title = String(w.title || "").toLowerCase().trim();
+            return !delSet.has(rawId) && !delSet.has(cleanId) && !delSet.has(`prod-${cleanId}`) && !delSet.has(title);
+          });
+        }
+      } catch {}
+    }
+    return initialWorks || [];
+  });
+
   const [selectedTab, setSelectedTab] = useState<SoftwareTabId>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<"3d" | "render">("3d");
 
+  // Restore saved tab on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const urlTab = p.get("tab");
+    const saved = localStorage.getItem("portfolio_tab");
+    const target = urlTab || saved;
+    if (
+      target === "photoshop" ||
+      target === "illustrator" ||
+      target === "canva" ||
+      target === "blender" ||
+      target === "all"
+    ) {
+      setSelectedTab(target as SoftwareTabId);
+    }
+  }, []);
+
+  const handleTabClick = (tabId: SoftwareTabId) => {
+    setSelectedTab(tabId);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("portfolio_tab", tabId);
+      const url = new URL(window.location.href);
+      if (tabId === "all") {
+        url.searchParams.delete("tab");
+      } else {
+        url.searchParams.set("tab", tabId);
+      }
+      window.history.replaceState(null, "", url.pathname + (url.search ? url.search : ""));
+    }
+  };
+
   // Fetch latest uploaded photos on mount
   useEffect(() => {
-    fetch("/api/photo-works")
+    fetch(`/api/photo-works?t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.works) && data.works.length > 0) {
-          const dbIds = new Set(data.works.map((w: PhotoWorkItem) => w._id));
-          const uniqueInitial = initialWorks.filter((w) => !dbIds.has(w._id));
-          setWorks([...data.works, ...uniqueInitial]);
+          let list = data.works;
+          if (typeof window !== "undefined") {
+            try {
+              const stored = JSON.parse(localStorage.getItem("admin_deleted_assets") || "[]");
+              if (Array.isArray(stored) && stored.length > 0) {
+                const delSet = new Set(stored.map((s: string) => String(s).toLowerCase().trim()));
+                list = list.filter((w: any) => {
+                  const rawId = String(w._id).toLowerCase();
+                  const cleanId = rawId.replace(/^prod-/, "");
+                  const title = String(w.title || "").toLowerCase().trim();
+                  return !delSet.has(rawId) && !delSet.has(cleanId) && !delSet.has(`prod-${cleanId}`) && !delSet.has(title);
+                });
+              }
+            } catch {}
+          }
+          setWorks(list);
         }
       })
       .catch(() => {});
-  }, [initialWorks]);
+  }, []);
 
   // Filtered works based on the selected software tab
   const filteredWorks = useMemo(() => {
-    if (selectedTab === "all") {
-      // Show all Photoshop, Illustrator, and Blender works
-      return works.filter((w) => {
-        const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
-        return !sw.includes("canva") || sw.includes("photoshop");
-      });
-    }
+    const list =
+      selectedTab === "all"
+        ? works
+        : works.filter((w) => {
+            const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
+            const cat = (w.category || "").toLowerCase();
+            const tags = (w.tags || []).join(" ").toLowerCase();
+            const title = (w.title || "").toLowerCase();
+            const img = (w.afterImage || w.thumbnail || "").toLowerCase();
 
-    if (selectedTab === "canva") {
-      // Canva is empty as explicitly requested: "Canva - emty"
-      return [];
-    }
+            if (selectedTab === "canva") {
+              return (
+                sw.some((s) => s.includes("canva")) ||
+                cat.includes("canva") ||
+                tags.includes("canva") ||
+                title.includes("canva")
+              );
+            }
 
-    return works.filter((w) => {
-      const sw = (w.softwareUsed || []).map((s) => s.toLowerCase());
-      const cat = (w.category || "").toLowerCase();
-      const tags = (w.tags || []).join(" ").toLowerCase();
-      const title = (w.title || "").toLowerCase();
-      const img = (w.afterImage || w.thumbnail || "").toLowerCase();
+            if (selectedTab === "illustrator") {
+              return (
+                sw.some((s) => s.includes("illustrator") || s.includes("vector")) ||
+                cat.includes("illustrator") ||
+                cat.includes("vector") ||
+                cat.includes("typography") ||
+                tags.includes("illustrator") ||
+                tags.includes("vector") ||
+                img.includes("illustrator-previews") ||
+                img.includes("/illustrator/") ||
+                w._id.startsWith("ai-")
+              );
+            }
 
-      if (selectedTab === "photoshop") {
-        const isAi = img.includes("illustrator");
-        const isBlend = sw.some((s) => s.includes("blender")) || cat.includes("3d") || img.includes("blender") || Boolean((w as any).modelUrl);
-        if (isAi || isBlend) return false;
+            if (selectedTab === "photoshop") {
+              const isAi =
+                sw.some((s) => s.includes("illustrator")) ||
+                (cat.includes("illustrator") && !sw.some((s) => s.includes("photoshop")));
+              const isCanva =
+                sw.some((s) => s.includes("canva")) ||
+                (cat.includes("canva") && !sw.some((s) => s.includes("photoshop")));
+              if (isAi || isCanva) return false;
 
-        const hasPhotoshop = sw.some(
-          (s) =>
-            s.includes("photoshop") ||
-            s.includes("lightroom") ||
-            s.includes("capture one") ||
-            s.includes("retouch")
-        );
-        return (
-          hasPhotoshop ||
-          w.workType === "before_after" ||
-          cat.includes("retouch") ||
-          cat.includes("background") ||
-          cat.includes("grading") ||
-          cat.includes("portrait") ||
-          cat.includes("fashion") ||
-          tags.includes("retouch") ||
-          title.includes("retouch")
-        );
-      }
+              const hasPhotoshop = sw.some(
+                (s) =>
+                  s.includes("photoshop") ||
+                  s.includes("lightroom") ||
+                  s.includes("capture one") ||
+                  s.includes("retouch")
+              );
+              if (hasPhotoshop) return true;
 
-      if (selectedTab === "illustrator") {
-        // ONLY genuine Illustrator artworks from /public/illustrator
-        return (
-          img.includes("illustrator-previews") ||
-          img.includes("/illustrator/") ||
-          w._id.startsWith("ai-")
-        );
-      }
+              if (sw.some((s) => s.includes("blender"))) return false;
 
-      if (selectedTab === "blender") {
-        // Strictly the 3D Models that were on /portfolio:
-        // Exclude all Adobe images, Photoshop before/after retouching, and Illustrator vector artworks.
-        const isAdobe =
-          sw.some(
-            (s) =>
-              s.includes("photoshop") ||
-              s.includes("illustrator") ||
-              s.includes("lightroom") ||
-              s.includes("capture one") ||
-              s.includes("adobe")
-          ) ||
-          w.workType === "before_after" ||
-          w._id.startsWith("ai-") ||
-          w._id.startsWith("pw-");
+              return (
+                w.workType === "before_after" ||
+                cat.includes("retouch") ||
+                cat.includes("background") ||
+                cat.includes("grading") ||
+                cat.includes("portrait") ||
+                cat.includes("fashion") ||
+                tags.includes("retouch") ||
+                title.includes("retouch")
+              );
+            }
 
-        if (isAdobe) {
-          return false;
-        }
+            if (selectedTab === "blender") {
+              const hasBlender = sw.some((s) => s.includes("blender"));
+              const hasAdobe = sw.some(
+                (s) =>
+                  s.includes("photoshop") ||
+                  s.includes("illustrator") ||
+                  s.includes("canva")
+              );
 
-        // Must strictly be the 3D Models from /portfolio (Product collection or FALLBACK_3D_PRODUCTS)
-        return (
-          w._id.startsWith("prod-") ||
-          Boolean((w as any).isPortfolio3D) ||
-          Boolean((w as any).isPortfolioProduct)
-        );
-      }
+              if (hasBlender) return true;
+              if (hasAdobe) return false;
 
-      return true;
+              return (
+                w._id.startsWith("prod-") ||
+                Boolean((w as any).isPortfolio3D) ||
+                Boolean((w as any).modelUrl) ||
+                cat.includes("3d")
+              );
+            }
+
+            return true;
+          });
+
+    return [...list].sort((a, b) => {
+      const aSn = Number(a.serialNumber || a.displayOrder || 0);
+      const bSn = Number(b.serialNumber || b.displayOrder || 0);
+      if (aSn > 0 && bSn > 0) return aSn - bSn;
+      if (aSn > 0) return -1;
+      if (bSn > 0) return 1;
+      return 0;
     });
   }, [works, selectedTab]);
 
@@ -228,7 +305,7 @@ export default function PhotoEditingGrid({ initialWorks }: PhotoEditingGridProps
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setSelectedTab(tab.id)}
+                  onClick={() => handleTabClick(tab.id)}
                   className={`inline-flex items-center gap-2 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-[13px] font-bold tracking-tight transition-all duration-200 cursor-pointer ${
                     isSelected
                       ? "bg-neutral-950 text-white shadow-md scale-[1.02]"

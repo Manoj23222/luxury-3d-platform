@@ -18,6 +18,8 @@ export interface FallbackProduct {
   views: number;
   downloads: number;
   likes: number;
+  serialNumber?: number;
+  displayOrder?: number;
   createdAt: string;
 }
 

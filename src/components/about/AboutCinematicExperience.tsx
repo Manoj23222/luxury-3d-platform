@@ -1,741 +1,750 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import WireframeCube from "./WireframeCube";
 
-interface ProductionStep {
-  step: string;
-  title: string;
+// ============================================================================
+// DATA DEFINITIONS (DIRECT FROM public/About/Ashok Meena – About (White & Gray).md)
+// ============================================================================
+
+interface SkillItem {
+  id: string;
+  name: string;
   subtitle: string;
-  icon: string;
-  image: string;
   description: string;
-  deliverable: string;
-  badge: string;
+  tags: string[];
 }
 
-const PRODUCTION_STEPS: ProductionStep[] = [
+const SKILLS_DATA: SkillItem[] = [
   {
-    step: "Step 01",
-    title: "Adobe Photoshop",
-    subtitle: "16-Bit RAW Retouching & Compositing",
-    icon: "/Softwear Icon/photoshop.svg",
-    image: "/Skill/step-01.png",
+    id: "blender",
+    name: "Blender 3D",
+    subtitle: "Hard-surface CGI, PBR shading, real-time GLB",
     description:
-      "Precision product isolation, clipping paths, realistic drop shadow casting, layer effects, and commercial packaging typography layout.",
-    deliverable: "16-Bit Master PSD / E-Commerce Hero Visual",
-    badge: "Post-Production",
+      "Subdivision modeling, procedural PBR shaders, studio three-point lighting, low-poly retopology, Cycles and Eevee renders, and web-ready GLB/glTF files.",
+    tags: [
+      "Product modeling",
+      "UV unwrapping & baking",
+      "Photorealistic CGI",
+      "GLB/glTF optimization",
+    ],
   },
   {
-    step: "Step 02",
-    title: "Adobe Illustrator",
-    subtitle: "Vector Monograms & Precision Tech-Packs",
-    icon: "/Softwear Icon/adobe-illustrator-svgrepo-com.svg",
-    image: "/Skill/step-02.png",
+    id: "clo3d",
+    name: "CLO 3D",
+    subtitle: "Digital fashion and virtual garments",
     description:
-      "Bézier anchor curve alignment, Pathfinder booleans, vector kerning, and production tech-pack paths for luxury brand lockups ('Luxe Imaginary').",
-    deliverable: "Lossless Vector AI / SVG Tech-Pack",
-    badge: "Vector Design",
+      "2D pattern construction to 3D garment simulation, with multi-layer fabric drape physics, micro-seam stitching and cloth animation for luxury apparel.",
+    tags: [
+      "2D to 3D patterning",
+      "Fabric physics",
+      "3D fit validation",
+      "PBR apparel texturing",
+    ],
   },
   {
-    step: "Step 03",
-    title: "Adobe Lightroom Classic",
-    subtitle: "High-Dynamic-Range Tone & Color Calibration",
-    icon: "/Softwear Icon/adobe-lightroom-svgrepo-com.svg",
-    image: "/Skill/step-03.png",
+    id: "photoshop",
+    name: "Adobe Photoshop",
+    subtitle: "Photo retouching and post-production",
     description:
-      "Tone curve luminance grading, warm gold saturation mapping, and batch catalogue synchronization across high-res studio photography.",
-    deliverable: "Color-Balanced Catalog / Production Preset",
-    badge: "Color Grading",
+      "16-bit RAW commercial retouching, non-destructive frequency separation, skin texture preservation, catalog enhancement and editorial color grading.",
+    tags: [
+      "Frequency separation",
+      "Background removal",
+      "Clipping paths",
+      "Color grading",
+    ],
   },
   {
-    step: "Step 04",
-    title: "Canva Pro",
-    subtitle: "Multi-Channel Campaign & Collateral Design",
-    icon: "/Softwear Icon/canva-icon.webp",
-    image: "/Skill/step-04.png",
+    id: "illustrator",
+    name: "Adobe Illustrator",
+    subtitle: "Vector precision and technical branding",
     description:
-      "Fast editorial banner composition, Spring Collection social layouts, responsive banners, and promotional retail packaging collaterals.",
-    deliverable: "Omnichannel Social & Digital Banner Kits",
-    badge: "Brand Collateral",
+      "Vector illustration, apparel tech-packs, brand identity systems, logo construction, typography layout and print-ready packaging assets.",
+    tags: [
+      "Logo design",
+      "Apparel tech-packs",
+      "Packaging design",
+      "Color separation",
+    ],
   },
   {
-    step: "Step 05",
-    title: "Blender 3D",
-    subtitle: "Sub-D Modeling & Procedural PBR Shaders",
-    icon: "/Softwear Icon/blender-svgrepo-com.svg",
-    image: "/Skill/step-05.png",
+    id: "lightroom",
+    name: "Adobe Lightroom",
+    subtitle: "RAW grading and studio lighting",
     description:
-      "Hard-surface Sub-D 3D modeling, clean quad mesh topology, procedural metallic gold node shader tree, and real-time viewport studio lighting.",
-    deliverable: "Production Sub-D 3D Model (.blend / .glb)",
-    badge: "3D Modeling",
+      "Batch commercial grading, tonal curve calibration, balanced highlights and shadows, and consistent high-volume photo catalogues.",
+    tags: [
+      "Tone curves",
+      "Batch processing",
+      "Noise reduction",
+      "Selective masking",
+    ],
   },
   {
-    step: "Step 06",
-    title: "CLO 3D",
-    subtitle: "Digital Apparel & Fabric Drape Simulation",
-    icon: "/Softwear Icon/clo3d.svg",
-    image: "/Skill/step-06.png",
+    id: "canva",
+    name: "Canva",
+    subtitle: "Graphic design and marketing",
     description:
-      "2D pattern garment drafting, precision cloth physics computation for Silk Crepe de Chine, dynamic fabric drape over product, and 3D fashion staging.",
-    deliverable: "Simulated 3D Garment Mesh & Animation",
-    badge: "3D Fashion",
+      "Fast social media banners, presentation decks, e-commerce graphics and promotional kits for quick turnaround.",
+    tags: [
+      "Social graphics",
+      "Banners",
+      "Presentation decks",
+      "Brand templates",
+    ],
+  },
+  {
+    id: "excel",
+    name: "Microsoft Excel",
+    subtitle: "Production tracking and workflow",
+    description:
+      "Asset inventory cataloging, SKU metadata indexing, delivery schedules, validation formulas and client specification tracking.",
+    tags: [
+      "Asset cataloging",
+      "SKU indexing",
+      "Quality checklists",
+      "Scheduling",
+    ],
+  },
+  {
+    id: "antigravity",
+    name: "Google Antigravity",
+    subtitle: "AI-assisted web engineering",
+    description:
+      "Agentic AI workflows and prompt engineering to build full-stack Next.js and Three.js applications and deploy them quickly.",
+    tags: [
+      "TypeScript & Next.js",
+      "Three.js",
+      "Prompt engineering",
+      "Multi-agent workflows",
+    ],
   },
 ];
 
-export default function AboutCinematicExperience() {
-  const [selectedImage, setSelectedImage] = useState<{ src: string; title: string; step: string } | null>(null);
+const MARQUEE_TOOLS = [
+  "Blender",
+  "CLO 3D",
+  "Photoshop",
+  "Illustrator",
+  "Lightroom",
+  "Canva",
+  "Three.js",
+  "Next.js",
+];
 
-  const handlePrint = () => {
-    if (typeof window !== "undefined") {
-      window.print();
-    }
+// ============================================================================
+// COUNT-UP NUMBER HELPER COMPONENT
+// ============================================================================
+function CounterNumber({
+  target,
+  suffix = "",
+  duration = 1800,
+}: {
+  target: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (!inView) return;
+
+    let startTime: number | null = null;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(easeOut * target));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [inView, target, duration]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {count}
+      {suffix}
+    </span>
+  );
+}
+
+// ============================================================================
+// SCROLL-DRIVEN STATEMENT SENTENCE WORD COMPONENT
+// ============================================================================
+function ScrollWord({
+  word,
+  progress,
+  start,
+  end,
+  isDark,
+}: {
+  word: string;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+  start: number;
+  end: number;
+  isDark: boolean;
+}) {
+  const opacity = useTransform(progress, [start, end], [0.22, 1]);
+  const color = useTransform(
+    progress,
+    [start, end],
+    isDark ? ["#8E8E91", "#FAFAF9"] : ["#8E8E91", "#2A2A2C"]
+  );
+
+  return (
+    <motion.span
+      style={{ opacity, color }}
+      className="inline-block mr-[0.28em] transition-colors duration-150"
+    >
+      {word}
+    </motion.span>
+  );
+}
+
+// ============================================================================
+// MAGNETIC BUTTON COMPONENT (FOR CONTACT SECTION)
+// ============================================================================
+function MagneticButton({
+  href,
+  children,
+  isDark,
+}: {
+  href: string;
+  children: React.ReactNode;
+  isDark: boolean;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - (rect.left + rect.width / 2);
+    const y = e.clientY - (rect.top + rect.height / 2);
+    setOffset({ x: x * 0.32, y: y * 0.32 });
+  };
+
+  const handleMouseLeave = () => {
+    setOffset({ x: 0, y: 0 });
   };
 
   return (
-    <div className="min-h-screen bg-[#EFEEEB] text-[#0A0A0A] font-sans selection:bg-[#D12424] selection:text-white pt-24 sm:pt-28 pb-16 sm:pb-24 px-3 sm:px-6 lg:px-8">
-      {/* ======================================================== */}
-      {/* EXECUTIVE RESUME CONTAINER (COMPACT LUXURY SHEET)        */}
-      {/* ======================================================== */}
-      <div className="max-w-[1020px] mx-auto bg-white border border-[#D8D7D1] rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-9 lg:p-11 space-y-7 sm:space-y-9">
-        
-        {/* ====================================================== */}
-        {/* TOP BAR / RESUME ACTION CONTROLS                       */}
-        {/* ====================================================== */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-5 border-b border-[#D8D7D1]">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[#76756F] bg-[#EFEEEB] px-3 py-1 rounded-full border border-[#D8D7D1]">
-              Curriculum Vitae • Live Resume
-            </span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[10.5px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-500/30 px-3 py-1 rounded-full">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Available for Projects
-            </span>
-          </div>
+    <motion.a
+      ref={ref}
+      href={href}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: offset.x, y: offset.y }}
+      transition={{ type: "spring", stiffness: 240, damping: 18, mass: 0.5 }}
+      className={`inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full text-sm sm:text-base font-medium transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none ${
+        isDark
+          ? "bg-[#FAFAF9] text-[#2A2A2C] hover:bg-[#EFEFED] focus-visible:ring-[#FAFAF9]"
+          : "bg-[#2A2A2C] text-[#FAFAF9] hover:bg-[#1E1E20] focus-visible:ring-[#2A2A2C]"
+      }`}
+    >
+      {children}
+    </motion.a>
+  );
+}
 
-          {/* Quick Actions: Download Resume PDF & Contact */}
-          <div className="flex items-center gap-2 shrink-0">
-            <a
-              href="/Ashok_Resume.pdf"
-              download="Ashok_Meena_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D12424] hover:bg-[#b51c1c] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all active:scale-95"
-              title="Download official PDF copy of Ashok's resume"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
-              <span>Download Resume (PDF)</span>
-            </a>
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+export default function AboutCinematicExperience() {
+  const [isDark, setIsDark] = useState(false);
+  const [activeSkillId, setActiveSkillId] = useState<string | null>(null);
 
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:bg-[#EFEEEB] text-[#0A0A0A] px-3.5 py-2 text-xs font-bold transition-colors cursor-pointer"
-              title="Print or Save as PDF"
-            >
-              <svg className="w-3.5 h-3.5 text-[#56554F]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24-1.076-.672-2.126-1.27-3.076a9.006 9.006 0 0113.1 0c-.598.95-1.03 2-1.27 3.076M6 18h12M9 21h6m-9-9V4a1 1 0 011-1h8a1 1 0 011 1v8" />
-              </svg>
-              <span>Print</span>
-            </button>
+  const statementRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: statementProgress } = useScroll({
+    target: statementRef,
+    offset: ["start 0.85", "end 0.35"],
+  });
 
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:border-[#0A0A0A] text-[#0A0A0A] px-3.5 py-2 text-xs font-bold transition-all"
-            >
-              <span>Hire ✉️</span>
-            </Link>
-          </div>
+  const statementParagraph1 =
+    "I turn clothing, products and ideas into precise 3D models and flawless images, made to look right on screen and run smoothly in real time.";
+  const statementParagraph2 =
+    "With six years of experience, I handle everything from 3D modeling, UV unwrapping and PBR texturing to lighting, typography and asset optimization, always with strict quality control.";
+
+  const words1 = statementParagraph1.split(" ");
+  const words2 = statementParagraph2.split(" ");
+  const totalWords = words1.length + words2.length;
+
+  return (
+    <div
+      className={`min-h-screen font-sans transition-colors duration-500 ease-out ${
+        isDark
+          ? "bg-[#1C1C1E] text-[#FAFAF9] selection:bg-[#FAFAF9] selection:text-[#1C1C1E]"
+          : "bg-[#FAFAF9] text-[#2A2A2C] selection:bg-[#2A2A2C] selection:text-[#FAFAF9]"
+      }`}
+    >
+      {/* ==================================================================== */}
+      {/* TOP SUB-NAV & LUXURY CONTROLS */}
+      {/* ==================================================================== */}
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-12 sm:pt-16 flex items-center justify-between border-b border-current/10 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs tracking-wider uppercase text-[#8E8E91]">
+            Curriculum Vitae
+          </span>
+          <span className="hidden sm:inline-block text-[#8E8E91]/40">/</span>
+          <span className="hidden sm:inline-block font-mono text-xs text-[#8E8E91]">
+            White & Gray Architecture
+          </span>
         </div>
 
-        {/* ====================================================== */}
-        {/* RESUME HEADER & CONTACT STRIP                          */}
-        {/* ====================================================== */}
-        <header className="space-y-3 text-left">
-          <div className="space-y-1">
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#0A0A0A] leading-tight">
-              Ashok Meena
-            </h1>
-            <p className="text-xs sm:text-sm font-bold text-[#D12424] tracking-wide">
-              Senior 3D Designer | 3D Apparel & Digital Fashion | Graphic & Product Visualization
-            </p>
-          </div>
+        {/* Theme Toggle Button & Resume Link */}
+        <div className="flex items-center gap-3">
+          <a
+            href="/Ashok_Resume.pdf"
+            download="Ashok_Meena_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`hidden md:inline-flex items-center gap-2 font-mono text-xs px-3 py-1.5 rounded-full border transition-all ${
+              isDark
+                ? "border-[#EFEFED]/30 text-[#EFEFED] hover:border-[#FAFAF9] hover:bg-[#FAFAF9]/10"
+                : "border-[#2A2A2C]/30 text-[#2A2A2C] hover:border-[#2A2A2C] hover:bg-[#2A2A2C]/5"
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Download PDF
+          </a>
 
-          {/* Compact Contact Metadata Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#D8D7D1] text-[11px] sm:text-xs font-mono text-[#56554F]">
-            <div className="flex items-center gap-1.5 truncate">
-              <span className="text-[#0A0A0A]">📞</span>
-              <a href="tel:+918000093300" className="hover:text-[#D12424] hover:underline truncate">
-                +91 80000 93300
-              </a>
-            </div>
-
-            <div className="flex items-center gap-1.5 truncate">
-              <span className="text-[#0A0A0A]">✉️</span>
-              <a href="mailto:ashokm3414@gmail.com" className="hover:text-[#D12424] hover:underline truncate">
-                ashokm3414@gmail.com
-              </a>
-            </div>
-
-            <div className="flex items-center gap-1.5 truncate">
-              <span className="text-[#0A0A0A]">📍</span>
-              <span className="truncate">Sardarshahar, Rajasthan</span>
-            </div>
-
-            <div className="flex items-center gap-1.5 truncate">
-              <span className="text-[#0A0A0A]">🌐</span>
-              <Link href="/" className="hover:text-[#D12424] hover:underline font-bold truncate">
-                Official Portfolio
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* ====================================================== */}
-        {/* 1. PROFESSIONAL SUMMARY                                */}
-        {/* ====================================================== */}
-        <section className="space-y-2 text-left">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
-            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
-              Professional Summary
-            </h2>
-          </div>
-
-          <p className="text-xs sm:text-[13px] leading-relaxed text-[#4A4944] font-normal pl-3 sm:pl-4 border-l-2 border-[#D8D7D1]">
-            Senior 3D & Graphic Designer with <strong className="text-[#0A0A0A] font-bold">6+ years of professional experience</strong> creating, optimizing, and delivering high-fidelity 3D assets for digital fashion, e-commerce, and real-time 3D web simulators. Proven expertise in <strong className="text-[#0A0A0A] font-bold">Blender, CLO 3D, and Adobe Creative Suite</strong> with end-to-end knowledge of 3D modeling, UV unwrapping, PBR texturing, lighting, typography, and asset optimization. Successfully delivered <strong className="text-[#D12424] font-bold">300+ production-ready 3D models</strong> and digital assets with strict quality control for global client platforms.
-          </p>
-        </section>
-
-        {/* ====================================================== */}
-        {/* 2. PROFESSIONAL EXPERIENCE                             */}
-        {/* ====================================================== */}
-        <section className="space-y-3.5 text-left">
-          <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#D8D7D1]">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#D12424]" />
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
-                Professional Experience
-              </h2>
-            </div>
-            <span className="font-mono text-[10.5px] sm:text-[11px] font-bold text-[#76756F]">
-              6+ Years Total Tenure
-            </span>
-          </div>
-
-          <div className="space-y-3 pl-3 sm:pl-4 border-l-2 border-[#D8D7D1]">
-            {/* Job Header */}
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-[#0A0A0A]">
-                  Senior 3D & Graphic Designer
-                </h3>
-                <p className="text-[11px] sm:text-xs font-mono text-[#56554F]">
-                  Infoeye Software Pvt. Ltd. • Sardarshahar, Rajasthan, India
-                </p>
-              </div>
-              <span className="font-mono text-[11px] sm:text-xs font-extrabold text-[#D12424] sm:text-right">
-                2020 – Present (6+ Yrs)
-              </span>
-            </div>
-
-            {/* Bullet Points */}
-            <ul className="space-y-1.5 text-xs sm:text-[12.5px] text-[#4A4944] leading-relaxed">
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Model, simulate, and optimize photorealistic 3D apparel and product assets using <strong>Blender and CLO 3D</strong> for e-commerce platforms and web-based 3D configurators.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Executed full <strong>PBR texturing workflows</strong>, material setups, custom studio lighting, and high-resolution rendering, reducing asset load latency and render times.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Successfully delivered <strong>300+ 3D model corrections and asset libraries</strong> with consistent accuracy, tight turnaround times, and strict QC protocols.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Prepared production-ready, lightweight <strong>OBJ and GLB/glTF files</strong>, verified geometric scale, fixed visual glitches, and managed color/material SKU variants for client 3D simulators.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Applied advanced <strong>typography, layout design, and brand identity principles</strong> to produce promotional graphics, textures, and digital visuals using Photoshop and Illustrator.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#D12424] font-bold shrink-0 mt-0.5">•</span>
-                <span>Collaborated closely with 3D developers, creative directors, and cross-functional teams across multiple time zones.</span>
-              </li>
-            </ul>
-
-            {/* Executive Honor Callout Box */}
-            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50/70 p-2.5 sm:p-3 text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-base shrink-0">🏆</span>
-                <span className="font-semibold text-[11px] sm:text-xs">
-                  Official Executive Recognition: Infoeye President personally visited Ashok&apos;s home for dinner in honor of dedication and senior production excellence.
-                </span>
-              </div>
-              <a
-                href="https://infoeye.com/news/staff/11540/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold underline shrink-0 hover:text-amber-800 text-[11px]"
-              >
-                Verification ↗
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ====================================================== */}
-        {/* 3. SOFTWARE TOOLS & CORE TECHNICAL SKILLS              */}
-        {/* ====================================================== */}
-        <section className="space-y-4 text-left">
-          <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#D8D7D1]">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#D12424]" />
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
-                Software & Technical Skills
-              </h2>
-            </div>
-            <span className="font-mono text-[10.5px] sm:text-[11px] font-bold text-[#76756F]">
-              8 Production Tools
-            </span>
-          </div>
-
-          {/* Compact 4-Column Software Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
-            {[
-              {
-                name: "Blender 3D",
-                role: "3D CGI & Modeling",
-                icon: "/Softwear Icon/blender-svgrepo-com.svg",
-              },
-              {
-                name: "CLO 3D",
-                role: "Digital Apparel Fashion",
-                icon: "/Softwear Icon/clo3d.svg",
-              },
-              {
-                name: "Photoshop",
-                role: "16-Bit RAW Retouching",
-                icon: "/Softwear Icon/photoshop.svg",
-              },
-              {
-                name: "Illustrator",
-                role: "Vector & Tech-Packs",
-                icon: "/Softwear Icon/adobe-illustrator-svgrepo-com.svg",
-              },
-              {
-                name: "Lightroom",
-                role: "Color RAW Grading",
-                icon: "/Softwear Icon/adobe-lightroom-svgrepo-com.svg",
-              },
-              {
-                name: "Canva",
-                role: "Marketing Collateral",
-                icon: "/Softwear Icon/canva-icon.webp",
-              },
-              {
-                name: "Excel",
-                role: "Asset Indexing & Data",
-                icon: "/Softwear Icon/excel2-svgrepo-com.svg",
-              },
-              {
-                name: "Antigravity",
-                role: "Agentic AI & Coding",
-                icon: "/Softwear Icon/google-antigravity.png",
-              },
-            ].map((tool) => (
-              <div
-                key={tool.name}
-                className="flex items-center gap-2 p-2 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/40 hover:bg-white hover:border-[#0A0A0A] transition-all"
-              >
-                <div className="relative h-7 w-7 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-white p-1 border border-[#D8D7D1]">
-                  <Image
-                    src={tool.icon}
-                    alt={tool.name}
-                    width={28}
-                    height={28}
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[11.5px] font-bold text-[#0A0A0A] truncate">
-                    {tool.name}
-                  </div>
-                  <p className="text-[9.5px] font-mono text-[#76756F] truncate">
-                    {tool.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Categorized Skills Pills */}
-          <div className="pt-1 space-y-1.5 text-xs">
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
-                3D & Simulation:
-              </span>
-              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
-                {[
-                  "3D Apparel Construction",
-                  "CLO 3D Garment Drape",
-                  "Hard-Surface Sub-D",
-                  "Mesh Topology",
-                  "UV Mapping",
-                  "PBR Texturing",
-                  "Studio Lighting",
-                  "Cycles & Eevee",
-                ].map((s) => (
-                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
-                Post-Production:
-              </span>
-              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
-                {[
-                  "16-Bit RAW Retouching",
-                  "Frequency Separation",
-                  "Skin Micro-Texture",
-                  "Background Removal",
-                  "Clipping Paths",
-                  "Color Correction",
-                  "E-Commerce Catalogues",
-                ].map((s) => (
-                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="font-mono text-[10.5px] font-bold text-[#0A0A0A] uppercase min-w-[110px]">
-                Pipeline & 3D Web:
-              </span>
-              <div className="flex flex-wrap gap-1.5 text-[10.5px] text-[#4A4944]">
-                {[
-                  "GLB / glTF Exports",
-                  "Draco Compression",
-                  "Low-Poly Retopology",
-                  "OBJ / FBX",
-                  "SKU Variant Management",
-                  "Quality Control (QC)",
-                ].map((s) => (
-                  <span key={s} className="bg-[#EFEEEB] border border-[#D8D7D1] rounded-md px-2 py-0.5">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ==================================================== */}
-          {/* STEP-BY-STEP SOFTWARE PRODUCTION WORKFLOW (ALTERNATING) */}
-          {/* ==================================================== */}
-          <div className="pt-4 border-t border-[#D8D7D1] space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-[#0A0A0A]">
-                  Step-by-Step Software Production Pipeline
-                </h3>
-                <p className="text-[10.5px] font-mono text-[#76756F]">
-                  Real production workflow screenshots across Adobe Creative Cloud, Blender & CLO 3D
-                </p>
-              </div>
-              <span className="font-mono text-[10px] text-[#D12424] font-bold bg-[#EFEEEB] px-2 py-0.5 rounded-full border border-[#D8D7D1]">
-                6 Steps • Click image to zoom
-              </span>
-            </div>
-
-            <div className="space-y-3 pt-1">
-              {PRODUCTION_STEPS.map((item, index) => {
-                const isEven = index % 2 === 1;
-                return (
-                  <div
-                    key={item.step}
-                    className="p-3 sm:p-4 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/25 hover:bg-white hover:border-[#0A0A0A] transition-all"
-                  >
-                    <div className={`grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center`}>
-                      {/* Text Column */}
-                      <div className={`md:col-span-7 space-y-2 ${isEven ? "md:order-2" : "md:order-1"}`}>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-[#0A0A0A] text-white">
-                            {item.step}
-                          </span>
-                          <span className="font-mono text-[10px] font-bold text-[#D12424] bg-red-50 border border-red-200 px-2 py-0.5 rounded">
-                            {item.badge}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <div className="relative h-5 w-5 shrink-0">
-                            <Image
-                              src={item.icon}
-                              alt={item.title}
-                              width={20}
-                              height={20}
-                              className="object-contain"
-                            />
-                          </div>
-                          <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-[#0A0A0A]">
-                              {item.title}
-                            </h4>
-                            <p className="text-[10px] sm:text-[10.5px] font-mono text-[#76756F]">
-                              {item.subtitle}
-                            </p>
-                          </div>
-                        </div>
-
-                        <p className="text-[11px] sm:text-[12px] text-[#4A4944] leading-relaxed">
-                          {item.description}
-                        </p>
-
-                        <div className="pt-1 flex items-center gap-1.5 text-[10px] font-mono text-[#56554F]">
-                          <span className="text-[#0A0A0A] font-bold">Deliverable:</span>
-                          <span className="bg-white border border-[#D8D7D1] px-2 py-0.5 rounded text-[#0A0A0A]">
-                            {item.deliverable}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Image Preview Column */}
-                      <div className={`md:col-span-5 ${isEven ? "md:order-1" : "md:order-2"}`}>
-                        <div
-                          onClick={() => setSelectedImage({ src: item.image, title: item.title, step: item.step })}
-                          className="group relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-[#D8D7D1] bg-[#111] cursor-pointer shadow-xs hover:border-[#D12424] transition-all"
-                          title={`Click to expand ${item.title} workspace screenshot`}
-                        >
-                          <Image
-                            src={item.image}
-                            alt={`${item.title} Production Interface`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 400px"
-                            className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 text-white font-mono text-[10px] px-2.5 py-1 rounded-full border border-white/20 backdrop-blur-sm">
-                              🔍 Click to Zoom
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* ====================================================== */}
-        {/* 4. EDUCATION                                           */}
-        {/* ====================================================== */}
-        <section className="space-y-3 text-left">
-          <div className="flex items-center gap-2 pb-1.5 border-b border-[#D8D7D1]">
-            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
-            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
-              Education
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Degree 1 */}
-            <div className="p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30 space-y-1">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="text-xs sm:text-[12.5px] font-bold text-[#0A0A0A]">
-                  Master of Science (M.Sc.) in Computer Science
-                </h3>
-                <span className="font-mono text-[10.5px] font-bold text-[#D12424] shrink-0">
-                  2025 – 2026
-                </span>
-              </div>
-              <p className="text-[10.5px] text-[#56554F]">
-                Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
-              </p>
-              <span className="inline-block text-[9.5px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-sm">
-                Pursuing (Ongoing)
-              </span>
-            </div>
-
-            {/* Degree 2 */}
-            <div className="p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30 space-y-1">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="text-xs sm:text-[12.5px] font-bold text-[#0A0A0A]">
-                  Bachelor of Arts (B.A.)
-                </h3>
-                <span className="font-mono text-[10.5px] font-bold text-[#56554F] shrink-0">
-                  Graduated 2024
-                </span>
-              </div>
-              <p className="text-[10.5px] text-[#56554F]">
-                Maharaja Ganga Singh University (MGSU), Bikaner, Rajasthan
-              </p>
-              <span className="inline-block text-[9.5px] font-mono text-[#56554F] bg-white border border-[#D8D7D1] px-2 py-0.5 rounded-sm">
-                Completed
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* ====================================================== */}
-        {/* 5. LANGUAGES & PROFESSIONAL STRENGTHS                  */}
-        {/* ====================================================== */}
-        <section className="space-y-3 text-left">
-          <div className="flex items-center gap-2 pb-1.5 border-b border-[#D8D7D1]">
-            <span className="h-2 w-2 rounded-full bg-[#D12424]" />
-            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0A0A0A]">
-              Languages & Professional Strengths
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            {/* Languages */}
-            <div className="space-y-1.5 p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30">
-              <p className="font-mono text-[10.5px] font-bold uppercase text-[#0A0A0A]">
-                Languages:
-              </p>
-              <ul className="space-y-1 text-[#4A4944] text-[11px] sm:text-xs">
-                <li>
-                  <strong className="text-[#0A0A0A]">Hindi:</strong> Native speaker. Devanagari script, translation, and proofreading.
-                </li>
-                <li>
-                  <strong className="text-[#0A0A0A]">English:</strong> Professional working proficiency for briefs and client communication.
-                </li>
-              </ul>
-            </div>
-
-            {/* Strengths */}
-            <div className="space-y-1.5 p-3 rounded-xl border border-[#D8D7D1] bg-[#EFEEEB]/30">
-              <p className="font-mono text-[10.5px] font-bold uppercase text-[#0A0A0A]">
-                Key Professional Strengths:
-              </p>
-              <div className="flex flex-wrap gap-1 pt-0.5 text-[10.5px] text-[#4A4944]">
-                {[
-                  "Attention to Detail",
-                  "Visual Quality Assurance",
-                  "Tight Deadline Turnaround",
-                  "Remote Work Discipline",
-                  "Cross-Functional Teamwork",
-                  "AI & Data Accuracy",
-                ].map((strength) => (
-                  <span key={strength} className="bg-white border border-[#D8D7D1] rounded-md px-1.5 py-0.5">
-                    ✓ {strength}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-        {/* ====================================================== */}
-        {/* BOTTOM ACTION BAR (RESUME DOWNLOAD & CONTACT)          */}
-        {/* ====================================================== */}
-        <footer className="pt-5 border-t border-[#D8D7D1] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
-          <div className="text-left">
-            <p className="text-xs font-bold text-[#0A0A0A]">
-              Need a verified offline copy of Ashok&apos;s Curriculum Vitae?
-            </p>
-            <p className="text-[10.5px] font-mono text-[#76756F]">
-              Official PDF formatted for HR review, client audits, and contract documentation.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <a
-              href="/Ashok_Resume.pdf"
-              download="Ashok_Meena_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#D12424] hover:bg-[#b51c1c] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all active:scale-95"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
-              <span>Download Resume (PDF)</span>
-            </a>
-
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#D8D7D1] bg-white hover:border-[#0A0A0A] hover:bg-[#EFEEEB] text-[#0A0A0A] px-4 py-2 text-xs font-bold transition-all"
-            >
-              <span>Contact ✉️</span>
-            </Link>
-          </div>
-        </footer>
-
+          <button
+            type="button"
+            onClick={() => setIsDark(!isDark)}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className={`flex items-center gap-2 font-mono text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer select-none focus-visible:ring-2 focus-visible:outline-none ${
+              isDark
+                ? "border-[#FAFAF9]/30 bg-[#2A2A2C] text-[#FAFAF9] hover:border-[#FAFAF9]"
+                : "border-[#2A2A2C]/20 bg-[#EFEFED] text-[#2A2A2C] hover:border-[#2A2A2C]"
+            }`}
+          >
+            {isDark ? (
+              <>
+                <svg className="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+                <span>Light</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5 text-[#2A2A2C]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+                <span>Dark</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* FULL-SCREEN LIGHTBOX MODAL FOR PRODUCTION WORKFLOW IMAGE */}
-      {/* ======================================================== */}
-      {selectedImage && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="relative max-w-5xl w-full bg-[#1A1A1A] border border-white/20 rounded-2xl overflow-hidden shadow-2xl space-y-2 p-3 sm:p-4 text-left"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-[#D12424] bg-white/10 px-2.5 py-0.5 rounded">
-                  {selectedImage.step}
-                </span>
-                <span className="text-white text-xs sm:text-sm font-bold">
-                  {selectedImage.title} • High-Resolution Production Workspace
-                </span>
+      {/* ==================================================================== */}
+      {/* 1. HERO SECTION */}
+      {/* ==================================================================== */}
+      <section className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-12 sm:pt-16 pb-14 sm:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+            <div className="overflow-hidden">
+              <motion.h1
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="text-[4rem] sm:text-[6rem] md:text-[7rem] lg:text-[7.5rem] font-semibold tracking-[-0.04em] leading-[0.88] select-none uppercase"
+              >
+                <span className="block">Ashok</span>
+                <span className="block text-[#8E8E91]">Meena</span>
+              </motion.h1>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+              className="space-y-3 max-w-2xl"
+            >
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-light tracking-tight">
+                Senior 3D Designer & Photo Editor
+              </h2>
+              <p className="text-sm sm:text-base leading-relaxed text-[#8E8E91] font-normal">
+                Creating, optimizing and delivering high-fidelity 3D assets for digital fashion, e-commerce and real-time 3D web simulators.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-current/10 font-mono text-xs"
+            >
+              <div>
+                <span className="block text-[#8E8E91] uppercase tracking-wider text-[10px]">Studio</span>
+                <span className="font-medium mt-0.5 block">Infoeye Software</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedImage(null)}
-                className="text-white/70 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
-                aria-label="Close image modal"
-              >
-                ✕
-              </button>
-            </div>
+              <div>
+                <span className="block text-[#8E8E91] uppercase tracking-wider text-[10px]">Based in</span>
+                <span className="font-medium mt-0.5 block">Sardarshahar, Rajasthan</span>
+              </div>
+              <div>
+                <span className="block text-[#8E8E91] uppercase tracking-wider text-[10px]">Languages</span>
+                <span className="font-medium mt-0.5 block">Hindi, English</span>
+              </div>
+            </motion.div>
+          </div>
 
-            <div className="relative aspect-[16/10] w-full bg-black rounded-lg overflow-hidden border border-white/10">
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.title}
-                fill
-                priority
-                className="object-contain"
-              />
-            </div>
-
-            <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-neutral-400">
-              <span>Press ESC or click background to close</span>
-              <a
-                href={selectedImage.src}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#D12424] hover:underline"
-              >
-                Open Original Image ↗
-              </a>
-            </div>
+          <div className="lg:col-span-5 xl:col-span-4 flex items-center justify-center">
+            <WireframeCube isDark={isDark} />
           </div>
         </div>
-      )}
+      </section>
+
+      {/* ==================================================================== */}
+      {/* 2. BIG SCROLL-REVEAL STATEMENT SENTENCE */}
+      {/* ==================================================================== */}
+      <section
+        ref={statementRef}
+        className={`py-16 sm:py-24 border-y border-current/10 transition-colors ${
+          isDark ? "bg-[#18181A]" : "bg-[#EFEFED]/50"
+        }`}
+      >
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-16 space-y-6 sm:space-y-8">
+          <p className="text-xl sm:text-3xl lg:text-4xl font-light leading-[1.28] tracking-tight">
+            {words1.map((word, i) => {
+              const start = (i / totalWords) * 0.9;
+              const end = ((i + 1) / totalWords) * 0.9;
+              return (
+                <ScrollWord
+                  key={`w1-${i}`}
+                  word={word}
+                  progress={statementProgress}
+                  start={start}
+                  end={end}
+                  isDark={isDark}
+                />
+              );
+            })}
+          </p>
+
+          <p className="text-lg sm:text-2xl lg:text-3xl font-light leading-[1.32] tracking-tight">
+            {words2.map((word, i) => {
+              const start = ((words1.length + i) / totalWords) * 0.95;
+              const end = ((words1.length + i + 1) / totalWords) * 0.95;
+              return (
+                <ScrollWord
+                  key={`w2-${i}`}
+                  word={word}
+                  progress={statementProgress}
+                  start={start}
+                  end={end}
+                  isDark={isDark}
+                />
+              );
+            })}
+          </p>
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* 3. COUNT-UP NUMBERS */}
+      {/* ==================================================================== */}
+      <section className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-14 sm:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-current/10 pb-14">
+          <div className="space-y-1">
+            <div className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
+              <CounterNumber target={6} suffix="+" />
+            </div>
+            <p className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider">
+              Years of experience
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
+              <CounterNumber target={300} suffix="+" />
+            </div>
+            <p className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider">
+              Production-ready 3D models
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
+              <CounterNumber target={8} />
+            </div>
+            <p className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider">
+              Production tools
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* 4. SKILLS LIST */}
+      {/* ==================================================================== */}
+      <section className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pb-16 sm:pb-24">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 mb-8 sm:mb-10">
+          <div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight">
+              Skills
+            </h2>
+            <p className="text-sm text-[#8E8E91] mt-1">
+              Eight tools that cover the full pipeline, from model to final image to web.
+            </p>
+          </div>
+          <span className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider">
+            Hover or tap row to explore
+          </span>
+        </div>
+
+        <div className="border-b border-current/15">
+          {SKILLS_DATA.map((skill, index) => {
+            const isActive = activeSkillId === skill.id;
+
+            return (
+              <div
+                key={skill.id}
+                onMouseEnter={() => setActiveSkillId(skill.id)}
+                onMouseLeave={() => setActiveSkillId(null)}
+                onClick={() =>
+                  setActiveSkillId(activeSkillId === skill.id ? null : skill.id)
+                }
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveSkillId(activeSkillId === skill.id ? null : skill.id);
+                  }
+                }}
+                className={`group border-t border-current/15 transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current ${
+                  isActive
+                    ? isDark
+                      ? "bg-[#FAFAF9] text-[#2A2A2C] px-5 sm:px-6 py-6 sm:py-7"
+                      : "bg-[#2A2A2C] text-[#FAFAF9] px-5 sm:px-6 py-6 sm:py-7"
+                    : "hover:px-3 py-4 sm:py-5"
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                  <div className="flex items-baseline gap-4">
+                    <span className="font-mono text-xs text-[#8E8E91] group-hover:text-inherit">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-light tracking-tight">
+                      {skill.name}
+                    </h3>
+                  </div>
+
+                  <span
+                    className={`font-mono text-xs transition-colors ${
+                      isActive ? "text-inherit/80" : "text-[#8E8E91]"
+                    }`}
+                  >
+                    {skill.subtitle}
+                  </span>
+                </div>
+
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="pt-4 sm:pt-5 space-y-4 max-w-4xl"
+                  >
+                    <p className="text-sm leading-relaxed text-inherit/90">
+                      {skill.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {skill.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className={`font-mono text-[11px] px-2.5 py-0.5 rounded-full border ${
+                            isDark
+                              ? "border-[#2A2A2C]/20 bg-[#2A2A2C]/5 text-[#2A2A2C]"
+                              : "border-[#FAFAF9]/20 bg-[#FAFAF9]/10 text-[#FAFAF9]"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* 5. JOURNEY TIMELINE */}
+      {/* ==================================================================== */}
+      <section className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pb-16 sm:pb-24">
+        <div className="mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight">
+            Journey
+          </h2>
+          <p className="text-sm text-[#8E8E91] mt-1">
+            Work and study, side by side.
+          </p>
+        </div>
+
+        <div className="space-y-8 sm:space-y-10 border-l-2 border-current/15 pl-5 sm:pl-8 ml-2">
+          <div className="relative space-y-2">
+            <span
+              className={`absolute -left-[27px] sm:-left-[39px] top-1.5 w-2.5 h-2.5 rounded-full border-2 ${
+                isDark
+                  ? "bg-[#1C1C1E] border-[#FAFAF9]"
+                  : "bg-[#FAFAF9] border-[#2A2A2C]"
+              }`}
+            />
+            <span className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider block">
+              2020 – Present
+            </span>
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-medium tracking-tight">
+              Senior 3D Designer & Photo Editor
+            </h3>
+            <p className="font-mono text-xs text-[#8E8E91]">
+              Infoeye Software, Sardarshahar, Rajasthan
+            </p>
+
+            <ul className="space-y-1.5 pt-1 text-sm text-inherit/80 max-w-3xl leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#8E8E91] mt-0.5 shrink-0">—</span>
+                <span>Model, simulate and optimize 3D apparel and hard-surface assets in Blender and CLO 3D.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#8E8E91] mt-0.5 shrink-0">—</span>
+                <span>Delivered 300+ production-ready 3D models with strict quality control for international client platforms.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#8E8E91] mt-0.5 shrink-0">—</span>
+                <span>Lead non-destructive 16-bit RAW retouching, frequency separation and color grading.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#8E8E91] mt-0.5 shrink-0">—</span>
+                <span>Build lightweight OBJ and GLB/glTF files with PBR materials for real-time 60 FPS web configurators.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="relative space-y-1.5">
+            <span
+              className={`absolute -left-[27px] sm:-left-[39px] top-1.5 w-2.5 h-2.5 rounded-full border-2 ${
+                isDark
+                  ? "bg-[#1C1C1E] border-[#FAFAF9]"
+                  : "bg-[#FAFAF9] border-[#2A2A2C]"
+              }`}
+            />
+            <span className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider block">
+              2025 – 2026 (ongoing)
+            </span>
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-medium tracking-tight">
+              M.Sc. in Computer Science
+            </h3>
+            <p className="font-mono text-xs text-[#8E8E91]">
+              Maharaja Ganga Singh University, Bikaner
+            </p>
+          </div>
+
+          <div className="relative space-y-1.5">
+            <span
+              className={`absolute -left-[27px] sm:-left-[39px] top-1.5 w-2.5 h-2.5 rounded-full border-2 ${
+                isDark
+                  ? "bg-[#1C1C1E] border-[#FAFAF9]"
+                  : "bg-[#FAFAF9] border-[#2A2A2C]"
+              }`}
+            />
+            <span className="font-mono text-xs text-[#8E8E91] uppercase tracking-wider block">
+              Graduated 2024
+            </span>
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-medium tracking-tight">
+              Bachelor of Arts (B.A.)
+            </h3>
+            <p className="font-mono text-xs text-[#8E8E91]">
+              Maharaja Ganga Singh University, Bikaner
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* 6. SLOW MARQUEE STRIP */}
+      {/* ==================================================================== */}
+      <div className="w-full overflow-hidden border-y border-current/10 py-4 select-none bg-current/5">
+        <div className="flex w-max animate-marquee space-x-6 items-center font-mono text-xs sm:text-sm tracking-widest uppercase text-[#8E8E91]">
+          {[...MARQUEE_TOOLS, ...MARQUEE_TOOLS, ...MARQUEE_TOOLS, ...MARQUEE_TOOLS].map(
+            (tool, index) => (
+              <span key={`${tool}-${index}`} className="flex items-center gap-6">
+                <span>{tool}</span>
+                <span className="text-current/30">·</span>
+              </span>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* ==================================================================== */}
+      {/* 7. CONTACT SECTION */}
+      {/* ==================================================================== */}
+      <footer id="contact" className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-16 sm:pt-24 pb-12 space-y-10 sm:space-y-12">
+        <div className="text-center space-y-6 max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-light tracking-tight">
+            Let&apos;s build something <span className="italic font-normal">flawless.</span>
+          </h2>
+
+          <div className="pt-2">
+            <MagneticButton href="mailto:ashokm3414@gmail.com" isDark={isDark}>
+              <span>Get in touch</span>
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+              </svg>
+            </MagneticButton>
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-current/10 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-[#8E8E91]">
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <a href="mailto:ashokm3414@gmail.com" className="hover:text-inherit hover:underline transition-colors">
+              ashokm3414@gmail.com
+            </a>
+            <a href="tel:+918000093300" className="hover:text-inherit hover:underline transition-colors">
+              +91 80000 93300
+            </a>
+            <a
+              href="/Ashok_Resume.pdf"
+              download="Ashok_Meena_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-inherit hover:opacity-75 transition-opacity"
+            >
+              Download résumé (PDF)
+            </a>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span>© 2026 Ashok Meena</span>
+            <span>·</span>
+            <a href="https://infoeye.com/company/" target="_blank" rel="noopener noreferrer" className="hover:underline">
+              Infoeye Software
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

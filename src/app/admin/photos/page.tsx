@@ -27,11 +27,26 @@ export default function AdminPhotosPage() {
   const loadWorks = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/photo-works", { cache: "no-store" });
+      const res = await fetch(`/api/photo-works?t=${Date.now()}`, { cache: "no-store" });
       const data = await res.json();
 
-      if (data.success) {
-        setWorks(data.works || []);
+      if (data.success && Array.isArray(data.works)) {
+        let list = data.works;
+        if (typeof window !== "undefined") {
+          try {
+            const stored = JSON.parse(localStorage.getItem("admin_deleted_assets") || "[]");
+            if (Array.isArray(stored) && stored.length > 0) {
+              const delSet = new Set(stored.map((s: string) => String(s).toLowerCase().trim()));
+              list = list.filter((w: any) => {
+                const rawId = String(w._id).toLowerCase();
+                const cleanId = rawId.replace(/^prod-/, "");
+                const title = String(w.title || "").toLowerCase().trim();
+                return !delSet.has(rawId) && !delSet.has(cleanId) && !delSet.has(`prod-${cleanId}`) && !delSet.has(title);
+              });
+            }
+          } catch {}
+        }
+        setWorks(list);
       }
     } catch {
       alert("Failed to load photo works");
@@ -66,23 +81,45 @@ export default function AdminPhotosPage() {
   };
 
   const deleteWork = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this photo retouching work?"))
+    const itemToDelete = works.find((w) => w._id === id);
+    if (!confirm(`Are you sure you want to delete "${itemToDelete?.title || "this work"}"? This cannot be undone.`))
       return;
+
+    // Immediately remove from UI
+    setWorks((prev) => prev.filter((item) => item._id !== id));
+    if (previewWork?._id === id) setPreviewWork(null);
+
+    // Save to local cache
+    if (typeof window !== "undefined") {
+      try {
+        const stored = JSON.parse(localStorage.getItem("admin_deleted_assets") || "[]");
+        const list = Array.isArray(stored) ? stored : [];
+        list.push(id);
+        const cleanId = id.replace(/^prod-/, "");
+        list.push(cleanId);
+        list.push(`prod-${cleanId}`);
+        if (itemToDelete?.title) list.push(itemToDelete.title.trim().toLowerCase());
+        localStorage.setItem("admin_deleted_assets", JSON.stringify(Array.from(new Set(list))));
+      } catch {}
+    }
 
     try {
       const res = await fetch(`/api/photo-works/${id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: itemToDelete?.title || "",
+        }),
       });
 
       const data = await res.json();
-      if (res.ok && data.success) {
-        setWorks((prev) => prev.filter((item) => item._id !== id));
-        if (previewWork?._id === id) setPreviewWork(null);
-      } else {
+      if (!res.ok || !data.success) {
         alert(data.message || "Delete failed");
+        loadWorks();
       }
     } catch {
       alert("Delete request failed");
+      loadWorks();
     }
   };
 

@@ -6,6 +6,8 @@ import PhotoWork from "@/models/PhotoWork";
 import Product from "@/models/Product";
 import { FALLBACK_PHOTO_WORKS } from "@/data/photoWorksData";
 import { FALLBACK_3D_PRODUCTS } from "@/lib/fallback-products";
+import { filterOutDeletedAssets } from "@/lib/deleted-assets";
+import { applyCustomOrders } from "@/lib/custom-orders";
 
 export const metadata: Metadata = {
   title: "Work | Ashok Meena — Senior 3D Designer & Photo Editor",
@@ -27,11 +29,20 @@ const MAPPED_FALLBACK_3D_PRODUCTS = FALLBACK_3D_PRODUCTS.map((p) => ({
   beforeImage: "",
   afterImage: p.thumbnail,
   thumbnail: p.thumbnail,
-  softwareUsed: ["Blender"],
+  softwareUsed:
+    Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+      ? p.softwareUsed
+      : ["Blender"],
   resolution: "3D GLB / PBR",
   clientName: "Luxury 3D Studio",
   projectYear: "2026",
-  tags: ["Blender", "3D Model", p.category].filter(Boolean),
+  tags: [
+    ...(Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+      ? p.softwareUsed
+      : ["Blender"]),
+    "3D Model",
+    p.category,
+  ].filter(Boolean),
   modelUrl: p.modelUrl || "",
   featured: Boolean(p.featured),
   views: p.views || 100,
@@ -43,8 +54,8 @@ async function getPhotoWorks() {
   try {
     await connectDB();
     const [photoItems, productItems] = await Promise.all([
-      PhotoWork.find({ status: "Published" }).sort({ createdAt: -1 }).lean(),
-      Product.find({ status: "Published" }).sort({ createdAt: -1 }).lean(),
+      PhotoWork.find({ status: "Published" }).sort({ serialNumber: 1, createdAt: -1 }).lean(),
+      Product.find({ status: "Published" }).sort({ serialNumber: 1, createdAt: -1 }).lean(),
     ]);
 
     const productsSource =
@@ -61,15 +72,26 @@ async function getPhotoWorks() {
       beforeImage: "",
       afterImage: p.thumbnail,
       thumbnail: p.thumbnail,
-      softwareUsed: ["Blender"],
+      softwareUsed:
+        Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+          ? p.softwareUsed
+          : ["Blender"],
       resolution: "3D GLB / PBR",
       clientName: p.brandName || "Luxury 3D Studio",
       projectYear: "2026",
-      tags: ["Blender", "3D Model", p.category].filter(Boolean),
+      tags: [
+        ...(Array.isArray(p.softwareUsed) && p.softwareUsed.length > 0
+          ? p.softwareUsed
+          : ["Blender"]),
+        "3D Model",
+        p.category,
+      ].filter(Boolean),
       modelUrl: p.glbUrl || p.modelUrl || "",
       featured: Boolean(p.featured),
       views: p.views || 100,
       likes: p.likes || 25,
+      serialNumber: Number(p.serialNumber || p.displayOrder || 0),
+      displayOrder: Number(p.serialNumber || p.displayOrder || 0),
       isPortfolio3D: true,
     }));
 
@@ -79,21 +101,51 @@ async function getPhotoWorks() {
       const dbTitles = new Set(
         combinedDB.map((x: any) => String(x.title || "").toLowerCase().trim())
       );
-      const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
-        (f) => !dbTitles.has(String(f.title || "").toLowerCase().trim())
+      const replacedFallbackIds = new Set(
+        combinedDB
+          .flatMap((p: any) => {
+            const tags: string[] = Array.isArray(p.tags) ? p.tags : [];
+            const fbTag = tags.find((t: string) => t.startsWith("fallbackId:"));
+            return fbTag ? [fbTag.replace("fallbackId:", "")] : [];
+          })
+          .filter(Boolean)
       );
 
-      return [
+      const nonDuplicateFallbacks = FALLBACK_PHOTO_WORKS.filter(
+        (f) =>
+          !replacedFallbackIds.has(f._id) &&
+          !dbTitles.has(String(f.title || "").toLowerCase().trim())
+      );
+
+      const finalItems = [
         ...combinedDB.map((x: any) => ({
           ...x,
           _id: x._id.toString(),
         })),
         ...nonDuplicateFallbacks,
       ];
+
+      const cleanItems = await filterOutDeletedAssets(finalItems);
+      const orderedItems = await applyCustomOrders(cleanItems);
+
+      orderedItems.sort((a: any, b: any) => {
+        const aSn = Number(a.serialNumber || a.displayOrder || 0);
+        const bSn = Number(b.serialNumber || b.displayOrder || 0);
+        if (aSn > 0 && bSn > 0) return aSn - bSn;
+        if (aSn > 0) return -1;
+        if (bSn > 0) return 1;
+        return 0;
+      });
+
+      return orderedItems;
     }
-    return [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
+    const baseCatalog = [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
+    const cleanCatalog = await filterOutDeletedAssets(baseCatalog);
+    return await applyCustomOrders(cleanCatalog);
   } catch {
-    return [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
+    const baseCatalog = [...FALLBACK_PHOTO_WORKS, ...MAPPED_FALLBACK_3D_PRODUCTS];
+    const cleanCatalog = await filterOutDeletedAssets(baseCatalog);
+    return await applyCustomOrders(cleanCatalog);
   }
 }
 
